@@ -11,11 +11,11 @@ import tn.star.Pfe.enums.StatutOffre;
 import tn.star.Pfe.enums.TypeOffre;
 import tn.star.Pfe.exceptions.BadRequestException;
 import tn.star.Pfe.exceptions.NotFoundException;
+import tn.star.Pfe.mapper.OffreMapper;
 import tn.star.Pfe.repository.OffreRepository;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.Base64;
 import java.util.List;
 
 @Service
@@ -23,28 +23,34 @@ import java.util.List;
 public class OffreService {
 
     private final OffreRepository offreRepository;
+    private final OffreMapper offreMapper;
 
     public List<OffreResponse> listerOffresOuvertes() {
         return offreRepository.findByStatut(StatutOffre.OUVERTE)
-                .stream().map(this::toResponse).toList();
+                .stream()
+                .map(offreMapper::toResponse)
+                .toList();
     }
 
     public OffreResponse trouverParId(int id) {
-        return toResponse(offreRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Offre introuvable : " + id)));
+        return offreMapper.toResponse(
+                offreRepository.findById(id)
+                        .orElseThrow(() -> new NotFoundException("Offre introuvable : " + id))
+        );
     }
 
     public List<OffreResponse> rechercherParTitre(String titre) {
         return offreRepository.findByTitreContainingIgnoreCase(titre)
-                .stream().map(this::toResponse).toList();
+                .stream()
+                .map(offreMapper::toResponse)
+                .toList();
     }
-
 
     @Transactional
     public OffreResponse creer(String titre, String description, TypeOffre typeOffre, LocalDate dateDebut, LocalDate dateFin, int capaciteMax, double prixParPersonne, String lieu, MultipartFile image) throws IOException {
+
         if (!dateFin.isAfter(dateDebut))
-            throw new BadRequestException(
-                    "La date de fin doit être après la date de début.");
+            throw new BadRequestException("La date de fin doit être après la date de début.");
 
         Offre offre = Offre.builder()
                 .titre(titre)
@@ -64,7 +70,7 @@ public class OffreService {
             offre.setImageType(image.getContentType());
         }
 
-        return toResponse(offreRepository.save(offre));
+        return offreMapper.toResponse(offreRepository.save(offre));
     }
 
     @Transactional
@@ -92,14 +98,15 @@ public class OffreService {
         if (req.getDateFin() != null)
             offre.setDateFin(req.getDateFin());
 
-        return toResponse(offreRepository.save(offre));
+        return offreMapper.toResponse(offreRepository.save(offre));
     }
 
     @Transactional
     public OffreResponse fermer(int id) {
-        Offre offre = offreRepository.findById(id).orElseThrow(() -> new NotFoundException("Offre introuvable : " + id));
+        Offre offre = offreRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Offre introuvable : " + id));
         offre.setStatut(StatutOffre.FERMEE);
-        return toResponse(offreRepository.save(offre));
+        return offreMapper.toResponse(offreRepository.save(offre));
     }
 
     @Transactional
@@ -107,32 +114,5 @@ public class OffreService {
         if (!offreRepository.existsById(id))
             throw new NotFoundException("Offre introuvable : " + id);
         offreRepository.deleteById(id);
-    }
-
-
-    public OffreResponse toResponse(Offre o) {
-        String imageBase64 = null;
-        if (o.getImage() != null) {
-            imageBase64 = Base64.getEncoder().encodeToString(o.getImage());
-        }
-
-        return OffreResponse.builder()
-                .id(o.getId())
-                .titre(o.getTitre())
-                .description(o.getDescription())
-                .typeOffre(o.getType())
-                .statutOffre(o.getStatut())
-                .dateDebut(o.getDateDebut())
-                .dateFin(o.getDateFin())
-                .capaciteMax(o.getCapaciteMax())
-                .placeRestantes(o.getPlacesRestantes())
-                .prixParPersonne(o.getPrixParPersonne())
-                .lieu(o.getLieu())
-                .imageBase64(imageBase64)
-                .imageType(o.getImageType())
-                .imageNom(o.getImageNom())
-                .createdAt(o.getCreatedAt())
-                .updatedAt(o.getUpdatedAt())
-                .build();
     }
 }
