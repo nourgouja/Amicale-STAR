@@ -6,6 +6,7 @@ import tn.star.Pfe.entity.Adherent;
 import tn.star.Pfe.entity.Inscription;
 import tn.star.Pfe.entity.Offre;
 import tn.star.Pfe.enums.StatutInscription;
+import tn.star.Pfe.enums.StatutPaiement;
 
 import java.util.List;
 import java.util.Optional;
@@ -26,4 +27,11 @@ public interface InscriptionRepository extends JpaRepository<Inscription, Intege
     List<Inscription> findByAdherent(Adherent adherent);
 
     boolean existsByOffreAndAdherent(Offre offre, Adherent adherent);
+
+    //dashboard
+    long countByStatut(StatutInscription statut);
+
+    long countByStatutPaiement(StatutPaiement statut);
+
+    List<Inscription> findByStatutPaiement(StatutPaiement statut);
 }

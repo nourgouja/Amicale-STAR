@@ -42,6 +42,9 @@ public interface OffreRepository extends JpaRepository<Offre, Integer> {
 
     List<Offre> findByStatutAndType(StatutOffre statut, TypeOffre type);
 
+    //dashboard
+    long countByStatut(StatutOffre statut);
+
     @Query("SELECT COUNT(i) FROM Inscription i " +
             "WHERE i.offre.id = :offreId " +
             "AND i.statut = 'CONFIRMEE'")
