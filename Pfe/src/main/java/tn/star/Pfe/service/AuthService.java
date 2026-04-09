@@ -58,8 +58,7 @@ public class AuthService {
 
         return new AuthResponse(
                 jwtUtils.generateAccessToken(principal),
-                principal.getUsername(),
-                roleName
-        );
+                roleName,
+                principal.isFirstLogin());
     }
 }

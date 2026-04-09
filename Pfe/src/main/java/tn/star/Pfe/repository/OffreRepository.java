@@ -32,7 +32,7 @@ import tn.star.Pfe.enums.TypeOffre;
 import java.util.List;
 
 @Repository
-public interface OffreRepository extends JpaRepository<Offre, Integer> {
+public interface OffreRepository extends JpaRepository<Offre, Long> {
 
     List<Offre> findByStatut(StatutOffre statut);
 
@@ -48,5 +48,5 @@ public interface OffreRepository extends JpaRepository<Offre, Integer> {
     @Query("SELECT COUNT(i) FROM Inscription i " +
             "WHERE i.offre.id = :offreId " +
             "AND i.statut = 'CONFIRMEE'")
-    int countInscritsConfirmes(@Param("offreId") int offreId);
+    int countInscritsConfirmes(@Param("offreId") Long offreId);
 }

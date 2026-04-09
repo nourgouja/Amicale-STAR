@@ -20,7 +20,7 @@ public abstract class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
     @Email(regexp = "^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$")
     @Column(nullable = false, unique = true)
     private String email;
@@ -42,6 +42,10 @@ public abstract class User {
     private LocalDateTime createdAt;
     @UpdateTimestamp
     private LocalDateTime updatedAt;
+
+    @Column(nullable = false)
+    @Builder.Default
+    private boolean firstLogin = true;
 
 
 

@@ -3,7 +3,7 @@ package tn.star.Pfe.dto.auth;
 import java.time.LocalDateTime;
 
 public record UserResponse(
-        int id,
+        Long id,
         String email,
         String nom,
         String prenom,

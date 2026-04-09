@@ -2,6 +2,7 @@ package tn.star.Pfe.exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -14,6 +15,12 @@ import java.util.Map;
 public class GlobalExceptionHandler {
 
     public record ErrorResponse(int status, String message) {}
+
+    @ExceptionHandler(DisabledException.class)
+    public ResponseEntity<ErrorResponse> handleDisabled(DisabledException ex) {
+        return ResponseEntity.status(403)
+                .body(new ErrorResponse(500,"Compte désactivé. Contactez l'administrateur."));
+    }
 
     @ExceptionHandler(EligibiliteException.class)
     public ResponseEntity<ErrorResponse> handleEligibilite(EligibiliteException ex) {

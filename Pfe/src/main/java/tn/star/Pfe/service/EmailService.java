@@ -40,7 +40,6 @@ public class EmailService {
         }
     }
 
-    @Async
     public void sendPasswordResetEmail(String to, String temporaryPassword) {
         if (mailSender == null) {
             log.warn("Mail not configured — skipping password reset email to: {}", to);

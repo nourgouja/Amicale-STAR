@@ -15,10 +15,10 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class InscriptionResponse {
 
-    private int id;
-    private int offreId;
+    private Long id;
+    private Long offreId;
     private String offreTitre;
-    private int adherentId;
+    private Long adherentId;
     private String mailAdherent;
     private StatutInscription statut;
     private StatutPaiement statutPaiement;

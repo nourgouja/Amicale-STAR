@@ -33,7 +33,7 @@ public class OffreController {
 
     @GetMapping("/{id}")
     public ResponseEntity<OffreResponse> trouverParId(
-            @PathVariable int id) {
+            @PathVariable Long id) {
         return ResponseEntity.ok(offreService.trouverParId(id));
     }
 
@@ -61,22 +61,22 @@ public class OffreController {
     }
 
     @PutMapping("/modifier/{id}")
-    @PreAuthorize("hasAnyRole('MEMBRE_BUREAU','ADMIN'")
+    @PreAuthorize("hasAnyRole('MEMBRE_BUREAU','ADMIN')")
     public ResponseEntity<OffreResponse> modifier(
-            @PathVariable int id,
+            @PathVariable Long id,
             @Valid @RequestBody OffreRequest.UpdateOffreRequest req) {
         return ResponseEntity.ok(offreService.modifier(id, req));
     }
 
     @PatchMapping("/fermer/{id}")
-    @PreAuthorize("hasAnyRole('MEMBRE_BUREAU','ADMIN'")
-    public ResponseEntity<OffreResponse> fermer(@PathVariable int id) {
+    @PreAuthorize("hasAnyRole('MEMBRE_BUREAU','ADMIN')")
+    public ResponseEntity<OffreResponse> fermer(@PathVariable Long id) {
         return ResponseEntity.ok(offreService.fermer(id));
     }
 
     @DeleteMapping("/supprimer/{id}")
-    @PreAuthorize("hasAnyRole('MEMBRE_BUREAU','ADMIN'")
-    public ResponseEntity<Void> supprimer(@PathVariable int id) {
+    @PreAuthorize("hasAnyRole('MEMBRE_BUREAU','ADMIN')")
+    public ResponseEntity<Void> supprimer(@PathVariable Long id) {
         offreService.supprimer(id);
         return ResponseEntity.noContent().build();
     }

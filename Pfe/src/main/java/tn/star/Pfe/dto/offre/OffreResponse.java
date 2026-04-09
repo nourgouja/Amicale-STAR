@@ -42,7 +42,7 @@ import java.time.LocalDateTime;
 @Data @Builder @NoArgsConstructor @AllArgsConstructor
 public class OffreResponse {
 
-    private int id;
+    private Long id;
     private String titre;
     private String description;
     private TypeOffre typeOffre;

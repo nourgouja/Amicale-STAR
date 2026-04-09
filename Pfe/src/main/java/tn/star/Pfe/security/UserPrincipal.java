@@ -12,29 +12,38 @@ import java.util.List;
 
 public class UserPrincipal implements UserDetails {
 
-    private final int id;
+    private final Long id;
     private final String username;
     private final String email;
     private final String motDePasse;
     private String role;
     private final boolean actif;
+    private final boolean firstLogin;
 
-    public UserPrincipal(int id, String email, String motDePasse, String role, boolean actif) {
+
+    public UserPrincipal(Long id, String email, String motDePasse, String role, boolean actif,boolean firstLogin) {
         this.id = id;
         this.username = email;
         this.email = email;
         this.motDePasse = motDePasse;
         this.role = role;
         this.actif = actif;
+        this.firstLogin=firstLogin;
     }
 
     public static UserPrincipal from(User u) {
-        String role = u.getRole().name();
-
-        return new UserPrincipal(u.getId(), u.getEmail(), u.getMotDePasse(), role, u.isActif());
+        String role = u.getRole() != null ? u.getRole().name() : "ADHERENT";
+        return new UserPrincipal(
+                u.getId(),
+                u.getEmail(),
+                u.getMotDePasse(),
+                role,
+                u.isActif(),
+                u.isFirstLogin()
+        );
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
@@ -76,4 +85,6 @@ public class UserPrincipal implements UserDetails {
     public boolean isCredentialsNonExpired() {
         return true;
     }
+
+    public boolean isFirstLogin(){return firstLogin;}
 }

@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 public class InscriptionRequest {
 
     @NotNull(message = "l'id de loffre est obligatoire")
-    private int offreId;
+    private Long offreId;
     private String maillAdherent;
 
 }

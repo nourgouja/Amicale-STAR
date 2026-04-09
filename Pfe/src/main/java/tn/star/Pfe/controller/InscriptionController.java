@@ -122,7 +122,7 @@ public class InscriptionController {
     @PostMapping("/inscrire/{offreId}")
     @PreAuthorize("hasRole('ADHERENT')")
     public ResponseEntity<InscriptionResponse> inscrire(
-            @PathVariable @Parameter(description = "ID de l'offre", required = true, example = "1") int offreId,
+            @PathVariable @Parameter(description = "ID de l'offre", required = true, example = "1") Long offreId,
             @AuthenticationPrincipal @Parameter(hidden = true) UserPrincipal principal) {
 
         Adherent adherent = getAdherentFromPrincipal(principal);
@@ -134,7 +134,7 @@ public class InscriptionController {
     @PatchMapping("/annuler/{inscriptionId}")
     @PreAuthorize("hasRole('ADHERENT')")
     public ResponseEntity<InscriptionResponse> annuler(
-            @PathVariable @Parameter(description = "ID de l'inscription", required = true) int inscriptionId,
+            @PathVariable @Parameter(description = "ID de l'inscription", required = true) Long inscriptionId,
             @AuthenticationPrincipal @Parameter(hidden = true) UserPrincipal principal) {
 
         Adherent adherent = getAdherentFromPrincipal(principal);
@@ -153,21 +153,21 @@ public class InscriptionController {
     @PatchMapping("/confirmer/{inscriptionId}")
     @PreAuthorize("hasAnyRole('MEMBRE_BUREAU', 'ADMIN')")
     public ResponseEntity<InscriptionResponse> confirmer(
-            @PathVariable @Parameter(description = "ID de l'inscription", required = true) int inscriptionId) {
+            @PathVariable @Parameter(description = "ID de l'inscription", required = true) Long inscriptionId) {
         return ResponseEntity.ok(inscriptionService.confirmer(inscriptionId));
     }
 
     @GetMapping("/offre/{offreId}")
     @PreAuthorize("hasAnyRole('MEMBRE_BUREAU', 'ADMIN')")
     public ResponseEntity<List<InscriptionResponse>> inscritsParOffre(
-            @PathVariable @Parameter(description = "ID de l'offre", required = true) int offreId) {
+            @PathVariable @Parameter(description = "ID de l'offre", required = true) Long offreId) {
         return ResponseEntity.ok(inscriptionService.inscritsParOffre(offreId));
     }
 
     @PutMapping("/{id}/paiement")
     @PreAuthorize("hasAnyRole('MEMBRE_BUREAU', 'ADMIN')")
     public ResponseEntity<InscriptionResponse> mettreAjourPaiement(
-            @PathVariable @Parameter(description = "ID de l'inscription", required = true) int id,
+            @PathVariable @Parameter(description = "ID de l'inscription", required = true) Long id,
             @RequestParam @Parameter(description = "Nouveau statut de paiement", required = true)
             StatutPaiement statut) {
         return ResponseEntity.ok(inscriptionService.mettreAjourPaiement(id, statut));

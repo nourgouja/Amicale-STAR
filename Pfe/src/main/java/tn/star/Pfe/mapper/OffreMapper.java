@@ -21,7 +21,6 @@ public class OffreMapper {
                 .placeRestantes(o.getPlacesRestantes())
                 .prixParPersonne(o.getPrixParPersonne())
                 .lieu(o.getLieu())
-
                 .imageType(o.getImageType())
                 .imageNom(o.getImageNom())
                 .createdAt(o.getCreatedAt())

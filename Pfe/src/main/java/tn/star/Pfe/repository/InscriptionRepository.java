@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface InscriptionRepository extends JpaRepository<Inscription, Integer> {
+public interface InscriptionRepository extends JpaRepository<Inscription, Long> {
 
     List<Inscription> findByOffre(Offre offre);
 
@@ -22,7 +22,7 @@ public interface InscriptionRepository extends JpaRepository<Inscription, Intege
 
     int countByOffreAndStatut(Offre offre, StatutInscription statut);
 
-    Optional<Inscription> findByIdAndAdherent(int id, Adherent adherent);
+    Optional<Inscription> findByIdAndAdherent(Long id, Adherent adherent);
 
     List<Inscription> findByAdherent(Adherent adherent);
 

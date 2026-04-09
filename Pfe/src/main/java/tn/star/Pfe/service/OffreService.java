@@ -32,7 +32,7 @@ public class OffreService {
                 .toList();
     }
 
-    public OffreResponse trouverParId(int id) {
+    public OffreResponse trouverParId(Long id) {
         return offreMapper.toResponse(
                 offreRepository.findById(id)
                         .orElseThrow(() -> new NotFoundException("Offre introuvable : " + id))
@@ -74,7 +74,7 @@ public class OffreService {
     }
 
     @Transactional
-    public OffreResponse modifier(int id, OffreRequest.UpdateOffreRequest req) {
+    public OffreResponse modifier(Long id, OffreRequest.UpdateOffreRequest req) {
         Offre offre = offreRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Offre introuvable : " + id));
 
@@ -102,7 +102,7 @@ public class OffreService {
     }
 
     @Transactional
-    public OffreResponse fermer(int id) {
+    public OffreResponse fermer(Long id) {
         Offre offre = offreRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Offre introuvable : " + id));
         offre.setStatut(StatutOffre.FERMEE);
@@ -110,7 +110,7 @@ public class OffreService {
     }
 
     @Transactional
-    public void supprimer(int id) {
+    public void supprimer(Long id) {
         if (!offreRepository.existsById(id))
             throw new NotFoundException("Offre introuvable : " + id);
         offreRepository.deleteById(id);

@@ -39,13 +39,13 @@ public class AdminController {
     }
 
     @PutMapping("/utilisateurs/{id}/activer")
-    public ResponseEntity<Void> activer(@PathVariable int id) {
+    public ResponseEntity<Void> activer(@PathVariable Long id) {
         userService.toggleUserStatus(id, true);
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/utilisateurs/{id}/desactiver")
-    public ResponseEntity<Void> desactiver(@PathVariable int id) {
+    public ResponseEntity<Void> desactiver(@PathVariable Long id) {
         userService.toggleUserStatus(id, false);
         return ResponseEntity.noContent().build();
     }

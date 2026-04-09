@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 public class Inscription {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
     @CreationTimestamp
     private LocalDateTime dateInscription;

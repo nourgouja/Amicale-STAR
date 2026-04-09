@@ -36,7 +36,7 @@ public class InscriptionService {
     }
 
     @Transactional
-    public InscriptionResponse inscrire(int offreId, Adherent adherent) {
+    public InscriptionResponse inscrire(Long offreId, Adherent adherent) {
 
         Offre offre = offreRepository.findById(offreId)
                 .orElseThrow(() -> new NotFoundException("Offre non trouvée"));
@@ -60,7 +60,7 @@ public class InscriptionService {
 
 
     @Transactional
-    public InscriptionResponse annuler(Adherent adherent, int inscriptionId) {
+    public InscriptionResponse annuler(Adherent adherent, Long inscriptionId) {
         Inscription inscription = inscriptionRepository
                 .findByIdAndAdherent(inscriptionId, adherent)
                 .orElseThrow(() -> new NotFoundException("Inscription introuvable"));
@@ -72,7 +72,7 @@ public class InscriptionService {
     }
 
     @Transactional
-    public InscriptionResponse confirmer(int inscriptionId) {
+    public InscriptionResponse confirmer(Long inscriptionId) {
         Inscription inscription = inscriptionRepository.findById(inscriptionId)
                 .orElseThrow(() -> new NotFoundException("Inscription introuvable"));
 
@@ -88,7 +88,7 @@ public class InscriptionService {
                 .toList();
     }
 
-    public List<InscriptionResponse> inscritsParOffre(int offreId) {
+    public List<InscriptionResponse> inscritsParOffre(Long offreId) {
         Offre offre = offreRepository.findById(offreId)
                 .orElseThrow(() -> new NotFoundException("Offre introuvable"));
 
@@ -99,7 +99,7 @@ public class InscriptionService {
     }
 
     @Transactional
-    public InscriptionResponse mettreAjourPaiement(int inscriptionId, StatutPaiement statut) {
+    public InscriptionResponse mettreAjourPaiement(Long inscriptionId, StatutPaiement statut) {
         Inscription inscription = inscriptionRepository.findById(inscriptionId)
                 .orElseThrow(() -> new NotFoundException("Inscription non trouvée"));
 

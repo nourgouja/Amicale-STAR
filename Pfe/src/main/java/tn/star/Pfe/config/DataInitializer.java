@@ -30,12 +30,12 @@ public class DataInitializer {
             if (userRepository.findByEmail(adminEmail).isEmpty()) {
 
                 Admin admin = Admin.builder()
-                        .nom("Admin")
-                        .prenom("Admin")
+                        .nom("Admin").prenom("Admin")
                         .email(adminEmail)
                         .motDePasse(passwordEncoder.encode(adminPassword))
                         .role(Role.ADMIN)
                         .actif(true)
+                        .firstLogin(false)
                         .build();
 
                 userRepository.save(admin);

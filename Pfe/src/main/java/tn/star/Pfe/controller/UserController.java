@@ -56,7 +56,7 @@ public class UserController {
 
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<UserResponse> getUserById(@PathVariable int id) {
+    public ResponseEntity<UserResponse> getUserById(@PathVariable Long id) {
         User user = userService.findById(id);
         return ResponseEntity.ok(userMapper.toResponse(user));
     }
@@ -71,7 +71,7 @@ public class UserController {
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<UserResponse> updateUser(
-            @PathVariable int id,
+            @PathVariable Long id,
             @Valid @RequestBody UpdateProfilRequest request) {
 
         User updated = userService.updateUser(id, request);
@@ -80,7 +80,7 @@ public class UserController {
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Void> deleteUser(@PathVariable int id) {
+    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
         return ResponseEntity.noContent().build();
     }
@@ -88,7 +88,7 @@ public class UserController {
     @PatchMapping("/{id}/role")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<UserResponse> assignRole(
-            @PathVariable int id,
+            @PathVariable Long id,
             @RequestParam Role role) {
 
         User updated = userService.assignRole(id, role);
@@ -98,7 +98,7 @@ public class UserController {
     @PatchMapping("/{id}/actif")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<UserResponse> toggleUserStatus(
-            @PathVariable int id,
+            @PathVariable Long id,
             @RequestParam boolean actif) {
 
         User updated = userService.toggleUserStatus(id, actif);
@@ -109,8 +109,17 @@ public class UserController {
     //changer cette fonction temparary password then reinstalation par email
     @PostMapping("/{id}/reinitialiser-mot-de-passe")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Void> adminResetPassword(@PathVariable int id) {
+    public ResponseEntity<Void> adminResetPassword(@PathVariable Long id) {
         userService.adminResetPassword(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/change-password")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Void> changePassword(
+            @AuthenticationPrincipal UserPrincipal principal,
+            @RequestBody @Valid ChangePasswordRequest request) {
+        userService.changePassword(principal.getId(), request);
         return ResponseEntity.noContent().build();
     }
 }
