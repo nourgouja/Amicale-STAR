@@ -9,12 +9,10 @@ import tn.star.Pfe.enums.StatutInscription;
 import tn.star.Pfe.enums.StatutOffre;
 import tn.star.Pfe.enums.StatutPaiement;
 import tn.star.Pfe.mapper.InscriptionMapper;
-import tn.star.Pfe.repository.EcheanceRepository;
-import tn.star.Pfe.repository.InscriptionRepository;
-import tn.star.Pfe.repository.OffreRepository;
-import tn.star.Pfe.repository.UserRepository;
+import tn.star.Pfe.repository.*;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -26,6 +24,8 @@ public class DashboardService {
     private final OffreRepository offreRepository;
     private final InscriptionRepository inscriptionRepository;
     private final EcheanceRepository echeanceRepository;
+    private final PoleRepository poleRepository;
+
     public AdminDashboardResponse getAdminDashboard() {
 
         long totalUtilisateurs = userRepository.count();
@@ -117,6 +117,30 @@ public class DashboardService {
                 inscriptionsEnAttente,
                 totalPaiementsEnRetard,
                 participation
+        );
+    }
+
+    public TresorierDashboardResponse getTresorierDashboard() {
+
+        Map<String, BigDecimal> collecteParPole = new HashMap<>();
+        Map<String, BigDecimal> attenduParPole  = new HashMap<>();
+
+        poleRepository.findAll().forEach(pole -> {
+            BigDecimal collecte = echeanceRepository
+                    .sumMontantByPoleAndStatut(pole, StatutPaiement.PAYEE);
+            BigDecimal attendu  = echeanceRepository
+                    .sumMontantByPoleAndStatut(pole, StatutPaiement.EN_ATTENTE);
+
+            collecteParPole.put(pole.getNom(), collecte);
+            attenduParPole.put(pole.getNom(),  attendu);
+        });
+
+        long totalEnRetard = echeanceRepository.countByStatut(StatutPaiement.EN_RETARD);
+
+        return new TresorierDashboardResponse(
+                collecteParPole,
+                attenduParPole,
+                totalEnRetard
         );
     }
 }

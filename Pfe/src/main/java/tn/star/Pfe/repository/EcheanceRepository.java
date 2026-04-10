@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import tn.star.Pfe.entity.Echeance;
 import tn.star.Pfe.entity.Inscription;
+import tn.star.Pfe.entity.Pole;
 import tn.star.Pfe.enums.StatutPaiement;
 
 import java.math.BigDecimal;
@@ -18,4 +19,9 @@ public interface EcheanceRepository extends JpaRepository<Echeance, Long> {
 
     @Query("SELECT COALESCE(SUM(e.montant), 0) FROM Echeance e WHERE e.statut = :statut")
     BigDecimal sumMontantByStatut(@Param("statut") StatutPaiement statut);
+    @Query("SELECT COALESCE(SUM(e.montant), 0) FROM Echeance e " +
+            "WHERE e.statut = :statut AND e.inscription.offre.pole = :pole")
+    BigDecimal sumMontantByPoleAndStatut(
+            @Param("pole") Pole pole,
+            @Param("statut") StatutPaiement statut);
 }

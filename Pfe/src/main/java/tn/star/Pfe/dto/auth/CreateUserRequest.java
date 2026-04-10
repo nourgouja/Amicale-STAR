@@ -25,5 +25,6 @@ public record CreateUserRequest(
         @NotNull(message = "Le rôle est obligatoire")
         Role role,
 
-        String posteMembre
+        String posteMembre,
+        Long poleId
 ) {}

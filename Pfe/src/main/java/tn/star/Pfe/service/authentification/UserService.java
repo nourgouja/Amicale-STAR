@@ -3,7 +3,6 @@ package tn.star.Pfe.service.authentification;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.service.spi.ServiceException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -14,14 +13,18 @@ import tn.star.Pfe.dto.auth.ChangePasswordRequest;
 import tn.star.Pfe.dto.auth.CreateUserRequest;
 import tn.star.Pfe.dto.auth.UpdateProfilRequest;
 import tn.star.Pfe.dto.auth.UserResponse;
+import tn.star.Pfe.entity.Pole;
 import tn.star.Pfe.entity.user.Adherent;
 import tn.star.Pfe.entity.user.Admin;
 import tn.star.Pfe.entity.user.MembreBureau;
 import tn.star.Pfe.entity.user.User;
+import tn.star.Pfe.enums.PosteBureau;
 import tn.star.Pfe.enums.Role;
 import tn.star.Pfe.exceptions.BadRequestException;
 import tn.star.Pfe.exceptions.NotFoundException;
+import tn.star.Pfe.exceptions.ServiceException;
 import tn.star.Pfe.mapper.UserMapper;
+import tn.star.Pfe.repository.PoleRepository;
 import tn.star.Pfe.repository.UserRepository;
 
 import java.security.SecureRandom;
@@ -35,30 +38,10 @@ public class UserService {
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
+    private final PoleRepository poleRepository;
 
     private static final SecureRandom SECURE_RANDOM = new SecureRandom();
     private static final String PASSWORD_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%";
-//    @Transactional
-//    public User updateProfile(int userId, UpdateProfilRequest request) {
-//        User user = userRepository.findById(userId)
-//                .orElseThrow(() -> new NotFoundException("Utilisateur non trouvé avec ID: " + userId));
-//
-//        if (request.nom() != null && !request.nom().isBlank()) {
-//            user.setNom(request.nom());
-//        }
-//        if (request.prenom() != null && !request.prenom().isBlank()) {
-//            user.setPrenom(request.prenom());
-//        }
-//        if (request.motDePasse() != null && !request.motDePasse().isBlank()) {
-//            if (request.motDePasse().length() < 6) {
-//                throw new BadRequestException("Le mot de passe doit contenir au moins 6 caractères");
-//            }
-//            user.setMotDePasse(passwordEncoder.encode(request.motDePasse()));
-//        }
-//
-//        return userRepository.save(user);
-//    }
-
 
     @Transactional
     public Page<UserResponse> findAll(Role role, String search, int page, int size) {
@@ -82,7 +65,8 @@ public class UserService {
     @Transactional
     public User findById(Long id) {
         return userRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Utilisateur non trouvé avec ID: " + id));
+                .orElseThrow(() -> new NotFoundException(
+                        "Utilisateur non trouvé avec ID: " + id));
     }
 
     @Transactional
@@ -103,6 +87,7 @@ public class UserService {
 
     private User buildUserByRole(CreateUserRequest request, String hashedPassword) {
         return switch (request.role()) {
+
             case ADHERENT -> Adherent.builder()
                     .email(request.email())
                     .motDePasse(hashedPassword)
@@ -112,15 +97,23 @@ public class UserService {
                     .actif(true)
                     .build();
 
-            case MEMBRE_BUREAU -> MembreBureau.builder()
-                    .email(request.email())
-                    .motDePasse(hashedPassword)
-                    .nom(request.nom())
-                    .prenom(request.prenom())
-                    .poste(request.posteMembre())
-                    .role(Role.MEMBRE_BUREAU)
-                    .actif(true)
-                    .build();
+            case MEMBRE_BUREAU -> {
+                Pole pole = null;
+                if (request.poleId() != null) {
+                    pole = poleRepository.findById(request.poleId())
+                            .orElseThrow(() -> new NotFoundException("Pôle introuvable avec ID: " + request.poleId()));
+                }
+                yield MembreBureau.builder()
+                        .email(request.email())
+                        .motDePasse(hashedPassword)
+                        .nom(request.nom())
+                        .prenom(request.prenom())
+                        .poste(PosteBureau.valueOf(request.posteMembre())) // .???
+                        .pole(pole)
+                        .role(Role.MEMBRE_BUREAU)
+                        .actif(true)
+                        .build();
+            }
 
             case ADMIN -> Admin.builder()
                     .email(request.email())
@@ -188,7 +181,8 @@ public class UserService {
             log.info("Password reset completed for userId={}", id);
         } catch (MailException ex) {
             log.error("Password reset email failed for userId={}", id, ex);
-            throw new ServiceException("Réinitialisation effectuée mais email non envoyé. Veuillez réessayer.");
+            throw new ServiceException(
+                    "Réinitialisation effectuée mais email non envoyé. Veuillez réessayer.");
         }
     }
 

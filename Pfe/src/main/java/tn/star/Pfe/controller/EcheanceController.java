@@ -24,7 +24,7 @@ public class EcheanceController {
     }
 
     @PatchMapping("/{id}/payer")
-    @PreAuthorize("hasRole('MEMBRE_BUREAU') or hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN') or @echeanceAuthService.canValidate(principal, #id)")
     public ResponseEntity<EcheanceResponse> marquerPayee(@PathVariable Long id) {
         return ResponseEntity.ok(echeanceService.marquerPayee(id));
     }
