@@ -1,16 +1,20 @@
 package tn.star.Pfe.dto.dashboard;
 
+import java.math.BigDecimal;
+import java.util.List;
 import java.util.Map;
 
 public record AdminDashboardResponse(
-
         long totalUtilisateurs,
         Map<String, Long> parRole,
-
-        Map<String, Long> offres,
-
-        Map<String, Long> inscriptions,
-
-        Map<String, Long> paiements
-
+        List<OffreDashboardItem> offres,
+        long totalInscriptions,
+        long enAttente,
+        long confirmees,
+        long annulees,
+        long echeancesEnAttente,
+        long echeancesEnRetard,
+        long echeancesPayees,
+        BigDecimal totalCollecte,
+        BigDecimal totalAttendu
 ) {}

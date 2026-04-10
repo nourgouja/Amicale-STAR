@@ -4,14 +4,17 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import tn.star.Pfe.dto.dashboard.*;
 import tn.star.Pfe.dto.inscription.InscriptionResponse;
+import tn.star.Pfe.enums.Role;
 import tn.star.Pfe.enums.StatutInscription;
 import tn.star.Pfe.enums.StatutOffre;
 import tn.star.Pfe.enums.StatutPaiement;
 import tn.star.Pfe.mapper.InscriptionMapper;
+import tn.star.Pfe.repository.EcheanceRepository;
 import tn.star.Pfe.repository.InscriptionRepository;
 import tn.star.Pfe.repository.OffreRepository;
 import tn.star.Pfe.repository.UserRepository;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -22,51 +25,52 @@ public class DashboardService {
     private final UserRepository userRepository;
     private final OffreRepository offreRepository;
     private final InscriptionRepository inscriptionRepository;
-    private final InscriptionMapper inscriptionMapper;
-
+    private final EcheanceRepository echeanceRepository;
     public AdminDashboardResponse getAdminDashboard() {
 
-        long totalUsers = userRepository.count();
-
-        long adherents    = userRepository.findAll().stream()
-                .filter(u -> u.getClass().getSimpleName().equals("Adherent")).count();
-
-        long membres      = userRepository.findAll().stream()
-                .filter(u -> u.getClass().getSimpleName().equals("MembreBureau")).count();
-
-        long admins       = userRepository.findAll().stream()
-                .filter(u -> u.getClass().getSimpleName().equals("Admin")).count();
-
+        long totalUtilisateurs = userRepository.count();
         Map<String, Long> parRole = Map.of(
-                "ADHERENT",adherents,
-                "MEMBRE_BUREAU",membres,
-                "ADMIN",admins
+                "ADMIN",         userRepository.countByRole(Role.ADMIN),
+                "ADHERENT",      userRepository.countByRole(Role.ADHERENT),
+                "MEMBRE_BUREAU", userRepository.countByRole(Role.MEMBRE_BUREAU)
         );
 
-        Map<String, Long> offres = Map.of(
-                "OUVERTE",offreRepository.countByStatut(StatutOffre.OUVERTE),
-                "FERMEE",offreRepository.countByStatut(StatutOffre.FERMEE),
-                "ANNULEE",offreRepository.countByStatut(StatutOffre.ANNULEE)
-        );
+        List<OffreDashboardItem> offres = offreRepository.findAll()
+                .stream()
+                .map(o -> new OffreDashboardItem(
+                        o.getId(),
+                        o.getTitre(),
+                        o.getStatut(),
+                        o.getPlacesRestantes(),
+                        inscriptionRepository.countByOffreAndStatut(
+                                o, StatutInscription.CONFIRMEE)
+                ))
+                .toList();
 
-        Map<String, Long> inscriptions = Map.of(
-                "EN_ATTENTE",inscriptionRepository.countByStatut(StatutInscription.EN_ATTENTE),
-                "CONFIRMEE",inscriptionRepository.countByStatut(StatutInscription.CONFIRMEE),
-                "ANNULEE",inscriptionRepository.countByStatut(StatutInscription.ANNULEE)
-        );
+        long totalInscriptions    = inscriptionRepository.count();
+        long enAttente            = inscriptionRepository.countByStatut(StatutInscription.EN_ATTENTE);
+        long confirmees           = inscriptionRepository.countByStatut(StatutInscription.CONFIRMEE);
+        long annulees             = inscriptionRepository.countByStatut(StatutInscription.ANNULEE);
 
-        Map<String, Long> paiements = Map.of(
-                "EN_ATTENTE",inscriptionRepository.countByStatutPaiement(StatutPaiement.EN_ATTENTE),
-                "VALIDE",inscriptionRepository.countByStatutPaiement(StatutPaiement.VALIDE),
-                "REJETE",inscriptionRepository.countByStatutPaiement(StatutPaiement.REJETE)
-        );
+        long echeancesEnAttente   = echeanceRepository.countByStatut(StatutPaiement.EN_ATTENTE);
+        long echeancesEnRetard    = echeanceRepository.countByStatut(StatutPaiement.EN_RETARD);
+        long echeancesPayees      = echeanceRepository.countByStatut(StatutPaiement.PAYEE);
+        BigDecimal totalCollecte  = echeanceRepository.sumMontantByStatut(StatutPaiement.PAYEE);
+        BigDecimal totalAttendu   = echeanceRepository.sumMontantByStatut(StatutPaiement.EN_ATTENTE);
 
         return new AdminDashboardResponse(
-                totalUsers,
+                totalUtilisateurs,
                 parRole,
                 offres,
-                inscriptions,
-                paiements
+                totalInscriptions,
+                enAttente,
+                confirmees,
+                annulees,
+                echeancesEnAttente,
+                echeancesEnRetard,
+                echeancesPayees,
+                totalCollecte,
+                totalAttendu
         );
     }
 
@@ -74,14 +78,13 @@ public class DashboardService {
 
         List<OffreDashboardItem> mesOffres = offreRepository.findAll()
                 .stream()
-                .map(offre -> new OffreDashboardItem(
-                        offre.getId(),
-                        offre.getTitre(),
-                        offre.getStatut(),
-                        offre.getPlacesRestantes(),
-                        offre.getInscriptions().stream()
-                                .filter(i -> i.getStatut() != StatutInscription.ANNULEE)
-                                .count()
+                .map(o -> new OffreDashboardItem(
+                        o.getId(),
+                        o.getTitre(),
+                        o.getStatut(),
+                        o.getPlacesRestantes(),
+                        inscriptionRepository.countByOffreAndStatut(
+                                o, StatutInscription.CONFIRMEE)
                 ))
                 .toList();
 
@@ -91,28 +94,20 @@ public class DashboardService {
         List<InscriptionResponse> inscriptionsEnAttente = inscriptionRepository
                 .findByStatut(StatutInscription.EN_ATTENTE)
                 .stream()
-                .map(inscriptionMapper::toResponse)
+                .map(i -> new InscriptionResponse(i.getId(), i.getOffre().getTitre(), i.getAdherent().getEmail(), i.getStatut()))
                 .toList();
 
-        long totalPaiements = inscriptionRepository
-                .countByStatutPaiement(StatutPaiement.EN_ATTENTE);
-
-        List<InscriptionResponse> paiementsEnAttente = inscriptionRepository
-                .findByStatutPaiement(StatutPaiement.EN_ATTENTE)
-                .stream()
-                .map(inscriptionMapper::toResponse)
-                .toList();
+        long totalPaiementsEnRetard = echeanceRepository
+                .countByStatut(StatutPaiement.EN_RETARD);
 
         List<ParticipationItem> participation = offreRepository.findAll()
                 .stream()
-                .map(offre -> new ParticipationItem(
-                        offre.getTitre(),
-                        offre.getInscriptions().stream()
-                                .filter(i -> i.getStatut() != StatutInscription.ANNULEE)
-                                .count(),
-                        offre.getInscriptions().stream()
-                                .filter(i -> i.getStatut() == StatutInscription.CONFIRMEE)
-                                .count()
+                .map(o -> new ParticipationItem(
+                        o.getTitre(),
+                        inscriptionRepository.countByOffreAndStatut(
+                                o, StatutInscription.EN_ATTENTE),
+                        inscriptionRepository.countByOffreAndStatut(
+                                o, StatutInscription.CONFIRMEE)
                 ))
                 .toList();
 
@@ -120,8 +115,7 @@ public class DashboardService {
                 mesOffres,
                 totalEnAttente,
                 inscriptionsEnAttente,
-                totalPaiements,
-                paiementsEnAttente,
+                totalPaiementsEnRetard,
                 participation
         );
     }

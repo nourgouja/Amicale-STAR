@@ -1,10 +1,9 @@
 package tn.star.Pfe.security;
 
-import jakarta.persistence.DiscriminatorValue;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import tn.star.Pfe.entity.User;
+import tn.star.Pfe.entity.user.User;
 
 import java.util.Collection;
 import java.util.List;

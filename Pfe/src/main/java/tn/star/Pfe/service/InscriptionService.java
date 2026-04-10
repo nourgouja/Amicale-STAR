@@ -4,17 +4,20 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import tn.star.Pfe.dto.inscription.InscriptionResponse;
-import tn.star.Pfe.entity.Adherent;
+import tn.star.Pfe.entity.user.Adherent;
+import tn.star.Pfe.entity.Echeance;
 import tn.star.Pfe.entity.Inscription;
 import tn.star.Pfe.entity.Offre;
 import tn.star.Pfe.enums.StatutInscription;
 import tn.star.Pfe.enums.StatutOffre;
 import tn.star.Pfe.enums.StatutPaiement;
+import tn.star.Pfe.enums.TypeOffre;
 import tn.star.Pfe.exceptions.*;
 import tn.star.Pfe.mapper.InscriptionMapper;
+import tn.star.Pfe.repository.EcheanceRepository;
 import tn.star.Pfe.repository.InscriptionRepository;
 import tn.star.Pfe.repository.OffreRepository;
-import tn.star.Pfe.security.UserPrincipal;
+import tn.star.Pfe.service.paiement.EcheanceFactory;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -27,13 +30,7 @@ public class InscriptionService {
     private final InscriptionRepository inscriptionRepository;
     private final OffreRepository offreRepository;
     private final InscriptionMapper inscriptionMapper;
-    private StatutPaiement statut;
-
-    private boolean isBureauOrAdmin(UserPrincipal principal) {
-        return principal.getAuthorities().stream()
-                .anyMatch(a -> a.getAuthority().equals("ROLE_MEMBRE_BUREAU")
-                        || a.getAuthority().equals("ROLE_ADMIN"));
-    }
+    private final EcheanceRepository echeanceRepository;
 
     @Transactional
     public InscriptionResponse inscrire(Long offreId, Adherent adherent) {
@@ -41,23 +38,40 @@ public class InscriptionService {
         Offre offre = offreRepository.findById(offreId)
                 .orElseThrow(() -> new NotFoundException("Offre non trouvée"));
 
+        if (offre.getType() == TypeOffre.CONVENTION)
+            throw new BadRequestException("Les conventions sont des partenariats publiés — aucune inscription possible.");
+
         if (offre.getStatut() != StatutOffre.OUVERTE)
             throw new OffreFermee("L'offre n'est pas ouverte");
-        if (offre.getDateFin().isBefore(LocalDate.now()))
+
+        if (offre.getDateFin() != null && offre.getDateFin().isBefore(LocalDate.now()))
             throw new BadRequestException("L'offre est expirée");
+
         if (inscriptionRepository.existsByOffreAndAdherent(offre, adherent))
             throw new InscriptionExistants("Déjà inscrit à cette offre");
+
         if (offre.getPlacesRestantes() <= 0)
             throw new CapaciteMaxAtteint("Plus de places disponibles");
 
         Inscription ins = Inscription.builder()
-                .offre(offre).adherent(adherent)
+                .offre(offre)
+                .adherent(adherent)
                 .montant(offre.getPrixParPersonne())
                 .build();
-        return inscriptionMapper.toResponse(
-                inscriptionRepository.save(ins));
-    }
 
+        Inscription saved = inscriptionRepository.save(ins);
+
+        if (offre.getType() == TypeOffre.VOYAGE && offre.getModePaiement() != null) {
+            List<Echeance> echeances = EcheanceFactory.generate(
+                    saved,
+                    offre.getPrixParPersonne(),
+                    offre.getModePaiement()
+            );
+            echeanceRepository.saveAll(echeances);
+        }
+
+        return inscriptionMapper.toResponse(saved);
+    }
 
     @Transactional
     public InscriptionResponse annuler(Adherent adherent, Long inscriptionId) {
@@ -81,10 +95,10 @@ public class InscriptionService {
         return inscriptionMapper.toResponse(inscriptionRepository.save(inscription));
     }
 
-    public List<InscriptionResponse> mesInscriptions( Adherent adherent) {
+    public List<InscriptionResponse> mesInscriptions(Adherent adherent) {
         return inscriptionRepository.findByAdherent(adherent)
                 .stream()
-                .map(i -> inscriptionMapper.toResponse(i))
+                .map(inscriptionMapper::toResponse)
                 .toList();
     }
 
@@ -94,7 +108,7 @@ public class InscriptionService {
 
         return inscriptionRepository.findByOffre(offre)
                 .stream()
-                .map(i -> inscriptionMapper.toResponse(i))
+                .map(inscriptionMapper::toResponse)
                 .toList();
     }
 
@@ -108,13 +122,4 @@ public class InscriptionService {
 
         return inscriptionMapper.toResponse(inscriptionRepository.save(inscription));
     }
-
-//    @Transactional
-//    public InscriptionResponse mettreAjourPaiement(int inscriptionId) {
-//        Inscription inscription = inscriptionRepository.findById(inscriptionId).orElseThrow(()-> new NotFoundException("inscription non trouve"));
-//        inscription.setStatutPaiement(statut);
-//        return inscriptionMapper.toResponse(inscriptionRepository.save(inscription), null);
-//
-//    }
-
 }

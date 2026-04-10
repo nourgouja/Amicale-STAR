@@ -7,7 +7,7 @@
 //import org.springframework.security.core.annotation.AuthenticationPrincipal;
 //import org.springframework.web.bind.annotation.*;
 //import tn.star.Pfe.dto.inscription.InscriptionResponse;
-//import tn.star.Pfe.entity.Adherent;
+//import tn.star.Pfe.entity.user.Adherent;
 //import tn.star.Pfe.enums.StatutPaiement;
 //import tn.star.Pfe.exceptions.EligibiliteException;
 //import tn.star.Pfe.exceptions.NotFoundException;
@@ -101,7 +101,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import tn.star.Pfe.dto.inscription.InscriptionResponse;
-import tn.star.Pfe.entity.Adherent;
+import tn.star.Pfe.entity.user.Adherent;
 import tn.star.Pfe.enums.StatutPaiement;
 import tn.star.Pfe.exceptions.EligibiliteException;
 import tn.star.Pfe.exceptions.NotFoundException;

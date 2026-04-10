@@ -14,6 +14,7 @@ import tn.star.Pfe.enums.TypeOffre;
 import tn.star.Pfe.service.OffreService;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -44,20 +45,12 @@ public class OffreController {
     }
 
     @PostMapping(value = "/creer", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @PreAuthorize("hasAnyRole('MEMBRE_BUREAU','ADMIN')")
+    @PreAuthorize("hasRole('MEMBRE_BUREAU') or hasRole('ADMIN')")
     public ResponseEntity<OffreResponse> creer(
-            @RequestParam String titre,
-            @RequestParam String description,
-            @RequestParam TypeOffre typeOffre,
-            @RequestParam String dateDebut,
-            @RequestParam String dateFin,
-            @RequestParam int capaciteMax,
-            @RequestParam double prixParPersonne,
-            @RequestParam(required = false) String lieu,
-            @RequestParam(required = false) MultipartFile image) throws IOException {
-
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(offreService.creer(titre, description, typeOffre, LocalDate.parse(dateDebut), LocalDate.parse(dateFin), capaciteMax, prixParPersonne, lieu, image));
+            @RequestPart("offre") @Valid OffreRequest request,
+            @RequestPart(value = "image", required = false) MultipartFile image
+    ) throws IOException {
+        return ResponseEntity.status(201).body(offreService.creer(request, image));
     }
 
     @PutMapping("/modifier/{id}")
@@ -79,5 +72,17 @@ public class OffreController {
     public ResponseEntity<Void> supprimer(@PathVariable Long id) {
         offreService.supprimer(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/publier/{id}")
+    @PreAuthorize("hasRole('MEMBRE_BUREAU') or hasRole('ADMIN')")
+    public ResponseEntity<OffreResponse> publier(@PathVariable Long id) {
+        return ResponseEntity.ok(offreService.publier(id));
+    }
+
+    @PatchMapping("/archiver/{id}")
+    @PreAuthorize("hasRole('MEMBRE_BUREAU') or hasRole('ADMIN')")
+    public ResponseEntity<OffreResponse> archiver(@PathVariable Long id) {
+        return ResponseEntity.ok(offreService.archiver(id));
     }
 }

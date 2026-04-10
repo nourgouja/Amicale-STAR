@@ -7,15 +7,17 @@ import org.springframework.web.multipart.MultipartFile;
 import tn.star.Pfe.dto.offre.OffreRequest;
 import tn.star.Pfe.dto.offre.OffreResponse;
 import tn.star.Pfe.entity.Offre;
+import tn.star.Pfe.entity.Pole;
 import tn.star.Pfe.enums.StatutOffre;
 import tn.star.Pfe.enums.TypeOffre;
 import tn.star.Pfe.exceptions.BadRequestException;
 import tn.star.Pfe.exceptions.NotFoundException;
 import tn.star.Pfe.mapper.OffreMapper;
 import tn.star.Pfe.repository.OffreRepository;
+import tn.star.Pfe.repository.PoleRepository;
 
 import java.io.IOException;
-import java.time.LocalDate;
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -23,6 +25,7 @@ import java.util.List;
 public class OffreService {
 
     private final OffreRepository offreRepository;
+    private final PoleRepository poleRepository;
     private final OffreMapper offreMapper;
 
     public List<OffreResponse> listerOffresOuvertes() {
@@ -47,21 +50,27 @@ public class OffreService {
     }
 
     @Transactional
-    public OffreResponse creer(String titre, String description, TypeOffre typeOffre, LocalDate dateDebut, LocalDate dateFin, int capaciteMax, double prixParPersonne, String lieu, MultipartFile image) throws IOException {
+    public OffreResponse creer(OffreRequest req, MultipartFile image) throws IOException {
 
-        if (!dateFin.isAfter(dateDebut))
-            throw new BadRequestException("La date de fin doit être après la date de début.");
+        Pole pole = null;
+        if (req.getPoleId() != null) {
+            pole = poleRepository.findById(req.getPoleId())
+                    .orElseThrow(() -> new NotFoundException("Pôle introuvable"));
+        }
 
         Offre offre = Offre.builder()
-                .titre(titre)
-                .description(description)
-                .type(typeOffre)
-                .statut(StatutOffre.OUVERTE)
-                .dateDebut(dateDebut)
-                .dateFin(dateFin)
-                .capaciteMax(capaciteMax)
-                .prixParPersonne(prixParPersonne)
-                .lieu(lieu)
+                .titre(req.getTitre())
+                .description(req.getDescription())
+                .lieu(req.getLieu())
+                .type(req.getTypeOffre())
+                .dateDebut(req.getDateDebut())
+                .dateFin(req.getDateFin())
+                .prixParPersonne(req.getPrixParPersonne())
+                .capaciteMax(req.getCapaciteMax() != null ? req.getCapaciteMax() : 0)
+                .modePaiement(req.getModePaiement())
+                .avantages(req.getAvantages())
+                .pole(pole)
+                .statut(StatutOffre.BROUILLON)
                 .build();
 
         if (image != null && !image.isEmpty()) {
@@ -69,6 +78,8 @@ public class OffreService {
             offre.setImageNom(image.getOriginalFilename());
             offre.setImageType(image.getContentType());
         }
+
+        validerParType(offre);
 
         return offreMapper.toResponse(offreRepository.save(offre));
     }
@@ -89,7 +100,7 @@ public class OffreService {
             offre.setType(req.getTypeOffre());
         if (req.getCapaciteMax() != null)
             offre.setCapaciteMax(req.getCapaciteMax());
-        if (req.getPrixParPersonne() != 0.0)
+        if (offre.getPrixParPersonne() != null && offre.getPrixParPersonne().compareTo(BigDecimal.ZERO) != 0)
             offre.setPrixParPersonne(req.getPrixParPersonne());
         if (req.getLieu() != null)
             offre.setLieu(req.getLieu());
@@ -114,5 +125,61 @@ public class OffreService {
         if (!offreRepository.existsById(id))
             throw new NotFoundException("Offre introuvable : " + id);
         offreRepository.deleteById(id);
+    }
+
+    private void validerParType(Offre offre) {
+        switch (offre.getType()) {
+
+            case EVENEMENT, LOISIRS, ACTIVITE-> {
+                if (offre.getDateFin() != null
+                        && offre.getDateFin().isBefore(offre.getDateDebut())) {
+                    throw new BadRequestException("Date fin invalide pour ce type d'offre.");
+                }
+            }
+
+            case VOYAGE, SEJOUR -> {
+                if (offre.getDateFin() == null) {
+                    throw new BadRequestException("Date fin obligatoire pour VOYAGE / SEJOUR.");
+                }
+                if (!offre.getDateFin().isAfter(offre.getDateDebut())) {
+                    throw new BadRequestException("Date fin doit être après date début.");
+                }
+            }
+
+            case CONVENTION -> {
+                if (offre.getPrixParPersonne() != null && offre.getPrixParPersonne().compareTo(BigDecimal.ZERO) != 0) {
+                    throw new BadRequestException("Convention n'a pas de prix.");
+                }
+                if (offre.getImage() == null) {
+                    throw new BadRequestException("Logo obligatoire pour une convention.");
+                }
+            }
+        }
+    }
+
+    @Transactional
+    public OffreResponse publier(Long id) {
+        Offre offre = offreRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Offre introuvable"));
+
+        if (offre.getStatut() != StatutOffre.BROUILLON)
+            throw new BadRequestException(
+                    "Seules les offres en brouillon peuvent être publiées. Statut actuel: "
+                            + offre.getStatut());
+
+        offre.setStatut(StatutOffre.OUVERTE);
+        return offreMapper.toResponse(offreRepository.save(offre));
+    }
+
+    @Transactional
+    public OffreResponse archiver(Long id) {
+        Offre offre = offreRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Offre introuvable"));
+
+        if (offre.getStatut() == StatutOffre.BROUILLON)
+            throw new BadRequestException("Un brouillon doit être publié avant d'être archivé.");
+
+        offre.setStatut(StatutOffre.ARCHIVEE);
+        return offreMapper.toResponse(offreRepository.save(offre));
     }
 }

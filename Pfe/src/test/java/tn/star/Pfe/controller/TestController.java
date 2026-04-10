@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import tn.star.Pfe.service.EmailService;
+import tn.star.Pfe.service.authentification.EmailService;
 
 @RestController
 @RequestMapping("/api/test")

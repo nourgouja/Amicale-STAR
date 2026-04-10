@@ -1,9 +1,10 @@
 package tn.star.Pfe.enums;
 
 public enum TypeOffre {
-    VOYAGE,
     EVENEMENT,
+    VOYAGE,
+    SEJOUR,
+    LOISIRS,
+    ACTIVITE,
     CONVENTION
-    //sejours
-
 }

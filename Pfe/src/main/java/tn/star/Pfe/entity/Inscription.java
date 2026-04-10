@@ -3,10 +3,14 @@ package tn.star.Pfe.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import tn.star.Pfe.entity.user.Adherent;
 import tn.star.Pfe.enums.StatutInscription;
 import tn.star.Pfe.enums.StatutPaiement;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "inscription")
@@ -44,11 +48,14 @@ public class Inscription {
 
     private LocalDateTime dateAnnulation;
 
-    private double montant;
+    @Column(precision = 10, scale = 2)
+    private BigDecimal montant;
 
     private String commentaire;
 
-
+    @OneToMany(mappedBy = "inscription", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<Echeance> echeances = new ArrayList<>();
 
 
 }
