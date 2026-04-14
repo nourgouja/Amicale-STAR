@@ -3,7 +3,7 @@ package tn.star.Pfe.mapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import tn.star.Pfe.dto.auth.UserResponse;
-import tn.star.Pfe.entity.user.User;
+import tn.star.Pfe.entity.User;
 
 import java.util.List;
 

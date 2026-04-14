@@ -10,11 +10,11 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import tn.star.Pfe.dto.auth.*;
-import tn.star.Pfe.entity.user.User;
+import tn.star.Pfe.entity.User;
 import tn.star.Pfe.enums.Role;
 import tn.star.Pfe.mapper.UserMapper;
 import tn.star.Pfe.security.UserPrincipal;
-import tn.star.Pfe.service.authentification.UserService;
+import tn.star.Pfe.service.user.IUserService;
 
 @Slf4j
 @RestController
@@ -22,7 +22,7 @@ import tn.star.Pfe.service.authentification.UserService;
 @RequiredArgsConstructor
 public class UserController {
 
-    private final UserService userService;
+    private final IUserService userService;
     private final UserMapper userMapper;
 
     @GetMapping("/profil")

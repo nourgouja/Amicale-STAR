@@ -6,7 +6,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import tn.star.Pfe.entity.user.Admin;
+import tn.star.Pfe.entity.Admin;
 import tn.star.Pfe.enums.Role;
 import tn.star.Pfe.repository.UserRepository;
 

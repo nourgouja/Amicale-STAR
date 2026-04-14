@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import tn.star.Pfe.dto.auth.CreateUserRequest;
 import tn.star.Pfe.dto.auth.UserResponse;
 import tn.star.Pfe.enums.Role;
-import tn.star.Pfe.service.authentification.UserService;
+import tn.star.Pfe.service.user.IUserService;
 
 @RestController
 @RequestMapping("/api/admin")
@@ -18,7 +18,7 @@ import tn.star.Pfe.service.authentification.UserService;
 @RequiredArgsConstructor
 public class AdminController {
 
-    private final UserService userService;
+    private final IUserService userService;
 
     @GetMapping("/utilisateurs")
     public ResponseEntity<Page<UserResponse>> listerTous(

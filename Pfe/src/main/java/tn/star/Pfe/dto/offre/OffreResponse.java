@@ -42,7 +42,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data @Builder @NoArgsConstructor @AllArgsConstructor
-// dto/offre/OffreResponse.java
 public class OffreResponse {
 
     private Long id;

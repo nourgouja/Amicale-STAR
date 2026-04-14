@@ -3,7 +3,6 @@ package tn.star.Pfe.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
-import tn.star.Pfe.entity.user.Adherent;
 import tn.star.Pfe.enums.StatutInscription;
 import tn.star.Pfe.enums.StatutPaiement;
 

@@ -5,7 +5,6 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-import tn.star.Pfe.entity.user.Adherent;
 import tn.star.Pfe.enums.ModePaiement;
 import tn.star.Pfe.enums.StatutInscription;
 import tn.star.Pfe.enums.StatutOffre;
