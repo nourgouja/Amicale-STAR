@@ -16,6 +16,8 @@ import tn.star.Pfe.mapper.UserMapper;
 import tn.star.Pfe.security.UserPrincipal;
 import tn.star.Pfe.service.user.IUserService;
 
+import java.util.Map;
+
 @Slf4j
 @RestController
 @RequestMapping("/api/utilisateurs")
@@ -105,8 +107,6 @@ public class UserController {
         return ResponseEntity.ok(userMapper.toResponse(updated));
     }
 
-
-    //changer cette fonction temparary password then reinstalation par email
     @PostMapping("/{id}/reinitialiser-mot-de-passe")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> adminResetPassword(@PathVariable Long id) {
@@ -114,12 +114,4 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("/change-password")
-    @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<Void> changePassword(
-            @AuthenticationPrincipal UserPrincipal principal,
-            @RequestBody @Valid ChangePasswordRequest request) {
-        userService.changePassword(principal.getId(), request);
-        return ResponseEntity.noContent().build();
-    }
 }

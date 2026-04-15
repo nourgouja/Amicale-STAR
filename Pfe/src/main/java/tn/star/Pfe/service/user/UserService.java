@@ -1,5 +1,6 @@
 package tn.star.Pfe.service.user;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -7,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.mail.MailException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import tn.star.Pfe.dto.auth.ChangePasswordRequest;
@@ -76,11 +78,13 @@ public class UserService implements IUserService {
             throw new BadRequestException("Email déjà utilisé: " + request.email());
         }
 
-        String hashedPassword = passwordEncoder.encode(request.motDePasse());
+        String rawPassword = request.motDePasse();
+        String hashedPassword = passwordEncoder.encode(rawPassword);
         User user = buildUserByRole(request, hashedPassword);
+        user.setFirstLogin(true);
         User saved = userRepository.save(user);
 
-        emailService.sendWelcomeEmail(saved.getEmail(), saved.getPrenom());
+        emailService.sendAccountCreatedEmail(saved.getEmail(), saved.getPrenom(), rawPassword);
         log.info("Created new user: {} with role: {}", saved.getEmail(), saved.getRole());
 
         return userMapper.toResponse(saved);
@@ -187,6 +191,25 @@ public class UserService implements IUserService {
         }
     }
 
+    @Transactional
+    public void forgotPasswordByEmail(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new NotFoundException("Aucun compte trouvé avec cet email: " + email));
+
+        String tempPassword = generateTemporaryPassword();
+        user.setMotDePasse(passwordEncoder.encode(tempPassword));
+        user.setFirstLogin(true);
+        userRepository.save(user);
+
+        try {
+            emailService.sendPasswordResetEmail(user.getEmail(), tempPassword);
+            log.info("Forgot-password email sent to: {}", email);
+        } catch (MailException ex) {
+            log.error("Failed to send forgot-password email to: {}", email, ex);
+            throw new ServiceException("Réinitialisation effectuée mais email non envoyé. Veuillez réessayer.");
+        }
+    }
+
     private String generateTemporaryPassword() {
         StringBuilder sb = new StringBuilder(12);
         for (int i = 0; i < 12; i++) {
@@ -196,14 +219,21 @@ public class UserService implements IUserService {
     }
 
     @Transactional
+    @Override
     public void changePassword(Long userId, ChangePasswordRequest request) {
-        if (!request.newPassword().equals(request.confirmPassword()))
-            throw new BadRequestException("Les mots de passe ne correspondent pas");
-
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException("Utilisateur introuvable"));
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
 
-        user.setMotDePasse(passwordEncoder.encode(request.newPassword()));
+        if (!user.isFirstLogin() && request.getCurrentPassword() != null) {
+            if (!passwordEncoder.matches(request.getCurrentPassword(), user.getMotDePasse())) {
+                throw new BadCredentialsException("Current password is incorrect");
+            }
+        }
+
+        if (!request.getNewPassword().equals(request.getConfirmPassword())) {
+            throw new IllegalArgumentException("New password and confirmation do not match");
+        }
+        user.setMotDePasse(passwordEncoder.encode(request.getNewPassword()));
         user.setFirstLogin(false);
         userRepository.save(user);
     }

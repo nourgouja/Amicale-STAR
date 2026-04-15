@@ -17,5 +17,6 @@ public interface IUserService {
     User assignRole(Long id, Role role);
     User toggleUserStatus(Long id, boolean actif);
     void adminResetPassword(Long id);
+    void forgotPasswordByEmail(String email);
     void changePassword(Long userId, ChangePasswordRequest request);
 }

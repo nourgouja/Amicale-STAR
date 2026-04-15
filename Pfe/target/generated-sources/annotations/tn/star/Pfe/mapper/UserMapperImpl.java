@@ -6,11 +6,11 @@ import java.util.List;
 import javax.annotation.processing.Generated;
 import org.springframework.stereotype.Component;
 import tn.star.Pfe.dto.auth.UserResponse;
-import tn.star.Pfe.entity.user.User;
+import tn.star.Pfe.entity.User;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-04-10T23:13:56+0100",
+    date = "2026-04-14T16:27:43+0100",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 17.0.15 (Microsoft)"
 )
 @Component

@@ -8,6 +8,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import tn.star.Pfe.dto.auth.AuthResponse;
+import tn.star.Pfe.dto.auth.ChangePasswordRequest;
+import tn.star.Pfe.dto.auth.ForgotPasswordRequest;
 import tn.star.Pfe.dto.auth.LoginRequest;
 import tn.star.Pfe.dto.auth.UserResponse;
 import tn.star.Pfe.entity.User;
@@ -35,6 +37,21 @@ public class AuthController {
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Void> logout() {
         authService.logout();
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<Void> forgotPassword(@RequestBody @Valid ForgotPasswordRequest request) {
+        userService.forgotPasswordByEmail(request.email());
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/change-password")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Void> changePassword(
+            @AuthenticationPrincipal UserPrincipal principal,
+            @RequestBody @Valid ChangePasswordRequest request) {
+        userService.changePassword(principal.getId(), request);
         return ResponseEntity.noContent().build();
     }
 
