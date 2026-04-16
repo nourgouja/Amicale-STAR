@@ -8,47 +8,19 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.mail.javamail.JavaMailSender;
 
 @Slf4j
 @RequiredArgsConstructor
 @Service
 public class EmailService implements IEmailService {
-    @Value("${spring.mail.host:#{null}}")
-    private String mailHost;
-    private JavaMailSender mailSender;
 
-    @Value("${spring.mail.username:noreply@example.com}")
+    // fixed it to final
+    private final JavaMailSender mailSender;
+    @Value("${spring.mail.from}")
     private String fromEmail;
 
     @Async
-    public void sendWelcomeEmail(String to, String firstName) {
-        if (mailSender == null) {
-            log.warn("Mail not configured — skipping welcome email to: {}", to);
-            return;
-        }
-        try {
-            SimpleMailMessage message = new SimpleMailMessage();
-            message.setFrom(fromEmail);
-            message.setTo(to);
-            message.setSubject("Bienvenue sur Amicale STAR");
-            message.setText(String.format(
-                    "Bonjour %s,\n\nVotre compte a été créé avec succès.\n\nCordialement,\nL'équipe Amicale STAR",
-                    firstName
-            ));
-            mailSender.send(message);
-            log.info("Welcome email sent to: {}", to);
-        } catch (Exception e) {
-            log.error("Failed to send email to: {}", to, e);
-        }
-    }
-
-    @Async
     public void sendAccountCreatedEmail(String to, String firstName, String temporaryPassword) {
-        if (mailSender == null) {
-            log.warn("Mail not configured — skipping account-created email to: {}", to);
-            return;
-        }
         try {
             SimpleMailMessage message = new SimpleMailMessage();
             message.setFrom(fromEmail);
@@ -76,11 +48,6 @@ public class EmailService implements IEmailService {
     }
 
     public void sendPasswordResetEmail(String to, String tempPassword) {
-        if ( mailHost== null || mailHost.isBlank()) {
-            log.warn("Mail not configured — skipping password reset email");
-            return;
-        }
-
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom(fromEmail);
         message.setTo(to);

@@ -41,12 +41,11 @@ public class OffreController {
             @RequestParam String titre) {
         return ResponseEntity.ok(offreService.rechercherParTitre(titre));
     }
-
+    //@PostMapping(value = "/creer",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PostMapping(value = "/creer", consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('ADMIN') or " + "(hasRole('MEMBRE_BUREAU') and " + "@offreAuthService.canCreate(principal, #request.typeOffre.name()))")
     public OffreResponse creer(@RequestPart OffreRequest req, @RequestPart MultipartFile image,
             @AuthenticationPrincipal UserDetails userDetails) throws IOException {
-
         return offreService.creer(req, image, userDetails.getUsername());
     }
 

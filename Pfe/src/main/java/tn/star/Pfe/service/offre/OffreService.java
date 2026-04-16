@@ -65,7 +65,6 @@ public class OffreService implements IOffreService {
                 && !pole.equals(membreBureau.getPole())) {
             throw new BadRequestException("Non autorisé pour ce pôle.");
         }
-
         Offre offre = Offre.builder()
                 .titre(req.getTitre())
                 .description(req.getDescription())

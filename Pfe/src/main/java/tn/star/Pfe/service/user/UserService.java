@@ -29,6 +29,7 @@ import tn.star.Pfe.mapper.UserMapper;
 import tn.star.Pfe.repository.PoleRepository;
 import tn.star.Pfe.repository.UserRepository;
 import tn.star.Pfe.service.email.IEmailService;
+import tn.star.Pfe.service.email.PasswordGenerator;
 
 import java.security.SecureRandom;
 
@@ -42,9 +43,7 @@ public class UserService implements IUserService {
     private final PasswordEncoder passwordEncoder;
     private final IEmailService emailService;
     private final PoleRepository poleRepository;
-
-    private static final SecureRandom SECURE_RANDOM = new SecureRandom();
-    private static final String PASSWORD_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%";
+    private final PasswordGenerator passwordGenerator;
 
     @Transactional
     public Page<UserResponse> findAll(Role role, String search, int page, int size) {
@@ -176,7 +175,7 @@ public class UserService implements IUserService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Utilisateur non trouvé avec ID: " + id));
 
-        String tempPassword = generateTemporaryPassword();
+        String tempPassword = passwordGenerator.generate();
         user.setMotDePasse(passwordEncoder.encode(tempPassword));
         user.setFirstLogin(true);
         userRepository.save(user);
@@ -196,7 +195,7 @@ public class UserService implements IUserService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new NotFoundException("Aucun compte trouvé avec cet email: " + email));
 
-        String tempPassword = generateTemporaryPassword();
+        String tempPassword = passwordGenerator.generate();
         user.setMotDePasse(passwordEncoder.encode(tempPassword));
         user.setFirstLogin(true);
         userRepository.save(user);
@@ -208,14 +207,6 @@ public class UserService implements IUserService {
             log.error("Failed to send forgot-password email to: {}", email, ex);
             throw new ServiceException("Réinitialisation effectuée mais email non envoyé. Veuillez réessayer.");
         }
-    }
-
-    private String generateTemporaryPassword() {
-        StringBuilder sb = new StringBuilder(12);
-        for (int i = 0; i < 12; i++) {
-            sb.append(PASSWORD_CHARS.charAt(SECURE_RANDOM.nextInt(PASSWORD_CHARS.length())));
-        }
-        return sb.toString();
     }
 
     @Transactional
