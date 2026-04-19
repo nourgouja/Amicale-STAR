@@ -47,7 +47,7 @@ public class SecurityConfig {
 
                         .requestMatchers(HttpMethod.GET, "/api/offres/**").authenticated()
 
-                        //offres
+                        .requestMatchers(HttpMethod.POST, "/api/utilisateurs/demande-adhesion").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/offres/**").hasAnyRole("MEMBRE_BUREAU", "ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/api/offres/**").hasAnyRole("MEMBRE_BUREAU", "ADMIN")
                         .requestMatchers(HttpMethod.PATCH, "/api/offres/**").hasAnyRole("MEMBRE_BUREAU", "ADMIN")

@@ -49,4 +49,5 @@ public class AdminController {
         userService.toggleUserStatus(id, false);
         return ResponseEntity.noContent().build();
     }
+
 }

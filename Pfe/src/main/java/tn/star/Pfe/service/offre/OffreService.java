@@ -2,6 +2,7 @@ package tn.star.Pfe.service.offre;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import tn.star.Pfe.dto.offre.OffreRequest;
@@ -10,6 +11,7 @@ import tn.star.Pfe.entity.Offre;
 import tn.star.Pfe.entity.User;
 import tn.star.Pfe.enums.PosteBureau;
 import tn.star.Pfe.enums.StatutOffre;
+import tn.star.Pfe.event.OffreCreatedEvent;
 import tn.star.Pfe.exceptions.BadRequestException;
 import tn.star.Pfe.exceptions.NotFoundException;
 import tn.star.Pfe.mapper.OffreMapper;
@@ -30,6 +32,8 @@ public class OffreService implements IOffreService {
     private final PoleRepository poleRepository;
     private final OffreMapper offreMapper;
     private final UserRepository userRepository;
+    private final ApplicationEventPublisher publisher;
+
 
     public List<OffreResponse> listerOffresOuvertes() {
         return offreRepository.findByStatut(StatutOffre.OUVERTE)
@@ -87,8 +91,9 @@ public class OffreService implements IOffreService {
         }
 
         validerParType(offre);
-
-        return offreMapper.toResponse(offreRepository.save(offre));
+        Offre saved = offreRepository.save(offre);
+        publisher.publishEvent(new OffreCreatedEvent(saved));
+        return offreMapper.toResponse(saved);
     }
 
     @Transactional
@@ -193,4 +198,12 @@ public class OffreService implements IOffreService {
         offre.setStatut(StatutOffre.ARCHIVEE);
         return offreMapper.toResponse(offreRepository.save(offre));
     }
+
+    public List<OffreResponse> listerToutes() {
+        return offreRepository.findAll()
+                .stream()
+                .map(offreMapper::toResponse)
+                .toList();
+    }
+
 }

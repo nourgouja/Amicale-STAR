@@ -16,8 +16,6 @@ import tn.star.Pfe.mapper.UserMapper;
 import tn.star.Pfe.security.UserPrincipal;
 import tn.star.Pfe.service.user.IUserService;
 
-import java.util.Map;
-
 @Slf4j
 @RestController
 @RequestMapping("/api/utilisateurs")
@@ -26,6 +24,12 @@ public class UserController {
 
     private final IUserService userService;
     private final UserMapper userMapper;
+
+    @PostMapping("/demande-adhesion")
+    public ResponseEntity<Void> demanderAdhesion(@Valid @RequestBody DemandeRequest request) {
+        userService.demanderAdhesion(request);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
 
     @GetMapping("/profil")
     @PreAuthorize("isAuthenticated()")
@@ -65,7 +69,8 @@ public class UserController {
 
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<UserResponse> createUser(@Valid @RequestBody CreateUserRequest request) {
+    public ResponseEntity<UserResponse> createUser(
+            @Valid @RequestBody CreateUserRequest request) {
         UserResponse created = userService.createUser(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }

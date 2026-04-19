@@ -1,10 +1,7 @@
 package tn.star.Pfe.service.user;
 
 import org.springframework.data.domain.Page;
-import tn.star.Pfe.dto.auth.ChangePasswordRequest;
-import tn.star.Pfe.dto.auth.CreateUserRequest;
-import tn.star.Pfe.dto.auth.UpdateProfilRequest;
-import tn.star.Pfe.dto.auth.UserResponse;
+import tn.star.Pfe.dto.auth.*;
 import tn.star.Pfe.entity.User;
 import tn.star.Pfe.enums.Role;
 
@@ -19,4 +16,7 @@ public interface IUserService {
     void adminResetPassword(Long id);
     void forgotPasswordByEmail(String email);
     void changePassword(Long userId, ChangePasswordRequest request);
+    void demanderAdhesion(DemandeRequest request);
+    void approuverDemande(Long id);
+    void rejeterDemande(Long id);
 }

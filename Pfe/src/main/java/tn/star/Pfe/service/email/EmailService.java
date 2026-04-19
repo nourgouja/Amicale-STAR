@@ -2,7 +2,6 @@ package tn.star.Pfe.service.email;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -14,7 +13,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class EmailService implements IEmailService {
 
-    // fixed it to final
     private final JavaMailSender mailSender;
     @Value("${spring.mail.from}")
     private String fromEmail;

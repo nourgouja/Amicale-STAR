@@ -2,6 +2,7 @@ package tn.star.Pfe.controller.offre;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -23,36 +24,41 @@ public class OffreController {
 
     private final IOffreService offreService;
 
-
     @GetMapping
     public ResponseEntity<List<OffreResponse>> listerOuvertes() {
         return ResponseEntity.ok(offreService.listerOffresOuvertes());
     }
 
+    @GetMapping("/all")
+    @PreAuthorize("hasAnyRole('MEMBRE_BUREAU', 'ADMIN')")
+    public ResponseEntity<List<OffreResponse>> listerToutes() {
+        return ResponseEntity.ok(offreService.listerToutes());
+    }
 
     @GetMapping("/{id}")
-    public ResponseEntity<OffreResponse> trouverParId(
-            @PathVariable Long id) {
+    public ResponseEntity<OffreResponse> trouverParId(@PathVariable Long id) {
         return ResponseEntity.ok(offreService.trouverParId(id));
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<OffreResponse>> rechercher(
-            @RequestParam String titre) {
+    public ResponseEntity<List<OffreResponse>> rechercher(@RequestParam String titre) {
         return ResponseEntity.ok(offreService.rechercherParTitre(titre));
     }
-    //@PostMapping(value = "/creer",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @PostMapping(value = "/creer", consumes = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('ADMIN') or " + "(hasRole('MEMBRE_BUREAU') and " + "@offreAuthService.canCreate(principal, #request.typeOffre.name()))")
-    public OffreResponse creer(@RequestPart OffreRequest req, @RequestPart MultipartFile image,
+
+    @PostMapping(value = "/creer", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize("hasRole('ADMIN') or " +
+            "(hasRole('MEMBRE_BUREAU') and " +
+            "@offreAuthService.canCreate(principal, #req.typeOffre.name()))")
+    public ResponseEntity<OffreResponse> creer(
+            @RequestPart("req") OffreRequest req,
+            @RequestPart(value = "image", required = false) MultipartFile image,
             @AuthenticationPrincipal UserDetails userDetails) throws IOException {
-        return offreService.creer(req, image, userDetails.getUsername());
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(offreService.creer(req, image, userDetails.getUsername()));
     }
 
-
     @PatchMapping(value = "/{id}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @PreAuthorize("hasRole('ADMIN') or " +
-            "(hasRole('MEMBRE_BUREAU') and @offreAuthService.canManage(principal, #id))")
+    @PreAuthorize("hasRole('ADMIN') or (hasRole('MEMBRE_BUREAU') and @offreAuthService.canManage(principal, #id))")
     public ResponseEntity<OffreResponse> uploadImage(
             @PathVariable Long id,
             @RequestPart("image") MultipartFile image) {
@@ -60,35 +66,35 @@ public class OffreController {
     }
 
     @PutMapping("/modifier/{id}")
-    @PreAuthorize("hasAnyRole('MEMBRE_BUREAU','ADMIN')")
+    @PreAuthorize("hasAnyRole('MEMBRE_BUREAU', 'ADMIN')")
     public ResponseEntity<OffreResponse> modifier(
             @PathVariable Long id,
             @Valid @RequestBody OffreRequest.UpdateOffreRequest req) {
         return ResponseEntity.ok(offreService.modifier(id, req));
     }
 
-    @PatchMapping("/fermer/{id}")
-    @PreAuthorize("hasAnyRole('MEMBRE_BUREAU','ADMIN')")
-    public ResponseEntity<OffreResponse> fermer(@PathVariable Long id) {
-        return ResponseEntity.ok(offreService.fermer(id));
-    }
-
-    @DeleteMapping("/supprimer/{id}")
-    @PreAuthorize("hasAnyRole('MEMBRE_BUREAU','ADMIN')")
-    public ResponseEntity<Void> supprimer(@PathVariable Long id) {
-        offreService.supprimer(id);
-        return ResponseEntity.noContent().build();
-    }
-
     @PatchMapping("/publier/{id}")
-    @PreAuthorize("hasRole('MEMBRE_BUREAU') or hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('MEMBRE_BUREAU', 'ADMIN')")
     public ResponseEntity<OffreResponse> publier(@PathVariable Long id) {
         return ResponseEntity.ok(offreService.publier(id));
     }
 
+    @PatchMapping("/fermer/{id}")
+    @PreAuthorize("hasAnyRole('MEMBRE_BUREAU', 'ADMIN')")
+    public ResponseEntity<OffreResponse> fermer(@PathVariable Long id) {
+        return ResponseEntity.ok(offreService.fermer(id));
+    }
+
     @PatchMapping("/archiver/{id}")
-    @PreAuthorize("hasRole('MEMBRE_BUREAU') or hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('MEMBRE_BUREAU', 'ADMIN')")
     public ResponseEntity<OffreResponse> archiver(@PathVariable Long id) {
         return ResponseEntity.ok(offreService.archiver(id));
+    }
+
+    @DeleteMapping("/supprimer/{id}")
+    @PreAuthorize("hasAnyRole('MEMBRE_BUREAU', 'ADMIN')")
+    public ResponseEntity<Void> supprimer(@PathVariable Long id) {
+        offreService.supprimer(id);
+        return ResponseEntity.noContent().build();
     }
 }

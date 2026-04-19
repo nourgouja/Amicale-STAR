@@ -9,6 +9,7 @@ import java.util.List;
 
 public interface IOffreService {
     List<OffreResponse> listerOffresOuvertes();
+    List<OffreResponse> listerToutes();                          // added
     OffreResponse trouverParId(Long id);
     List<OffreResponse> rechercherParTitre(String titre);
     OffreResponse creer(OffreRequest req, MultipartFile image, String username) throws IOException;
