@@ -39,7 +39,8 @@ public class OffreRequest {
     private ModePaiement modePaiement;
 
     private String avantages;
-    private Long poleId;
+
+    private tn.star.Pfe.enums.StatutOffre statut;
 
     @Getter
     @Setter

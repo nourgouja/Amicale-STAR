@@ -48,6 +48,11 @@ public abstract class User {
     @Builder.Default
     private boolean firstLogin = true;
 
+    @Lob
+    @Column(name = "photo", columnDefinition = "LONGBLOB")
+    private byte[] photo;
 
+    private String photoNom;
+    private String photoType;
 
 }

@@ -18,16 +18,20 @@ public class UserPrincipal implements UserDetails {
     private String role;
     private final boolean actif;
     private final boolean firstLogin;
+    private final String prenom;
+    private final String nom;
 
 
-    public UserPrincipal(Long id, String email, String motDePasse, String role, boolean actif,boolean firstLogin) {
+    public UserPrincipal(Long id, String email, String motDePasse, String role, boolean actif, boolean firstLogin, String prenom, String nom) {
         this.id = id;
         this.username = email;
         this.email = email;
         this.motDePasse = motDePasse;
         this.role = role;
         this.actif = actif;
-        this.firstLogin=firstLogin;
+        this.firstLogin = firstLogin;
+        this.prenom = prenom != null ? prenom : "";
+        this.nom = nom != null ? nom : "";
     }
 
     public static UserPrincipal from(User u) {
@@ -38,7 +42,9 @@ public class UserPrincipal implements UserDetails {
                 u.getMotDePasse(),
                 role,
                 u.isActif(),
-                u.isFirstLogin()
+                u.isFirstLogin(),
+                u.getPrenom(),
+                u.getNom()
         );
     }
 
@@ -85,5 +91,7 @@ public class UserPrincipal implements UserDetails {
         return true;
     }
 
-    public boolean isFirstLogin(){return firstLogin;}
+    public boolean isFirstLogin() { return firstLogin; }
+    public String getPrenom()     { return prenom; }
+    public String getNom()        { return nom; }
 }

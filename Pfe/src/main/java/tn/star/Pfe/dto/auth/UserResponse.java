@@ -8,6 +8,14 @@ public record UserResponse(
         String nom,
         String prenom,
         String role,
-        boolean actif ,
-        LocalDateTime createdAt) {
+        boolean actif,
+        String telephone,
+        String matriculeStar,
+        String posteMembre,
+        Long poleId,
+        String poleNom,
+        String poleTypeOffre,
+        LocalDateTime createdAt,
+        String photoBase64,
+        String photoType) {
 }

@@ -44,6 +44,8 @@ public class SecurityConfig {
                                 "/swagger-ui/**",
                                 "/swagger-ui.html"
                         ).permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/adhesion/demande").permitAll()
+                        .requestMatchers("/api/adhesion/**").hasRole("ADMIN")
 
                         .requestMatchers(HttpMethod.GET, "/api/offres/**").authenticated()
 

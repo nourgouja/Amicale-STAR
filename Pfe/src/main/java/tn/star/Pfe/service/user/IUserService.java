@@ -1,6 +1,7 @@
 package tn.star.Pfe.service.user;
 
 import org.springframework.data.domain.Page;
+import org.springframework.web.multipart.MultipartFile;
 import tn.star.Pfe.dto.auth.*;
 import tn.star.Pfe.entity.User;
 import tn.star.Pfe.enums.Role;
@@ -19,4 +20,5 @@ public interface IUserService {
     void demanderAdhesion(DemandeRequest request);
     void approuverDemande(Long id);
     void rejeterDemande(Long id);
+    UserResponse uploadPhoto(Long id, MultipartFile photo);
 }

@@ -32,7 +32,7 @@ public class OffreController {
     @GetMapping("/all")
     @PreAuthorize("hasAnyRole('MEMBRE_BUREAU', 'ADMIN')")
     public ResponseEntity<List<OffreResponse>> listerToutes() {
-        return ResponseEntity.ok(offreService.listerToutes());
+        return ResponseEntity.ok(offreService.listerToutesLesOffres());
     }
 
     @GetMapping("/{id}")
@@ -71,6 +71,16 @@ public class OffreController {
             @PathVariable Long id,
             @Valid @RequestBody OffreRequest.UpdateOffreRequest req) {
         return ResponseEntity.ok(offreService.modifier(id, req));
+    }
+
+    /** Edit endpoint used by the frontend form (multipart, with optional image replacement) */
+    @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize("hasAnyRole('MEMBRE_BUREAU', 'ADMIN')")
+    public ResponseEntity<OffreResponse> modifierAvecImage(
+            @PathVariable Long id,
+            @RequestPart("req") OffreRequest offreReq,
+            @RequestPart(value = "image", required = false) MultipartFile image) throws IOException {
+        return ResponseEntity.ok(offreService.modifierAvecImage(id, offreReq, image));
     }
 
     @PatchMapping("/publier/{id}")

@@ -8,7 +8,7 @@ public record DemandeRequest (
         @NotBlank String prenom,
         @NotBlank @Email String email,
         String telephone,
-        @NotBlank String matriculeStar,
+        String matriculeStar,
         String poste
 ) {
 }

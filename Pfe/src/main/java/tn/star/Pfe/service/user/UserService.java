@@ -12,6 +12,8 @@ import org.springframework.mail.MailException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import tn.star.Pfe.dto.auth.UserResponse;
 import tn.star.Pfe.dto.auth.*;
 import tn.star.Pfe.entity.*;
 import tn.star.Pfe.enums.PosteBureau;
@@ -129,10 +131,41 @@ public class UserService implements IUserService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Utilisateur non trouvé avec ID: " + id));
 
-        if (request.nom() != null) user.setNom(request.nom());
-        if (request.prenom() != null) user.setPrenom(request.prenom());
+        if (request.nom()       != null) user.setNom(request.nom());
+        if (request.prenom()    != null) user.setPrenom(request.prenom());
+        if (request.email()     != null) user.setEmail(request.email());
+        if (request.telephone() != null) user.setTelephone(request.telephone());
+
+        if (user instanceof MembreBureau mb) {
+            if (request.posteMembre() != null && !request.posteMembre().isBlank()) {
+                mb.setPoste(PosteBureau.valueOf(request.posteMembre()));
+            }
+            if (request.poleId() != null) {
+                Pole pole = poleRepository.findById(request.poleId())
+                        .orElseThrow(() -> new NotFoundException("Pôle introuvable avec ID: " + request.poleId()));
+                mb.setPole(pole);
+            } else if (request.posteMembre() != null
+                    && !request.posteMembre().equals("RESPONSABLE_POLE")) {
+                mb.setPole(null);
+            }
+        } else if (user instanceof Adherent adherent) {
+            if (request.matriculeStar() != null) adherent.setMatriculeStar(request.matriculeStar());
+        }
 
         return userRepository.save(user);
+    }
+    @Transactional
+    public UserResponse uploadPhoto(Long id, MultipartFile photo) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Utilisateur non trouvé avec ID: " + id));
+        try {
+            user.setPhoto(photo.getBytes());
+            user.setPhotoNom(photo.getOriginalFilename());
+            user.setPhotoType(photo.getContentType());
+        } catch (Exception e) {
+            throw new BadRequestException("Erreur lecture image.");
+        }
+        return userMapper.toResponse(userRepository.save(user));
     }
 
     @Transactional
