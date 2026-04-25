@@ -157,6 +157,13 @@ public class InscriptionController {
         return ResponseEntity.ok(inscriptionService.confirmer(inscriptionId));
     }
 
+    @PatchMapping("/refuser/{inscriptionId}")
+    @PreAuthorize("hasAnyRole('MEMBRE_BUREAU', 'ADMIN')")
+    public ResponseEntity<InscriptionResponse> refuser(
+            @PathVariable @Parameter(description = "ID de l'inscription", required = true) Long inscriptionId) {
+        return ResponseEntity.ok(inscriptionService.refuser(inscriptionId));
+    }
+
     @GetMapping("/offre/{offreId}")
     @PreAuthorize("hasAnyRole('MEMBRE_BUREAU', 'ADMIN')")
     public ResponseEntity<List<InscriptionResponse>> inscritsParOffre(

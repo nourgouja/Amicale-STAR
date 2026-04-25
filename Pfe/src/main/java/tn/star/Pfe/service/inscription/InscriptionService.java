@@ -101,6 +101,19 @@ public class InscriptionService implements IInscriptionService {
         return inscriptionMapper.toResponse(saved);
     }
 
+    @Transactional
+    public InscriptionResponse refuser(Long inscriptionId) {
+        Inscription inscription = inscriptionRepository.findById(inscriptionId)
+                .orElseThrow(() -> new NotFoundException("Inscription introuvable"));
+
+        StatutInscription oldStatut = inscription.getStatut();
+        inscription.setStatut(StatutInscription.REJETEE);
+        Inscription saved = inscriptionRepository.save(inscription);
+
+        publisher.publishEvent(new InscriptionStatusChangedEvent(saved, oldStatut, StatutInscription.REJETEE));
+        return inscriptionMapper.toResponse(saved);
+    }
+
     public List<InscriptionResponse> mesInscriptions(Adherent adherent) {
         return inscriptionRepository.findByAdherent(adherent)
                 .stream()

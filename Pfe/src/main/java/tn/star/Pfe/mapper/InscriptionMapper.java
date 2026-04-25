@@ -19,6 +19,8 @@ public class InscriptionMapper {
                 .offreTitre(i.getOffre().getTitre())
                 .adherentId(i.getAdherent().getId())
                 .mailAdherent(i.getAdherent().getEmail())
+                .adherentNom(i.getAdherent().getNom())
+                .adherentPrenom(i.getAdherent().getPrenom())
                 .statut(i.getStatut())
                 .montant(i.getMontant())
                 .statutPaiement(i.getStatutPaiement())
