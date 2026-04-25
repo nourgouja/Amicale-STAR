@@ -2,6 +2,7 @@ package tn.star.Pfe.service.offre;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import tn.star.Pfe.dto.offre.OffreRequest;
@@ -10,6 +11,7 @@ import tn.star.Pfe.entity.Offre;
 import tn.star.Pfe.entity.User;
 import tn.star.Pfe.enums.PosteBureau;
 import tn.star.Pfe.enums.StatutOffre;
+import tn.star.Pfe.event.OffreCreatedEvent;
 import tn.star.Pfe.exceptions.BadRequestException;
 import tn.star.Pfe.exceptions.NotFoundException;
 import tn.star.Pfe.mapper.OffreMapper;
@@ -30,6 +32,8 @@ public class OffreService implements IOffreService {
     private final PoleRepository poleRepository;
     private final OffreMapper offreMapper;
     private final UserRepository userRepository;
+    private final ApplicationEventPublisher publisher;
+
 
     public List<OffreResponse> listerOffresOuvertes() {
         return offreRepository.findByStatut(StatutOffre.OUVERTE)
@@ -57,14 +61,14 @@ public class OffreService implements IOffreService {
         User currentUser = userRepository.findByEmail(username)
                 .orElseThrow(() -> new NotFoundException("Utilisateur introuvable"));
 
-        Pole pole = poleRepository.findById(req.getPoleId())
-                .orElseThrow(() -> new NotFoundException("Pôle introuvable : " + req.getPoleId()));
+//        Pole pole = poleRepository.findById(req.getPoleId())
+//                .orElseThrow(() -> new NotFoundException("Pôle introuvable : " + req.getPoleId()));
 
-        if (currentUser instanceof MembreBureau membreBureau
-                && membreBureau.getPoste() == PosteBureau.RESPONSABLE_POLE
-                && !pole.equals(membreBureau.getPole())) {
-            throw new BadRequestException("Non autorisé pour ce pôle.");
-        }
+//        if (currentUser instanceof MembreBureau membreBureau
+//                && membreBureau.getPoste() == PosteBureau.RESPONSABLE_POLE
+//                && !pole.equals(membreBureau.getPole())) {
+//            throw new BadRequestException("Non autorisé pour ce pôle.");
+//        }
         Offre offre = Offre.builder()
                 .titre(req.getTitre())
                 .description(req.getDescription())
@@ -76,8 +80,7 @@ public class OffreService implements IOffreService {
                 .capaciteMax(req.getCapaciteMax() != null ? req.getCapaciteMax() : 0)
                 .modePaiement(req.getModePaiement())
                 .avantages(req.getAvantages())
-                .pole(pole)
-                .statut(StatutOffre.BROUILLON)
+                .statut(req.getStatut() != null ? req.getStatut() : StatutOffre.OUVERTE)
                 .build();
 
         if (image != null && !image.isEmpty()) {
@@ -87,8 +90,9 @@ public class OffreService implements IOffreService {
         }
 
         validerParType(offre);
-
-        return offreMapper.toResponse(offreRepository.save(offre));
+        Offre saved = offreRepository.save(offre);
+        publisher.publishEvent(new OffreCreatedEvent(saved));
+        return offreMapper.toResponse(saved);
     }
 
     @Transactional
@@ -130,6 +134,35 @@ public class OffreService implements IOffreService {
             offre.setDateDebut(req.getDateDebut());
         if (req.getDateFin() != null)
             offre.setDateFin(req.getDateFin());
+        validerParType(offre);
+        return offreMapper.toResponse(offreRepository.save(offre));
+    }
+
+    @Transactional
+    public OffreResponse modifierAvecImage(Long id, OffreRequest req, MultipartFile image) throws IOException {
+        Offre offre = offreRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Offre introuvable : " + id));
+
+        if (offre.getStatut() == StatutOffre.ANNULEE)
+            throw new BadRequestException("Impossible de modifier une offre annulée.");
+
+        if (req.getTitre()           != null) offre.setTitre(req.getTitre());
+        if (req.getDescription()     != null) offre.setDescription(req.getDescription());
+        if (req.getTypeOffre()       != null) offre.setType(req.getTypeOffre());
+        if (req.getLieu()            != null) offre.setLieu(req.getLieu());
+        if (req.getDateDebut()       != null) offre.setDateDebut(req.getDateDebut());
+        if (req.getDateFin()         != null) offre.setDateFin(req.getDateFin());
+        if (req.getPrixParPersonne() != null) offre.setPrixParPersonne(req.getPrixParPersonne());
+        if (req.getCapaciteMax()     != null) offre.setCapaciteMax(req.getCapaciteMax());
+        if (req.getModePaiement()    != null) offre.setModePaiement(req.getModePaiement());
+        if (req.getAvantages()       != null) offre.setAvantages(req.getAvantages());
+
+        if (image != null && !image.isEmpty()) {
+            offre.setImage(image.getBytes());
+            offre.setImageNom(image.getOriginalFilename());
+            offre.setImageType(image.getContentType());
+        }
+
         validerParType(offre);
         return offreMapper.toResponse(offreRepository.save(offre));
     }
@@ -186,11 +219,15 @@ public class OffreService implements IOffreService {
     public OffreResponse archiver(Long id) {
         Offre offre = offreRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Offre introuvable"));
-
-        if (offre.getStatut() == StatutOffre.BROUILLON)
-            throw new BadRequestException("Un brouillon doit être publié avant d'être archivé.");
-
         offre.setStatut(StatutOffre.ARCHIVEE);
         return offreMapper.toResponse(offreRepository.save(offre));
     }
+
+    public List<OffreResponse> listerToutesLesOffres() {
+        return offreRepository.findAll()
+                .stream()
+                .map(offreMapper::toResponse)
+                .toList();
+    }
+
 }

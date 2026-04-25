@@ -15,8 +15,8 @@ public class TestController {
 
     private EmailService emailService;
     @PostMapping("/email")
-    public ResponseEntity<String> testEmail(@RequestParam String to) {
-        emailService.sendWelcomeEmail(to, "Test User");
+    public ResponseEntity<String> testEmail(@RequestParam String to, @RequestParam String firstName, @RequestParam String temporaryPassword) {
+        emailService.sendAccountCreatedEmail(to,firstName, temporaryPassword);
         return ResponseEntity.ok("Email sent to " + to);
     }
 }

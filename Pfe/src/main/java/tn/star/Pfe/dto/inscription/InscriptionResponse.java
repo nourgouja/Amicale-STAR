@@ -20,6 +20,8 @@ public class InscriptionResponse {
     private String offreTitre;
     private Long adherentId;
     private String mailAdherent;
+    private String adherentNom;
+    private String adherentPrenom;
     private StatutInscription statut;
     private StatutPaiement statutPaiement;
     private BigDecimal montant;

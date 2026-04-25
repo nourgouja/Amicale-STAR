@@ -10,6 +10,7 @@ public interface IInscriptionService {
     InscriptionResponse inscrire(Long offreId, Adherent adherent);
     InscriptionResponse annuler(Adherent adherent, Long inscriptionId);
     InscriptionResponse confirmer(Long inscriptionId);
+    InscriptionResponse refuser(Long inscriptionId);
     List<InscriptionResponse> mesInscriptions(Adherent adherent);
     List<InscriptionResponse> inscritsParOffre(Long offreId);
     InscriptionResponse mettreAjourPaiement(Long inscriptionId, StatutPaiement statut);

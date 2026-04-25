@@ -28,6 +28,8 @@ public class JwtUtils {
                 .claim("role", principal.getRole())
                 .claim("actif", principal.isEnabled())
                 .claim("firstLogin", principal.isFirstLogin())
+                .claim("prenom", principal.getPrenom())
+                .claim("nom", principal.getNom())
                 .setId(UUID.randomUUID().toString())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + jwtExpirationMs))

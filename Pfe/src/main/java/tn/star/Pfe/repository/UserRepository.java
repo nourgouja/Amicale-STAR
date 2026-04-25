@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import tn.star.Pfe.entity.User;
 import tn.star.Pfe.enums.Role;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -26,9 +27,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Page<User> findByRoleAndSearch(@Param("role") Role role,
                                    @Param("search") String search,
                                    Pageable pageable);
-
     Page<User> findByRole(Role role, Pageable pageable);
-
+    List<User> findByRole(Role role);
     @Query("SELECT u FROM User u WHERE " +
             "LOWER(u.nom) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
             "LOWER(u.prenom) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
@@ -36,6 +36,4 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Page<User> searchByKeyword(@Param("search") String search, Pageable pageable);
 
     long countByRole(Role role);
-
-    long countByActif(boolean actif);
 }

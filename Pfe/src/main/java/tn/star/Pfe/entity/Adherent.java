@@ -1,9 +1,9 @@
 package tn.star.Pfe.entity;
 
-
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import tn.star.Pfe.enums.StatutDemande;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,17 +16,21 @@ import java.util.List;
 @SuperBuilder
 public class Adherent extends User {
 
-    @OneToMany(mappedBy = "adherent", fetch= FetchType.EAGER)
+    @OneToMany(mappedBy = "adherent", fetch = FetchType.EAGER)
     @Builder.Default
-    private List<Inscription> inscriptions=new ArrayList<>();
+    private List<Inscription> inscriptions = new ArrayList<>();
 
-
-    // TO UPDATE THIS PART AFTER YAPPING
     @Builder.Default
     private boolean aDette = false;
 
     @Builder.Default
     private double soldeCongé = 0.0;
 
+    private String matriculeStar;
 
+    private String poste;
+
+    @Enumerated(EnumType.STRING)
+    @Builder.Default
+    private StatutDemande statut = StatutDemande.APPROVED;
 }

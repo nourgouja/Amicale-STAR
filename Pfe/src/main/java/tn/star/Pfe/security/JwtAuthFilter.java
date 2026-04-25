@@ -35,15 +35,19 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             return;
         }
 
-        Long userId= jwtUtils.extractClaim(token, "userId", Long.class);
-        String email= jwtUtils.extractEmail(token);
-        String role= jwtUtils.extractClaim(token, "role", String.class);
+        Long userId     = jwtUtils.extractClaim(token, "userId",     Long.class);
+        String email    = jwtUtils.extractEmail(token);
+        String role     = jwtUtils.extractClaim(token, "role",       String.class);
         Boolean firstLogin = jwtUtils.extractClaim(token, "firstLogin", Boolean.class);
+        String prenom   = jwtUtils.extractClaim(token, "prenom",     String.class);
+        String nom      = jwtUtils.extractClaim(token, "nom",        String.class);
 
         UserPrincipal principal = new UserPrincipal(
                 userId, email, null, role,
                 true,
-                Boolean.TRUE.equals(firstLogin)
+                Boolean.TRUE.equals(firstLogin),
+                prenom != null ? prenom : "",
+                nom    != null ? nom    : ""
         );
 
         UsernamePasswordAuthenticationToken auth =

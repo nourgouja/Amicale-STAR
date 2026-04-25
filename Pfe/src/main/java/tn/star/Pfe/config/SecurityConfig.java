@@ -44,10 +44,12 @@ public class SecurityConfig {
                                 "/swagger-ui/**",
                                 "/swagger-ui.html"
                         ).permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/adhesion/demande").permitAll()
+                        .requestMatchers("/api/adhesion/**").hasRole("ADMIN")
 
                         .requestMatchers(HttpMethod.GET, "/api/offres/**").authenticated()
 
-                        //offres
+                        .requestMatchers(HttpMethod.POST, "/api/utilisateurs/demande-adhesion").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/offres/**").hasAnyRole("MEMBRE_BUREAU", "ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/api/offres/**").hasAnyRole("MEMBRE_BUREAU", "ADMIN")
                         .requestMatchers(HttpMethod.PATCH, "/api/offres/**").hasAnyRole("MEMBRE_BUREAU", "ADMIN")

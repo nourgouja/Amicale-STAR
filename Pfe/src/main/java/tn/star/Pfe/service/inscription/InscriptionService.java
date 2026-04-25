@@ -2,6 +2,7 @@ package tn.star.Pfe.service.inscription;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import tn.star.Pfe.dto.inscription.InscriptionResponse;
 import tn.star.Pfe.entity.Adherent;
@@ -12,6 +13,7 @@ import tn.star.Pfe.enums.StatutInscription;
 import tn.star.Pfe.enums.StatutOffre;
 import tn.star.Pfe.enums.StatutPaiement;
 import tn.star.Pfe.enums.TypeOffre;
+import tn.star.Pfe.event.InscriptionStatusChangedEvent;
 import tn.star.Pfe.exceptions.*;
 import tn.star.Pfe.mapper.InscriptionMapper;
 import tn.star.Pfe.repository.EcheanceRepository;
@@ -31,10 +33,10 @@ public class InscriptionService implements IInscriptionService {
     private final OffreRepository offreRepository;
     private final InscriptionMapper inscriptionMapper;
     private final EcheanceRepository echeanceRepository;
+    private final ApplicationEventPublisher publisher;
 
     @Transactional
     public InscriptionResponse inscrire(Long offreId, Adherent adherent) {
-
         Offre offre = offreRepository.findById(offreId)
                 .orElseThrow(() -> new NotFoundException("Offre non trouvée"));
 
@@ -63,9 +65,7 @@ public class InscriptionService implements IInscriptionService {
 
         if (offre.getType() == TypeOffre.VOYAGE && offre.getModePaiement() != null) {
             List<Echeance> echeances = EcheanceFactory.generate(
-                    saved,
-                    offre.getPrixParPersonne(),
-                    offre.getModePaiement()
+                    saved, offre.getPrixParPersonne(), offre.getModePaiement()
             );
             echeanceRepository.saveAll(echeances);
         }
@@ -79,10 +79,13 @@ public class InscriptionService implements IInscriptionService {
                 .findByIdAndAdherent(inscriptionId, adherent)
                 .orElseThrow(() -> new NotFoundException("Inscription introuvable"));
 
+        StatutInscription oldStatut = inscription.getStatut();
         inscription.setStatut(StatutInscription.ANNULEE);
         inscription.setDateAnnulation(LocalDateTime.now());
+        Inscription saved = inscriptionRepository.save(inscription);
 
-        return inscriptionMapper.toResponse(inscriptionRepository.save(inscription));
+        publisher.publishEvent(new InscriptionStatusChangedEvent(saved, oldStatut, StatutInscription.ANNULEE));
+        return inscriptionMapper.toResponse(saved);
     }
 
     @Transactional
@@ -90,9 +93,25 @@ public class InscriptionService implements IInscriptionService {
         Inscription inscription = inscriptionRepository.findById(inscriptionId)
                 .orElseThrow(() -> new NotFoundException("Inscription introuvable"));
 
+        StatutInscription oldStatut = inscription.getStatut();
         inscription.setStatut(StatutInscription.CONFIRMEE);
+        Inscription saved = inscriptionRepository.save(inscription);
 
-        return inscriptionMapper.toResponse(inscriptionRepository.save(inscription));
+        publisher.publishEvent(new InscriptionStatusChangedEvent(saved, oldStatut, StatutInscription.CONFIRMEE));
+        return inscriptionMapper.toResponse(saved);
+    }
+
+    @Transactional
+    public InscriptionResponse refuser(Long inscriptionId) {
+        Inscription inscription = inscriptionRepository.findById(inscriptionId)
+                .orElseThrow(() -> new NotFoundException("Inscription introuvable"));
+
+        StatutInscription oldStatut = inscription.getStatut();
+        inscription.setStatut(StatutInscription.REJETEE);
+        Inscription saved = inscriptionRepository.save(inscription);
+
+        publisher.publishEvent(new InscriptionStatusChangedEvent(saved, oldStatut, StatutInscription.REJETEE));
+        return inscriptionMapper.toResponse(saved);
     }
 
     public List<InscriptionResponse> mesInscriptions(Adherent adherent) {
