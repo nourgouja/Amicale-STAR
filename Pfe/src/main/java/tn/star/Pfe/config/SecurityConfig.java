@@ -9,6 +9,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -21,6 +22,7 @@ import tn.star.Pfe.security.JwtAuthFilter;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
 
@@ -49,7 +51,7 @@ public class SecurityConfig {
 
                         .requestMatchers(HttpMethod.GET, "/api/offres/**").authenticated()
 
-                        .requestMatchers(HttpMethod.POST, "/api/utilisateurs/demande-adhesion").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/adhesion/demande").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/offres/**").hasAnyRole("MEMBRE_BUREAU", "ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/api/offres/**").hasAnyRole("MEMBRE_BUREAU", "ADMIN")
                         .requestMatchers(HttpMethod.PATCH, "/api/offres/**").hasAnyRole("MEMBRE_BUREAU", "ADMIN")

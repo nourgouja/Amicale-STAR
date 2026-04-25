@@ -15,6 +15,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import tn.star.Pfe.dto.auth.UserResponse;
 import tn.star.Pfe.dto.auth.*;
+
+import java.util.List;
 import tn.star.Pfe.entity.*;
 import tn.star.Pfe.enums.PosteBureau;
 import tn.star.Pfe.enums.Role;
@@ -293,6 +295,16 @@ public class UserService implements IUserService {
         Adherent saved = userRepository.save(adherent);
         publisher.publishEvent(new AdhesionDemandeEvent(saved));
         log.info("New adhesion request from {} ({})", request.email(), request.matriculeStar());
+    }
+
+    @Transactional
+    public List<DemandeAdhesionResponse> findDemandesPending() {
+        return userRepository.findPendingAdhesions().stream()
+                .map(a -> new DemandeAdhesionResponse(
+                        a.getId(), a.getNom(), a.getPrenom(), a.getEmail(),
+                        a.getTelephone(), a.getMatriculeStar(), a.getStatut().name(), a.getCreatedAt()
+                ))
+                .toList();
     }
 
     @Transactional

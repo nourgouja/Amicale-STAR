@@ -6,6 +6,8 @@ import tn.star.Pfe.dto.auth.*;
 import tn.star.Pfe.entity.User;
 import tn.star.Pfe.enums.Role;
 
+import java.util.List;
+
 public interface IUserService {
     Page<UserResponse> findAll(Role role, String search, int page, int size);
     User findById(Long id);
@@ -18,6 +20,7 @@ public interface IUserService {
     void forgotPasswordByEmail(String email);
     void changePassword(Long userId, ChangePasswordRequest request);
     void demanderAdhesion(DemandeRequest request);
+    List<DemandeAdhesionResponse> findDemandesPending();
     void approuverDemande(Long id);
     void rejeterDemande(Long id);
     UserResponse uploadPhoto(Long id, MultipartFile photo);
