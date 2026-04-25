@@ -5,6 +5,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import tn.star.Pfe.enums.Role;
 
+import java.util.List;
+
 public record CreateUserRequest(
 
         @NotBlank(message = "L'email est obligatoire")
@@ -21,5 +23,6 @@ public record CreateUserRequest(
         Role role,
 
         String posteMembre,
-        Long poleId
+        Long poleId,
+        List<String> typesAutorisees
 ) {}

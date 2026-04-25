@@ -8,6 +8,7 @@ import tn.star.Pfe.entity.User;
 
 import java.util.Base64;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class UserMapper {
@@ -15,19 +16,23 @@ public class UserMapper {
     public UserResponse toResponse(User user) {
         if (user == null) return null;
 
-        String posteMembre   = null;
-        Long   poleId        = null;
-        String poleNom       = null;
-        String poleTypeOffre = null;
-        String matriculeStar = null;
+        String       posteMembre     = null;
+        Long         poleId          = null;
+        String       poleNom         = null;
+        List<String> poleTypesOffre  = null;
+        String       matriculeStar   = null;
 
         if (user instanceof MembreBureau mb) {
             posteMembre = mb.getPoste() != null ? mb.getPoste().name() : null;
             if (mb.getPole() != null) {
-                poleId        = mb.getPole().getId();
-                poleNom       = mb.getPole().getNom();
-                poleTypeOffre = mb.getPole().getTypeOffre() != null
-                        ? mb.getPole().getTypeOffre().name() : null;
+                poleId  = mb.getPole().getId();
+                poleNom = mb.getPole().getNom();
+            }
+            if (mb.getTypesAutorisees() != null && !mb.getTypesAutorisees().isEmpty()) {
+                poleTypesOffre = mb.getTypesAutorisees().stream()
+                        .map(Enum::name)
+                        .sorted()
+                        .collect(Collectors.toList());
             }
         } else if (user instanceof Adherent a) {
             matriculeStar = a.getMatriculeStar();
@@ -50,7 +55,7 @@ public class UserMapper {
                 posteMembre,
                 poleId,
                 poleNom,
-                poleTypeOffre,
+                poleTypesOffre,
                 user.getCreatedAt(),
                 photoBase64,
                 user.getPhotoType()

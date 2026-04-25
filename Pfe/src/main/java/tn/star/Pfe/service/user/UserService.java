@@ -18,6 +18,7 @@ import tn.star.Pfe.dto.auth.*;
 import tn.star.Pfe.entity.*;
 import tn.star.Pfe.enums.PosteBureau;
 import tn.star.Pfe.enums.Role;
+import tn.star.Pfe.enums.TypeOffre;
 import tn.star.Pfe.enums.StatutDemande;
 import tn.star.Pfe.event.AdhesionDemandeEvent;
 import tn.star.Pfe.exceptions.BadRequestException;
@@ -103,6 +104,12 @@ public class UserService implements IUserService {
                     pole = poleRepository.findById(request.poleId())
                             .orElseThrow(() -> new NotFoundException("Pôle introuvable avec ID: " + request.poleId()));
                 }
+                java.util.Set<TypeOffre> types = new java.util.HashSet<>();
+                if (request.typesAutorisees() != null) {
+                    for (String t : request.typesAutorisees()) {
+                        try { types.add(TypeOffre.valueOf(t)); } catch (IllegalArgumentException ignored) {}
+                    }
+                }
                 yield MembreBureau.builder()
                         .email(request.email())
                         .motDePasse(hashedPassword)
@@ -110,6 +117,7 @@ public class UserService implements IUserService {
                         .prenom(request.prenom())
                         .poste(PosteBureau.valueOf(request.posteMembre()))
                         .pole(pole)
+                        .typesAutorisees(types)
                         .role(Role.MEMBRE_BUREAU)
                         .actif(true)
                         .build();
@@ -147,6 +155,13 @@ public class UserService implements IUserService {
             } else if (request.posteMembre() != null
                     && !request.posteMembre().equals("RESPONSABLE_POLE")) {
                 mb.setPole(null);
+            }
+            if (request.typesAutorisees() != null) {
+                java.util.Set<TypeOffre> types = new java.util.HashSet<>();
+                for (String t : request.typesAutorisees()) {
+                    try { types.add(TypeOffre.valueOf(t)); } catch (IllegalArgumentException ignored) {}
+                }
+                mb.setTypesAutorisees(types);
             }
         } else if (user instanceof Adherent adherent) {
             if (request.matriculeStar() != null) adherent.setMatriculeStar(request.matriculeStar());

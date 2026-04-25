@@ -14,7 +14,7 @@ public record UserResponse(
         String posteMembre,
         Long poleId,
         String poleNom,
-        String poleTypeOffre,
+        java.util.List<String> poleTypesOffre,
         LocalDateTime createdAt,
         String photoBase64,
         String photoType) {
