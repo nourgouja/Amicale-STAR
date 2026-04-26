@@ -9,12 +9,15 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import tn.star.Pfe.dto.auth.MembreBureauPublicResponse;
 import tn.star.Pfe.dto.auth.UpdateProfilRequest;
 import tn.star.Pfe.dto.auth.UserResponse;
 import tn.star.Pfe.entity.User;
 import tn.star.Pfe.mapper.UserMapper;
 import tn.star.Pfe.security.UserPrincipal;
 import tn.star.Pfe.service.user.IUserService;
+
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -38,6 +41,11 @@ public class UserController {
             @Valid @RequestBody UpdateProfilRequest request) {
         User updated = userService.updateUser(principal.getId(), request);
         return ResponseEntity.ok(userMapper.toResponse(updated));
+    }
+
+    @GetMapping("/membres-bureau")
+    public ResponseEntity<List<MembreBureauPublicResponse>> getMembresBureau() {
+        return ResponseEntity.ok(userService.findMembresBureau());
     }
 
     @PatchMapping(value = "/profil/photo", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

@@ -23,5 +23,6 @@ public interface IUserService {
     List<DemandeAdhesionResponse> findDemandesPending();
     void approuverDemande(Long id);
     void rejeterDemande(Long id);
+    List<MembreBureauPublicResponse> findMembresBureau();
     UserResponse uploadPhoto(Long id, MultipartFile photo);
 }

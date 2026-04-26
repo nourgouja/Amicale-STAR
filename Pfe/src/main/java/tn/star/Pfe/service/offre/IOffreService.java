@@ -12,7 +12,7 @@ public interface IOffreService {
     List<OffreResponse> listerToutesLesOffres();
     OffreResponse trouverParId(Long id);
     List<OffreResponse> rechercherParTitre(String titre);
-    OffreResponse creer(OffreRequest req, MultipartFile image, String username) throws IOException;
+    OffreResponse creer(OffreRequest req, MultipartFile image, List<MultipartFile> imagesSupplementaires, String username) throws IOException;
     OffreResponse uploadImage(Long id, MultipartFile image);
     OffreResponse modifier(Long id, OffreRequest.UpdateOffreRequest req);
     OffreResponse modifierAvecImage(Long id, OffreRequest req, MultipartFile image) throws IOException;

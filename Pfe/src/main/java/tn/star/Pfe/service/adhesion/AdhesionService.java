@@ -2,6 +2,7 @@ package tn.star.Pfe.service.adhesion;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import tn.star.Pfe.dto.auth.DemandeAdhesionResponse;
@@ -9,6 +10,7 @@ import tn.star.Pfe.dto.auth.DemandeRequest;
 import tn.star.Pfe.entity.Adherent;
 import tn.star.Pfe.enums.Role;
 import tn.star.Pfe.enums.StatutDemande;
+import tn.star.Pfe.event.AdhesionDemandeEvent;
 import tn.star.Pfe.exceptions.BadRequestException;
 import tn.star.Pfe.exceptions.NotFoundException;
 import tn.star.Pfe.repository.UserRepository;
@@ -25,6 +27,7 @@ public class AdhesionService implements IAdhesionService {
     private final PasswordEncoder passwordEncoder;
     private final PasswordGenerator passwordGenerator;
     private final IEmailService emailService;
+    private final ApplicationEventPublisher publisher;
 
     @Override
     @Transactional
@@ -48,7 +51,8 @@ public class AdhesionService implements IAdhesionService {
                 .actif(false)
                 .build();
 
-        userRepository.save(adherent);
+        Adherent saved = userRepository.save(adherent);
+        publisher.publishEvent(new AdhesionDemandeEvent(saved));
     }
 
     @Override

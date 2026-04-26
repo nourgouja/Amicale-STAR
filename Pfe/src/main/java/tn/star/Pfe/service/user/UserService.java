@@ -345,4 +345,20 @@ public class UserService implements IUserService {
         userRepository.save(adherent);
         log.info("Adhesion rejected for userId={}", id);
     }
+
+    public List<MembreBureauPublicResponse> findMembresBureau() {
+        return userRepository.findByRole(Role.MEMBRE_BUREAU).stream()
+                .filter(u -> u instanceof MembreBureau && u.isActif())
+                .map(u -> {
+                    MembreBureau mb = (MembreBureau) u;
+                    return new MembreBureauPublicResponse(
+                            mb.getId(),
+                            mb.getNom(),
+                            mb.getPrenom(),
+                            mb.getPoste() != null ? mb.getPoste().name() : null,
+                            mb.getPole() != null ? mb.getPole().getNom() : null
+                    );
+                })
+                .toList();
+    }
 }

@@ -42,7 +42,7 @@ public class NotificationService {
                             UUID.randomUUID().toString(),
                             "ADHESION_DEMANDE",
                             "New adhesion request from " + a.getPrenom() + " " + a.getNom() + " (" + a.getMatriculeStar() + ")",
-                            "/admin/adhesions",
+                            "/admin/utilisateurs",
                             NotificationDto.Severity.INFO,
                             LocalDateTime.now()
                     ));

@@ -45,6 +45,8 @@ public class OffreController {
         return ResponseEntity.ok(offreService.rechercherParTitre(titre));
     }
 
+    private static final long MAX_IMAGE_BYTES = 1_000_000L; // 1 MB — MySQL max_allowed_packet limit
+
     @PostMapping(value = "/creer", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasRole('ADMIN') or " +
             "(hasRole('MEMBRE_BUREAU') and " +
@@ -52,9 +54,22 @@ public class OffreController {
     public ResponseEntity<OffreResponse> creer(
             @RequestPart("req") OffreRequest req,
             @RequestPart(value = "image", required = false) MultipartFile image,
+            @RequestPart(value = "images", required = false) List<MultipartFile> images,
             @AuthenticationPrincipal UserDetails userDetails) throws IOException {
+        if (image != null && !image.isEmpty() && image.getSize() > MAX_IMAGE_BYTES) {
+            throw new tn.star.Pfe.exceptions.BadRequestException(
+                "L'image de couverture ne peut pas dépasser 1 Mo. Compressez-la avant l'envoi.");
+        }
+        if (images != null) {
+            for (MultipartFile extra : images) {
+                if (extra != null && !extra.isEmpty() && extra.getSize() > MAX_IMAGE_BYTES) {
+                    throw new tn.star.Pfe.exceptions.BadRequestException(
+                        "Chaque image supplémentaire ne peut pas dépasser 1 Mo.");
+                }
+            }
+        }
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(offreService.creer(req, image, userDetails.getUsername()));
+                .body(offreService.creer(req, image, images, userDetails.getUsername()));
     }
 
     @PatchMapping(value = "/{id}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

@@ -17,6 +17,8 @@ import tn.star.Pfe.exceptions.NotFoundException;
 import tn.star.Pfe.mapper.OffreMapper;
 import tn.star.Pfe.entity.Pole;
 import tn.star.Pfe.entity.MembreBureau;
+import tn.star.Pfe.entity.OffreImage;
+import tn.star.Pfe.repository.OffreImageRepository;
 import tn.star.Pfe.repository.OffreRepository;
 import tn.star.Pfe.repository.PoleRepository;
 import tn.star.Pfe.repository.UserRepository;
@@ -33,6 +35,7 @@ public class OffreService implements IOffreService {
     private final OffreMapper offreMapper;
     private final UserRepository userRepository;
     private final ApplicationEventPublisher publisher;
+    private final OffreImageRepository offreImageRepository;
 
 
     public List<OffreResponse> listerOffresOuvertes() {
@@ -42,11 +45,12 @@ public class OffreService implements IOffreService {
                 .toList();
     }
 
+    @Transactional
     public OffreResponse trouverParId(Long id) {
-        return offreMapper.toResponse(
-                offreRepository.findById(id)
-                        .orElseThrow(() -> new NotFoundException("Offre introuvable : " + id))
-        );
+        Offre offre = offreRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Offre introuvable : " + id));
+        offre.getImagesSupplementaires().size(); // force lazy load
+        return offreMapper.toResponse(offre);
     }
 
     public List<OffreResponse> rechercherParTitre(String titre) {
@@ -57,7 +61,7 @@ public class OffreService implements IOffreService {
     }
 
     @Transactional
-    public OffreResponse creer(OffreRequest req, MultipartFile image, String username) throws IOException {
+    public OffreResponse creer(OffreRequest req, MultipartFile image, List<MultipartFile> imagesSupplementaires, String username) throws IOException {
         User currentUser = userRepository.findByEmail(username)
                 .orElseThrow(() -> new NotFoundException("Utilisateur introuvable"));
 
@@ -91,8 +95,22 @@ public class OffreService implements IOffreService {
 
         validerParType(offre);
         Offre saved = offreRepository.save(offre);
+
+        if (imagesSupplementaires != null) {
+            for (MultipartFile extra : imagesSupplementaires) {
+                if (extra != null && !extra.isEmpty()) {
+                    offreImageRepository.save(OffreImage.builder()
+                            .offre(saved)
+                            .data(extra.getBytes())
+                            .nom(extra.getOriginalFilename())
+                            .type(extra.getContentType())
+                            .build());
+                }
+            }
+        }
+
         publisher.publishEvent(new OffreCreatedEvent(saved));
-        return offreMapper.toResponse(saved);
+        return offreMapper.toResponse(offreRepository.findById(saved.getId()).orElse(saved));
     }
 
     @Transactional

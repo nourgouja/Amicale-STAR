@@ -60,6 +60,16 @@ public class OffreResponse {
     private String imageType;
     private String imageNom;
 
+    private java.util.List<ImageSupplementaire> imagesSupplementaires;
+
+    @lombok.Data @lombok.NoArgsConstructor @lombok.AllArgsConstructor
+    public static class ImageSupplementaire {
+        private Long id;
+        private String base64;
+        private String type;
+        private String nom;
+    }
+
     private Long poleId;
     private String poleNom;
     private String avantages;

@@ -35,10 +35,26 @@ public class OffreMapper {
         }
 
         if (offre.getImage() != null) {
-            res.setImageBase64(Base64.getEncoder().encodeToString(offre.getImage())
-            );
+            res.setImageBase64(Base64.getEncoder().encodeToString(offre.getImage()));
             res.setImageType(offre.getImageType());
             res.setImageNom(offre.getImageNom());
+        }
+
+        try {
+            if (offre.getImagesSupplementaires() != null && !offre.getImagesSupplementaires().isEmpty()) {
+                res.setImagesSupplementaires(
+                    offre.getImagesSupplementaires().stream()
+                        .map(img -> new OffreResponse.ImageSupplementaire(
+                            img.getId(),
+                            img.getData() != null ? Base64.getEncoder().encodeToString(img.getData()) : null,
+                            img.getType(),
+                            img.getNom()
+                        ))
+                        .toList()
+                );
+            }
+        } catch (org.hibernate.LazyInitializationException ignored) {
+            // collection not initialized — caller did not pre-fetch; skip supplementary images
         }
 
         return res;

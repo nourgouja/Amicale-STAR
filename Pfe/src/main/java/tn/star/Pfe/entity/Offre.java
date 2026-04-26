@@ -77,6 +77,10 @@ public class Offre {
     @Column(nullable = false)
     private StatutOffre statut = StatutOffre.BROUILLON;
 
+    @OneToMany(mappedBy = "offre", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @Builder.Default
+    private List<OffreImage> imagesSupplementaires = new ArrayList<>();
+
     //@JsonIgnore
     @OneToMany(mappedBy= "offre" , cascade = CascadeType.ALL , orphanRemoval = true,fetch = FetchType.EAGER)
     @Builder.Default
