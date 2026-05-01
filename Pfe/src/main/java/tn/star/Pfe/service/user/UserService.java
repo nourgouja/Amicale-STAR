@@ -13,16 +13,15 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import tn.star.Pfe.dto.auth.UserResponse;
-import tn.star.Pfe.dto.auth.*;
-
-import java.util.List;
+import tn.star.Pfe.dto.auth.create.UserResponse;
+import tn.star.Pfe.dto.auth.create.CreateUserRequest;
+import tn.star.Pfe.dto.auth.create.MembreBureauPublicResponse;
+import tn.star.Pfe.dto.auth.login.ChangePasswordRequest;
+import tn.star.Pfe.dto.auth.update.UpdateProfilRequest;
 import tn.star.Pfe.entity.*;
 import tn.star.Pfe.enums.PosteBureau;
 import tn.star.Pfe.enums.Role;
 import tn.star.Pfe.enums.TypeOffre;
-import tn.star.Pfe.enums.StatutDemande;
-import tn.star.Pfe.event.AdhesionDemandeEvent;
 import tn.star.Pfe.exceptions.BadRequestException;
 import tn.star.Pfe.exceptions.NotFoundException;
 import tn.star.Pfe.exceptions.ServiceException;
@@ -31,6 +30,8 @@ import tn.star.Pfe.repository.PoleRepository;
 import tn.star.Pfe.repository.UserRepository;
 import tn.star.Pfe.service.email.IEmailService;
 import tn.star.Pfe.service.email.PasswordGenerator;
+
+import java.util.List;
 
 @Slf4j
 @Service
@@ -45,30 +46,33 @@ public class UserService implements IUserService {
     private final PasswordGenerator passwordGenerator;
     private final ApplicationEventPublisher publisher;
 
+
     @Transactional
-    public Page<UserResponse> findAll(Role role, String search, int page, int size) {
+    public Page<UserResponse> findAll(Role role, String search, int page, int size, boolean actif) {
         int safeSize = Math.min(size, 100);
         Pageable pageable = PageRequest.of(page, safeSize);
 
         Page<User> result;
         if (role != null && search != null && !search.isBlank()) {
-            result = userRepository.findByRoleAndSearch(role, search, pageable);
+            result = userRepository.findByActifAndRoleAndSearch(actif, role, search, pageable);
         } else if (role != null) {
-            result = userRepository.findByRole(role, pageable);
+            result = userRepository.findByActifAndRole(actif, role, pageable);
         } else if (search != null && !search.isBlank()) {
-            result = userRepository.searchByKeyword(search, pageable);
+            result = userRepository.searchByKeywordAndActif(actif, search, pageable);
         } else {
-            result = userRepository.findAll(pageable);
+            result = userRepository.findByActif(actif, pageable);
         }
 
         return result.map(userMapper::toResponse);
     }
+
 
     @Transactional
     public User findById(Long id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Utilisateur non trouvé avec ID: " + id));
     }
+
 
     @Transactional
     public UserResponse createUser(CreateUserRequest request) {
@@ -78,6 +82,7 @@ public class UserService implements IUserService {
 
         String rawPassword = passwordGenerator.generate();
         String hashedPassword = passwordEncoder.encode(rawPassword);
+
         User user = buildUserByRole(request, hashedPassword);
         user.setFirstLogin(true);
         User saved = userRepository.save(user);
@@ -88,6 +93,7 @@ public class UserService implements IUserService {
         return userMapper.toResponse(saved);
     }
 
+
     private User buildUserByRole(CreateUserRequest request, String hashedPassword) {
         return switch (request.role()) {
 
@@ -96,6 +102,8 @@ public class UserService implements IUserService {
                     .motDePasse(hashedPassword)
                     .nom(request.nom())
                     .prenom(request.prenom())
+                    .telephone(request.telephone())
+                    .matriculeStar(request.matriculeStar())
                     .role(Role.ADHERENT)
                     .actif(true)
                     .build();
@@ -106,12 +114,17 @@ public class UserService implements IUserService {
                     pole = poleRepository.findById(request.poleId())
                             .orElseThrow(() -> new NotFoundException("Pôle introuvable avec ID: " + request.poleId()));
                 }
+
                 java.util.Set<TypeOffre> types = new java.util.HashSet<>();
                 if (request.typesAutorisees() != null) {
                     for (String t : request.typesAutorisees()) {
-                        try { types.add(TypeOffre.valueOf(t)); } catch (IllegalArgumentException ignored) {}
+                        try {
+                            types.add(TypeOffre.valueOf(t));
+                        } catch (IllegalArgumentException ignored) {
+                        }
                     }
                 }
+
                 yield MembreBureau.builder()
                         .email(request.email())
                         .motDePasse(hashedPassword)
@@ -136,14 +149,26 @@ public class UserService implements IUserService {
         };
     }
 
+
     @Transactional
     public User updateUser(Long id, UpdateProfilRequest request) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Utilisateur non trouvé avec ID: " + id));
 
-        if (request.nom()       != null) user.setNom(request.nom());
-        if (request.prenom()    != null) user.setPrenom(request.prenom());
-        if (request.email()     != null) user.setEmail(request.email());
+        // Role change requires entity migration (JOINED inheritance)
+        if (request.role() != null && request.role() != user.getRole()) {
+            return migrateUserRole(user, request);
+        }
+
+        if (request.email() != null && !request.email().equals(user.getEmail())) {
+            if (userRepository.existsByEmail(request.email())) {
+                throw new BadRequestException("Email déjà utilisé: " + request.email());
+            }
+        }
+
+        if (request.nom() != null)       user.setNom(request.nom());
+        if (request.prenom() != null)    user.setPrenom(request.prenom());
+        if (request.email() != null)     user.setEmail(request.email());
         if (request.telephone() != null) user.setTelephone(request.telephone());
 
         if (user instanceof MembreBureau mb) {
@@ -154,8 +179,7 @@ public class UserService implements IUserService {
                 Pole pole = poleRepository.findById(request.poleId())
                         .orElseThrow(() -> new NotFoundException("Pôle introuvable avec ID: " + request.poleId()));
                 mb.setPole(pole);
-            } else if (request.posteMembre() != null
-                    && !request.posteMembre().equals("RESPONSABLE_POLE")) {
+            } else if (request.posteMembre() != null && !request.posteMembre().equals("RESPONSABLE_POLE")) {
                 mb.setPole(null);
             }
             if (request.typesAutorisees() != null) {
@@ -171,6 +195,54 @@ public class UserService implements IUserService {
 
         return userRepository.save(user);
     }
+
+    private User migrateUserRole(User existing, UpdateProfilRequest request) {
+        if (existing instanceof Adherent a && !a.getInscriptions().isEmpty()) {
+            throw new BadRequestException("Impossible de changer le rôle : l'utilisateur a des inscriptions actives.");
+        }
+
+        String email     = request.email()     != null ? request.email()     : existing.getEmail();
+        String nom       = request.nom()       != null ? request.nom()       : existing.getNom();
+        String prenom    = request.prenom()    != null ? request.prenom()    : existing.getPrenom();
+        String telephone = request.telephone() != null ? request.telephone() : existing.getTelephone();
+
+        if (!email.equals(existing.getEmail()) && userRepository.existsByEmail(email)) {
+            throw new BadRequestException("Email déjà utilisé: " + email);
+        }
+
+        try {
+            userRepository.delete(existing);
+            userRepository.flush();
+        } catch (Exception ex) {
+            throw new BadRequestException("Impossible de changer le rôle : l'utilisateur est référencé par d'autres données.");
+        }
+
+        User newUser = switch (request.role()) {
+            case ADHERENT -> Adherent.builder()
+                    .email(email).motDePasse(existing.getMotDePasse()).nom(nom).prenom(prenom)
+                    .telephone(telephone).matriculeStar(request.matriculeStar())
+                    .role(Role.ADHERENT).actif(true).firstLogin(existing.isFirstLogin()).build();
+            case MEMBRE_BUREAU -> {
+                if (request.posteMembre() == null || request.posteMembre().isBlank()) {
+                    throw new BadRequestException("Le poste est obligatoire pour un membre du bureau.");
+                }
+                Pole pole = request.poleId() != null
+                        ? poleRepository.findById(request.poleId()).orElse(null) : null;
+                yield MembreBureau.builder()
+                        .email(email).motDePasse(existing.getMotDePasse()).nom(nom).prenom(prenom)
+                        .telephone(telephone).role(Role.MEMBRE_BUREAU).actif(true)
+                        .firstLogin(existing.isFirstLogin())
+                        .poste(PosteBureau.valueOf(request.posteMembre())).pole(pole).build();
+            }
+            case ADMIN -> Admin.builder()
+                    .email(email).motDePasse(existing.getMotDePasse()).nom(nom).prenom(prenom)
+                    .telephone(telephone).role(Role.ADMIN).actif(true).firstLogin(existing.isFirstLogin()).build();
+        };
+
+        return userRepository.save(newUser);
+    }
+
+
     @Transactional
     public UserResponse uploadPhoto(Long id, MultipartFile photo) {
         User user = userRepository.findById(id)
@@ -194,6 +266,7 @@ public class UserService implements IUserService {
         log.info("Deleted user with ID: {}", id);
     }
 
+
     @Transactional
     public User assignRole(Long id, Role role) {
         User user = userRepository.findById(id)
@@ -203,6 +276,7 @@ public class UserService implements IUserService {
         log.info("Changed role for user {} to {}", user.getEmail(), role);
         return userRepository.save(user);
     }
+
 
     @Transactional
     public User toggleUserStatus(Long id, boolean actif) {
@@ -214,6 +288,7 @@ public class UserService implements IUserService {
         return userRepository.save(user);
     }
 
+
     @Transactional
     public void adminResetPassword(Long id) {
         User user = userRepository.findById(id)
@@ -224,14 +299,10 @@ public class UserService implements IUserService {
         user.setFirstLogin(true);
         userRepository.save(user);
 
-        try {
-            emailService.sendPasswordResetEmail(user.getEmail(), tempPassword);
-            log.info("Password reset completed for userId={}", id);
-        } catch (MailException ex) {
-            log.error("Password reset email failed for userId={}", id, ex);
-            throw new ServiceException("Réinitialisation effectuée mais email non envoyé. Veuillez réessayer.");
-        }
+        emailService.sendPasswordResetEmail(user.getEmail(), tempPassword);
+        log.info("Password reset completed for userId={}", id);
     }
+
 
     @Transactional
     public void forgotPasswordByEmail(String email) {
@@ -253,7 +324,6 @@ public class UserService implements IUserService {
     }
 
     @Transactional
-    @Override
     public void changePassword(Long userId, ChangePasswordRequest request) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
@@ -267,84 +337,12 @@ public class UserService implements IUserService {
         if (!request.getNewPassword().equals(request.getConfirmPassword())) {
             throw new IllegalArgumentException("New password and confirmation do not match");
         }
+
         user.setMotDePasse(passwordEncoder.encode(request.getNewPassword()));
         user.setFirstLogin(false);
         userRepository.save(user);
     }
 
-    @Transactional
-    public void demanderAdhesion(DemandeRequest request) {
-        if (userRepository.existsByEmail(request.email())) {
-            throw new BadRequestException("Un compte existe déjà avec cet email : " + request.email());
-        }
-
-        Adherent adherent = Adherent.builder()
-                .email(request.email())
-                .motDePasse(passwordEncoder.encode(passwordGenerator.generate()))
-                .nom(request.nom())
-                .prenom(request.prenom())
-                .telephone(request.telephone())
-                .matriculeStar(request.matriculeStar())
-                .poste(request.poste())
-                .role(Role.ADHERENT)
-                .actif(false)
-                .statut(StatutDemande.PENDING)
-                .firstLogin(true)
-                .build();
-
-        Adherent saved = userRepository.save(adherent);
-        publisher.publishEvent(new AdhesionDemandeEvent(saved));
-        log.info("New adhesion request from {} ({})", request.email(), request.matriculeStar());
-    }
-
-    @Transactional
-    public List<DemandeAdhesionResponse> findDemandesPending() {
-        return userRepository.findPendingAdhesions().stream()
-                .map(a -> new DemandeAdhesionResponse(
-                        a.getId(), a.getNom(), a.getPrenom(), a.getEmail(),
-                        a.getTelephone(), a.getMatriculeStar(), a.getStatut().name(), a.getCreatedAt()
-                ))
-                .toList();
-    }
-
-    @Transactional
-    public void approuverDemande(Long id) {
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Demande introuvable"));
-
-        if (!(user instanceof Adherent adherent)) {
-            throw new BadRequestException("Cet utilisateur n'est pas un adhérent");
-        }
-        if (adherent.getStatut() != StatutDemande.PENDING) {
-            throw new BadRequestException("Cette demande n'est pas en attente");
-        }
-
-        String rawPassword = passwordGenerator.generate();
-        adherent.setMotDePasse(passwordEncoder.encode(rawPassword));
-        adherent.setActif(true);
-        adherent.setStatut(StatutDemande.APPROVED);
-        userRepository.save(adherent);
-
-        emailService.sendAccountCreatedEmail(adherent.getEmail(), adherent.getPrenom(), rawPassword);
-        log.info("Adhesion approved for userId={}", id);
-    }
-
-    @Transactional
-    public void rejeterDemande(Long id) {
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Demande introuvable"));
-
-        if (!(user instanceof Adherent adherent)) {
-            throw new BadRequestException("Cet utilisateur n'est pas un adhérent");
-        }
-        if (adherent.getStatut() != StatutDemande.PENDING) {
-            throw new BadRequestException("Cette demande n'est pas en attente");
-        }
-
-        adherent.setStatut(StatutDemande.REJECTED);
-        userRepository.save(adherent);
-        log.info("Adhesion rejected for userId={}", id);
-    }
 
     public List<MembreBureauPublicResponse> findMembresBureau() {
         return userRepository.findByRole(Role.MEMBRE_BUREAU).stream()

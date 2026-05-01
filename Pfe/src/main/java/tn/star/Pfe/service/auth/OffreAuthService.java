@@ -18,22 +18,27 @@ public class OffreAuthService {
     private final UserRepository  userRepository;
     private final OffreRepository offreRepository;
 
-    /** Bureau member can create an offer only if their pole matches the given typeOffre.
-     *  Members without a pole (PRESIDENT, TRESORIER, SECRETAIRE) can create any type. */
+    /**
+     * Bureau member can create an offer only if the requested typeOffre is in their pole's typesOffre.
+     * Members without a pole (PRESIDENT, TRESORIER, SECRETAIRE) can create any type.
+     */
     public boolean canCreate(UserDetails principal, String typeOffreName) {
         MembreBureau mb = resolveMembre(principal);
         if (mb == null) return false;
         Pole pole = mb.getPole();
         if (pole == null) return true;
         try {
-            return pole.getTypeOffre() == TypeOffre.valueOf(typeOffreName);
+            TypeOffre requested = TypeOffre.valueOf(typeOffreName);
+            return pole.getTypesOffre().contains(requested);
         } catch (IllegalArgumentException e) {
             return false;
         }
     }
 
-    /** Bureau member can manage an offer only if the offer belongs to their pole.
-     *  Members without a pole can manage any offer. */
+    /**
+     * Bureau member can manage an offer only if the offer belongs to their pole.
+     * Members without a pole can manage any offer.
+     */
     public boolean canManage(UserDetails principal, Long offreId) {
         MembreBureau mb = resolveMembre(principal);
         if (mb == null) return false;

@@ -13,6 +13,7 @@ import tn.star.Pfe.enums.StatutInscription;
 import tn.star.Pfe.enums.StatutOffre;
 import tn.star.Pfe.enums.StatutPaiement;
 import tn.star.Pfe.enums.TypeOffre;
+import tn.star.Pfe.event.InscriptionCreeeEvent;
 import tn.star.Pfe.event.InscriptionStatusChangedEvent;
 import tn.star.Pfe.exceptions.*;
 import tn.star.Pfe.mapper.InscriptionMapper;
@@ -62,6 +63,7 @@ public class InscriptionService implements IInscriptionService {
                 .build();
 
         Inscription saved = inscriptionRepository.save(ins);
+        publisher.publishEvent(new InscriptionCreeeEvent(saved));
 
         if (offre.getType() == TypeOffre.VOYAGE && offre.getModePaiement() != null) {
             List<Echeance> echeances = EcheanceFactory.generate(

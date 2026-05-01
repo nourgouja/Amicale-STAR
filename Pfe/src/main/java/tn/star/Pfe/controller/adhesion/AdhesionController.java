@@ -6,8 +6,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import tn.star.Pfe.dto.auth.DemandeAdhesionResponse;
-import tn.star.Pfe.dto.auth.DemandeRequest;
+import tn.star.Pfe.dto.auth.create.DemandeAdhesionResponse;
+import tn.star.Pfe.dto.auth.create.DemandeRequest;
 import tn.star.Pfe.service.adhesion.IAdhesionService;
 
 import java.util.List;

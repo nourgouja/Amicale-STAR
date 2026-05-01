@@ -7,12 +7,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import tn.star.Pfe.dto.auth.CreateUserRequest;
-import tn.star.Pfe.dto.auth.UpdateProfilRequest;
-import tn.star.Pfe.dto.auth.UserResponse;
+import tn.star.Pfe.dto.auth.create.CreateUserRequest;
+import tn.star.Pfe.dto.auth.update.UpdateProfilRequest;
+import tn.star.Pfe.dto.auth.create.UserResponse;
 import tn.star.Pfe.entity.User;
 import tn.star.Pfe.enums.Role;
 import tn.star.Pfe.mapper.UserMapper;
+import tn.star.Pfe.repository.UserRepository;
 import tn.star.Pfe.service.user.IUserService;
 
 @RestController
@@ -23,14 +24,16 @@ public class AdminController {
 
     private final IUserService userService;
     private final UserMapper userMapper;
+    private UserRepository userRepository;
 
     @GetMapping
     public ResponseEntity<Page<UserResponse>> listerTous(
             @RequestParam(required = false) Role role,
             @RequestParam(required = false) String search,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
-        return ResponseEntity.ok(userService.findAll(role, search, page, size));
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "true") boolean actif) {
+        return ResponseEntity.ok(userService.findAll(role, search, page, size, actif));
     }
 
     @GetMapping("/{id}")
@@ -78,4 +81,6 @@ public class AdminController {
         userService.adminResetPassword(id);
         return ResponseEntity.noContent().build();
     }
+
+
 }

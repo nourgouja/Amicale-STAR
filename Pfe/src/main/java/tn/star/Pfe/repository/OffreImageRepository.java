@@ -6,6 +6,7 @@ import tn.star.Pfe.entity.OffreImage;
 
 import java.util.List;
 
+// to remove
 @Repository
 public interface OffreImageRepository extends JpaRepository<OffreImage, Long> {
     List<OffreImage> findByOffreId(Long offreId);

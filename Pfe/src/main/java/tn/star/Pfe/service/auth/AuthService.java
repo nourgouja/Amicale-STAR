@@ -9,12 +9,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import tn.star.Pfe.dto.auth.AuthResponse;
-import tn.star.Pfe.dto.auth.LoginRequest;
+import tn.star.Pfe.dto.auth.login.AuthResponse;
+import tn.star.Pfe.dto.auth.login.LoginRequest;
 import tn.star.Pfe.exceptions.BadRequestException;
 import tn.star.Pfe.security.JwtUtils;
 import tn.star.Pfe.security.UserPrincipal;
-import tn.star.Pfe.service.auth.IAuthService;
 
 @Slf4j
 @Service

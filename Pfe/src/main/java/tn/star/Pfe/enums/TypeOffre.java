@@ -6,5 +6,6 @@ public enum TypeOffre {
     SEJOUR,
     LOISIRS,
     ACTIVITE,
-    CONVENTION
+    CONVENTION,
+    ANNONCE
 }

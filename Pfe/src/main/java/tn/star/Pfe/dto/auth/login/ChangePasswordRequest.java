@@ -1,8 +1,7 @@
-package tn.star.Pfe.dto.auth;
+package tn.star.Pfe.dto.auth.login;
 
 import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Data

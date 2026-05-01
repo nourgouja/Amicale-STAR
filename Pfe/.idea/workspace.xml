@@ -5,12 +5,84 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9eb97705-73c2-4459-8719-a6433c0ff1ba" name="Changes" comment="updates">
-      <change beforePath="$PROJECT_DIR$/../.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/config/SecurityConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/tn/star/Pfe/dto/auth/CreateUserRequest.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/tn/star/Pfe/dto/auth/CreateUserRequest.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/tn/star/Pfe/dto/auth/UpdateProfilRequest.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/tn/star/Pfe/dto/auth/UpdateProfilRequest.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/config/DataInitializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/config/DataInitializer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/controller/adhesion/AdhesionController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/controller/adhesion/AdhesionController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/controller/auth/AuthController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/controller/auth/AuthController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/controller/user/AdminController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/controller/user/AdminController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/controller/user/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/controller/user/UserController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/dto/auth/create/CreateUserRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/dto/auth/create/CreateUserRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/dto/auth/create/DemandeAdhesionResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/dto/auth/create/DemandeAdhesionResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/dto/auth/create/DemandeRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/dto/auth/create/DemandeRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/dto/auth/create/MembreBureauPublicResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/dto/auth/create/MembreBureauPublicResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/dto/auth/create/UserResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/dto/auth/create/UserResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/dto/auth/login/AuthResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/dto/auth/login/AuthResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/dto/auth/login/ChangePasswordRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/dto/auth/login/ChangePasswordRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/dto/auth/login/LoginRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/dto/auth/login/LoginRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/dto/auth/update/ForgotPasswordRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/dto/auth/update/ForgotPasswordRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/dto/auth/update/UpdateProfilRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/dto/auth/update/UpdateProfilRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/dto/offre/OffreRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/dto/offre/OffreRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/dto/pole/PoleRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/dto/pole/PoleRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/dto/pole/PoleResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/dto/pole/PoleResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/entity/Pole.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/entity/Pole.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/enums/TypeOffre.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/enums/TypeOffre.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/mapper/UserMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/mapper/UserMapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/repository/OffreImageRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/repository/OffreImageRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/repository/PoleRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/repository/PoleRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/repository/UserRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/repository/UserRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/adhesion/AdhesionService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/adhesion/AdhesionService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/adhesion/IAdhesionService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/adhesion/IAdhesionService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/auth/AuthService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/auth/AuthService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/auth/IAuthService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/auth/IAuthService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/auth/OffreAuthService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/auth/OffreAuthService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/email/EmailService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/email/EmailService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/email/IEmailService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/email/IEmailService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/inscription/InscriptionService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/inscription/InscriptionService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/notification/NotificationService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/notification/NotificationService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/offre/OffreService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/offre/OffreService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/pole/PoleService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/pole/PoleService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/user/IUserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/user/IUserService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/user/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/user/UserService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tn/star/Pfe/config/DataInitializer.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/tn/star/Pfe/config/DataInitializer.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tn/star/Pfe/controller/adhesion/AdhesionController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/tn/star/Pfe/controller/adhesion/AdhesionController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tn/star/Pfe/controller/auth/AuthController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/tn/star/Pfe/controller/auth/AuthController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tn/star/Pfe/controller/user/AdminController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/tn/star/Pfe/controller/user/AdminController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tn/star/Pfe/controller/user/UserController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/tn/star/Pfe/controller/user/UserController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tn/star/Pfe/dto/auth/AuthResponse.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tn/star/Pfe/dto/auth/ChangePasswordRequest.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tn/star/Pfe/dto/auth/CreateUserRequest.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tn/star/Pfe/dto/auth/DemandeAdhesionResponse.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tn/star/Pfe/dto/auth/DemandeRequest.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tn/star/Pfe/dto/auth/ForgotPasswordRequest.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tn/star/Pfe/dto/auth/LoginRequest.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tn/star/Pfe/dto/auth/MembreBureauPublicResponse.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tn/star/Pfe/dto/auth/UpdateProfilRequest.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tn/star/Pfe/dto/auth/UserResponse.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tn/star/Pfe/dto/offre/OffreRequest$UpdateOffreRequest.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/tn/star/Pfe/dto/offre/OffreRequest$UpdateOffreRequest.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tn/star/Pfe/dto/offre/OffreRequest.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/tn/star/Pfe/dto/offre/OffreRequest.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tn/star/Pfe/dto/pole/PoleRequest.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/tn/star/Pfe/dto/pole/PoleRequest.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tn/star/Pfe/dto/pole/PoleResponse.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/tn/star/Pfe/dto/pole/PoleResponse.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tn/star/Pfe/entity/Pole$PoleBuilder.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/tn/star/Pfe/entity/Pole$PoleBuilder.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tn/star/Pfe/entity/Pole.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/tn/star/Pfe/entity/Pole.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tn/star/Pfe/enums/TypeOffre.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/tn/star/Pfe/enums/TypeOffre.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tn/star/Pfe/mapper/UserMapper.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/tn/star/Pfe/mapper/UserMapper.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tn/star/Pfe/repository/PoleRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/tn/star/Pfe/repository/PoleRepository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tn/star/Pfe/repository/UserRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/tn/star/Pfe/repository/UserRepository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tn/star/Pfe/service/adhesion/AdhesionService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/tn/star/Pfe/service/adhesion/AdhesionService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tn/star/Pfe/service/adhesion/IAdhesionService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/tn/star/Pfe/service/adhesion/IAdhesionService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tn/star/Pfe/service/auth/AuthService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/tn/star/Pfe/service/auth/AuthService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tn/star/Pfe/service/auth/IAuthService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/tn/star/Pfe/service/auth/IAuthService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tn/star/Pfe/service/auth/OffreAuthService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/tn/star/Pfe/service/auth/OffreAuthService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tn/star/Pfe/service/email/EmailService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/tn/star/Pfe/service/email/EmailService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tn/star/Pfe/service/email/IEmailService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/tn/star/Pfe/service/email/IEmailService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tn/star/Pfe/service/inscription/InscriptionService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/tn/star/Pfe/service/inscription/InscriptionService.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/tn/star/Pfe/service/notification/NotificationService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/tn/star/Pfe/service/notification/NotificationService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tn/star/Pfe/service/offre/OffreService$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tn/star/Pfe/service/offre/OffreService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/tn/star/Pfe/service/offre/OffreService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tn/star/Pfe/service/pole/PoleService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/tn/star/Pfe/service/pole/PoleService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tn/star/Pfe/service/user/IUserService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/tn/star/Pfe/service/user/IUserService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tn/star/Pfe/service/user/UserService$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/tn/star/Pfe/service/user/UserService$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tn/star/Pfe/service/user/UserService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/tn/star/Pfe/service/user/UserService.class" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -35,12 +107,15 @@
     &quot;assignee&quot;: &quot;nourgouja&quot;
   }
 }</component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/nourgouja/Amicale-STAR.git",
-    "accountId": "63db37ec-a0ec-46a8-b79a-95ce4d1bdd46"
+  <component name="GithubDefaultAccount">
+    <option name="defaultAccountId" value="f17a1d26-eb4a-4752-b40a-5b55a0c0387d" />
+  </component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/nourgouja/Amicale-STAR.git&quot;,
+    &quot;accountId&quot;: &quot;f17a1d26-eb4a-4752-b40a-5b55a0c0387d&quot;
   }
-}]]></component>
+}</component>
   <component name="McpProjectServerCommands">
     <commands />
     <urls />
@@ -53,25 +128,21 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "JavaMethodFindUsagesOptions.isImplementingMethods": "true",
-    "Maven.Pfe [clean].executor": "Run",
-    "Maven.Pfe [compile].executor": "Run",
-    "Maven.Pfe [validate].executor": "Run",
-    "RunOnceActivity.MCP Project settings loaded": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "Spring Boot.PfeApplication.executor": "Debug",
-    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
-    "git-widget-placeholder": "main",
-    "junie.onboarding.icon.badge.shown": "true",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/kossa/IdeaProjects/Amicale-STAR/Pfe/pom.xml",
-    "to.speed.mode.migration.done": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;JavaMethodFindUsagesOptions.isImplementingMethods&quot;: &quot;true&quot;,
+    &quot;Maven.Pfe [clean].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.Pfe [compile].executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.MCP Project settings loaded&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;Spring Boot.PfeApplication.executor&quot;: &quot;Debug&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/nourg/IdeaProjects/BACKEND_STAR/Pfe/pom.xml&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager">
     <configuration default="true" type="AZURE_FUNCTION_SUPPORT" factoryName="Run Functions">
       <option name="appName" />
@@ -126,7 +197,7 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-30f59d01ecdd-2fc7cc6b9a17-intellij.indexing.shared.core-IU-253.32098.37" />
+        <option value="bundled-jdk-30f59d01ecdd-2fc7cc6b9a17-intellij.indexing.shared.core-IU-253.30387.90" />
       </set>
     </attachedChunks>
   </component>
@@ -164,17 +235,6 @@
     </task>
     <option name="localTasksCounter" value="4" />
     <servers />
-  </component>
-  <component name="UnknownFeatures">
-    <option featureType="dependencySupport" implementationName="java:org.springframework:spring-core" />
-    <option featureType="dependencySupport" implementationName="java:org.springframework.security:spring-security-core" />
-    <option featureType="dependencySupport" implementationName="java:jakarta.validation:jakarta.validation-api" />
-    <option featureType="dependencySupport" implementationName="java:jakarta.persistence:jakarta.persistence-api" />
-    <option featureType="dependencySupport" implementationName="java:org.springframework.data:spring-data-commons" />
-    <option featureType="dependencySupport" implementationName="java:org.hibernate.validator:hibernate-validator" />
-    <option featureType="dependencySupport" implementationName="java:org.springframework.boot:spring-boot" />
-    <option featureType="dependencySupport" implementationName="java:org.springframework:spring-webmvc" />
-    <option featureType="dependencySupport" implementationName="java:org.projectlombok:lombok" />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">

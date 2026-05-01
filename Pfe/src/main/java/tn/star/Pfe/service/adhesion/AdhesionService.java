@@ -2,11 +2,13 @@ package tn.star.Pfe.service.adhesion;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.mail.MailException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import tn.star.Pfe.dto.auth.DemandeAdhesionResponse;
-import tn.star.Pfe.dto.auth.DemandeRequest;
+import tn.star.Pfe.dto.auth.create.DemandeAdhesionResponse;
+import tn.star.Pfe.dto.auth.create.DemandeRequest;
 import tn.star.Pfe.entity.Adherent;
 import tn.star.Pfe.enums.Role;
 import tn.star.Pfe.enums.StatutDemande;
@@ -19,6 +21,7 @@ import tn.star.Pfe.service.email.PasswordGenerator;
 
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AdhesionService implements IAdhesionService {
@@ -28,6 +31,7 @@ public class AdhesionService implements IAdhesionService {
     private final PasswordGenerator passwordGenerator;
     private final IEmailService emailService;
     private final ApplicationEventPublisher publisher;
+
 
     @Override
     @Transactional
@@ -44,6 +48,7 @@ public class AdhesionService implements IAdhesionService {
                 .email(request.email())
                 .telephone(request.telephone())
                 .matriculeStar(request.matriculeStar())
+                .poste(request.poste())
                 .motDePasse(passwordEncoder.encode(tempPassword))
                 .role(Role.ADHERENT)
                 .statut(StatutDemande.PENDING)
@@ -52,15 +57,17 @@ public class AdhesionService implements IAdhesionService {
                 .build();
 
         Adherent saved = userRepository.save(adherent);
+
         publisher.publishEvent(new AdhesionDemandeEvent(saved));
+        emailService.sendAccountCreatedEmail(saved.getEmail(), saved.getPrenom(), tempPassword);
+        log.info("Membership request submitted from {} ({})", request.email(), request.matriculeStar());
+
     }
 
     @Override
+    @Transactional
     public List<DemandeAdhesionResponse> getDemandesEnAttente() {
-        return userRepository.findByRole(Role.ADHERENT).stream()
-                .filter(u -> u instanceof Adherent)
-                .map(u -> (Adherent) u)
-                .filter(a -> a.getStatut() == StatutDemande.PENDING)
+        return userRepository.findPendingAdhesions().stream()
                 .map(a -> new DemandeAdhesionResponse(
                         a.getId(),
                         a.getNom(),
@@ -74,21 +81,42 @@ public class AdhesionService implements IAdhesionService {
                 .toList();
     }
 
+
+
     @Override
     @Transactional
     public void approuver(Long id) {
         Adherent adherent = findPendingAdherent(id);
+
+        String tempPassword = passwordGenerator.generate();
+        adherent.setMotDePasse(passwordEncoder.encode(tempPassword));
+
+
         adherent.setStatut(StatutDemande.APPROVED);
         adherent.setActif(true);
+        adherent.setFirstLogin(true);
         userRepository.save(adherent);
+        emailService.sendAccountCreatedEmail(adherent.getEmail(), adherent.getPrenom(), tempPassword);
+        log.info("Membership request approved for userId={}, credentials sent", id);
+
     }
 
     @Override
     @Transactional
     public void rejeter(Long id) {
         Adherent adherent = findPendingAdherent(id);
+
         adherent.setStatut(StatutDemande.REJECTED);
+
         userRepository.save(adherent);
+
+        try {
+            emailService.sendRejectionEmail(adherent.getEmail(), adherent.getPrenom());
+            log.info("Membership request rejected for userId={}, notification sent", id);
+        } catch (MailException ex) {
+            log.error("Failed to send rejection email for userId={}", id, ex);
+            log.warn("Applicant will not be notified of rejection");
+        }
     }
 
     private Adherent findPendingAdherent(Long id) {

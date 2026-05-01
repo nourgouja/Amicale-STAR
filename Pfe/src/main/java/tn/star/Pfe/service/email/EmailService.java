@@ -45,15 +45,19 @@ public class EmailService implements IEmailService {
         }
     }
 
+    @Async
     public void sendPasswordResetEmail(String to, String tempPassword) {
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom(fromEmail);
-        message.setTo(to);
-        message.setSubject("Réinitialisation de votre mot de passe");
-        message.setText(buildBody(tempPassword));
-
-        mailSender.send(message);
-        log.info("Password-reset e-mail sent to {}", to);
+        try {
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setFrom(fromEmail);
+            message.setTo(to);
+            message.setSubject("Réinitialisation de votre mot de passe");
+            message.setText(buildBody(tempPassword));
+            mailSender.send(message);
+            log.info("Password-reset e-mail sent to {}", to);
+        } catch (Exception e) {
+            log.error("Failed to send password-reset email to {}", to, e);
+        }
     }
 
     private String buildBody(String tempPassword) {
@@ -67,5 +71,29 @@ public class EmailService implements IEmailService {
                 Cordialement,
                 L'équipe Amicale STAR
                 """.formatted(tempPassword);
+    }
+
+    @Override
+    public void sendRejectionEmail(String to, String firstName) {
+        try {
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setFrom(fromEmail);
+            message.setTo(to);
+            message.setSubject("Décision de votre demande d'adhésion - AmicaleStar");
+            message.setText("""
+                    Bonjour %s,
+
+                    Nous regrettons de vous informer que votre demande d'adhésion à AmicaleStar n'a pas été approuvée.
+
+                    Si vous avez des questions, veuillez contacter l'administration.
+
+                    Cordialement,
+                    L'équipe Amicale STAR
+                    """.formatted(firstName));
+            mailSender.send(message);
+            log.info(" ", to);
+        } catch (Exception e) {
+            log.error("Failed to send account-created email to: {}", to, e);
+        }
     }
 }

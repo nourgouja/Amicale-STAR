@@ -24,19 +24,18 @@ public class PoleService implements IPoleService {
     }
 
     @Transactional
-    public PoleResponse creer( PoleRequest request) {
+    public PoleResponse creer(PoleRequest request) {
         Pole pole = Pole.builder()
                 .nom(request.getNom())
-                .typeOffre(request.getTypeOffre())
                 .build();
+
         return toResponse(poleRepository.save(pole));
     }
 
     private PoleResponse toResponse(Pole pole) {
         return new PoleResponse(
                 pole.getId(),
-                pole.getNom(),
-                pole.getTypeOffre()
+                pole.getNom()
         );
     }
 }

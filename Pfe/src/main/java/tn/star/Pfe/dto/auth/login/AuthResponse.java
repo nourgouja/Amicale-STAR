@@ -1,4 +1,4 @@
-package tn.star.Pfe.dto.auth;
+package tn.star.Pfe.dto.auth.login;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 

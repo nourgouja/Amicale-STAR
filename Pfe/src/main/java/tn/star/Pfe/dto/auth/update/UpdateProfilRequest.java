@@ -1,4 +1,4 @@
-package tn.star.Pfe.dto.auth;
+package tn.star.Pfe.dto.auth.update;
 
 import jakarta.validation.constraints.Email;
 import tn.star.Pfe.enums.Role;

@@ -42,6 +42,8 @@ public class OffreRequest {
 
     private tn.star.Pfe.enums.StatutOffre statut;
 
+    private Long poleId;
+
     @Getter
     @Setter
     public static class UpdateOffreRequest {

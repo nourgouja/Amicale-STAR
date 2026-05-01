@@ -9,7 +9,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import tn.star.Pfe.entity.Admin;
 import tn.star.Pfe.entity.Pole;
 import tn.star.Pfe.enums.Role;
-import tn.star.Pfe.enums.TypeOffre;
 import tn.star.Pfe.repository.PoleRepository;
 import tn.star.Pfe.repository.UserRepository;
 
@@ -28,33 +27,43 @@ public class DataInitializer {
     private String adminPassword;
 
     @Bean
-    CommandLineRunner initAdmin() {
+    CommandLineRunner initData() {
         return args -> {
+
+            // ✅ Create Admin if not exists
             if (userRepository.findByEmail(adminEmail).isEmpty()) {
                 Admin admin = Admin.builder()
-                        .nom("Admin").prenom("Admin")
+                        .nom("Admin")
+                        .prenom("Admin")
                         .email(adminEmail)
                         .motDePasse(passwordEncoder.encode(adminPassword))
                         .role(Role.ADMIN)
                         .actif(true)
                         .firstLogin(false)
                         .build();
+
                 userRepository.save(admin);
-                System.out.println("ADMIN créé !");
+                System.out.println("✅ ADMIN créé !");
             }
 
-            seedPole("Pôle Activités & Loisirs",   TypeOffre.ACTIVITE);
-            seedPole("Pôle Voyages & Séjours",       TypeOffre.VOYAGE);
-            seedPole("Pôle Conventions & Événements", TypeOffre.CONVENTION);
+            // ✅ Seed Poles
+            seedPole("Pôle Activités & Loisirs");
+            seedPole("Pôle Voyages & Séjours");
+            seedPole("Pôle Conventions & Événements");
         };
     }
 
-    private void seedPole(String nom, TypeOffre type) {
+    private void seedPole(String nom) {
         boolean exists = poleRepository.findAll().stream()
                 .anyMatch(p -> p.getNom().equalsIgnoreCase(nom));
+
         if (!exists) {
-            poleRepository.save(Pole.builder().nom(nom).typeOffre(type).build());
-            System.out.println("Pôle créé : " + nom);
+            poleRepository.save(
+                    Pole.builder()
+                            .nom(nom)
+                            .build()
+            );
+            System.out.println("✅ Pôle créé : " + nom);
         }
     }
 }

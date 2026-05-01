@@ -1,7 +1,7 @@
 package tn.star.Pfe.mapper;
 
 import org.springframework.stereotype.Component;
-import tn.star.Pfe.dto.auth.UserResponse;
+import tn.star.Pfe.dto.auth.create.UserResponse;
 import tn.star.Pfe.entity.Adherent;
 import tn.star.Pfe.entity.MembreBureau;
 import tn.star.Pfe.entity.User;

@@ -10,9 +10,11 @@ import tn.star.Pfe.dto.notification.NotificationDto;
 import tn.star.Pfe.dto.notification.NotificationDto.Severity;
 import tn.star.Pfe.entity.MembreBureau;
 import tn.star.Pfe.enums.Role;
+import tn.star.Pfe.enums.StatutInscription;
 import tn.star.Pfe.event.*;
 import tn.star.Pfe.repository.UserRepository;
 import tn.star.Pfe.service.email.IEmailService;
+import tn.star.Pfe.event.InscriptionCreeeEvent;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -131,6 +133,67 @@ public class NotificationService {
             log.info("Email failure notifications sent successfully");
         } catch (Exception e) {
             log.error("Error processing email failed event", e);
+        }
+    }
+
+    @Async
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    public void onInscriptionCreee(InscriptionCreeeEvent event) {
+        try {
+            var ins      = event.inscription();
+            var adherent = ins.getAdherent();
+            var offre    = ins.getOffre();
+
+            userRepository.findByRole(Role.MEMBRE_BUREAU).forEach(u -> {
+                try {
+                    store.push(u.getId(), new NotificationDto(
+                            UUID.randomUUID().toString(),
+                            "INSCRIPTION_CREEE",
+                            adherent.getPrenom() + " " + adherent.getNom()
+                                    + " vient de s'inscrire à \"" + offre.getTitre() + "\"",
+                            "/bureau/inscriptions",
+                            Severity.INFO,
+                            LocalDateTime.now()
+                    ));
+                } catch (Exception e) {
+                    log.error("Failed to notify bureau member {} of new inscription", u.getId(), e);
+                }
+            });
+        } catch (Exception e) {
+            log.error("Error processing InscriptionCreeeEvent", e);
+        }
+    }
+
+    @Async
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    public void onInscriptionStatusChanged(InscriptionStatusChangedEvent event) {
+        try {
+            var ins      = event.inscription();
+            var adherent = ins.getAdherent();
+            var offre    = ins.getOffre();
+            var newStatut = event.newStatut();
+
+            if (newStatut == StatutInscription.CONFIRMEE) {
+                store.push(adherent.getId(), new NotificationDto(
+                        UUID.randomUUID().toString(),
+                        "INSCRIPTION_CONFIRMEE",
+                        "Votre inscription à \"" + offre.getTitre() + "\" a été confirmée !",
+                        "/adherent/inscriptions",
+                        Severity.SUCCESS,
+                        LocalDateTime.now()
+                ));
+            } else if (newStatut == StatutInscription.REJETEE) {
+                store.push(adherent.getId(), new NotificationDto(
+                        UUID.randomUUID().toString(),
+                        "INSCRIPTION_REJETEE",
+                        "Votre inscription à \"" + offre.getTitre() + "\" a été refusée.",
+                        "/adherent/offres",
+                        Severity.ERROR,
+                        LocalDateTime.now()
+                ));
+            }
+        } catch (Exception e) {
+            log.error("Error processing InscriptionStatusChangedEvent", e);
         }
     }
 

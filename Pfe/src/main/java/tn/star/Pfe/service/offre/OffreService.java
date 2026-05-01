@@ -22,6 +22,7 @@ import tn.star.Pfe.repository.OffreImageRepository;
 import tn.star.Pfe.repository.OffreRepository;
 import tn.star.Pfe.repository.PoleRepository;
 import tn.star.Pfe.repository.UserRepository;
+import tn.star.Pfe.enums.TypeOffre;
 
 import java.io.IOException;
 import java.util.List;
@@ -65,14 +66,17 @@ public class OffreService implements IOffreService {
         User currentUser = userRepository.findByEmail(username)
                 .orElseThrow(() -> new NotFoundException("Utilisateur introuvable"));
 
-//        Pole pole = poleRepository.findById(req.getPoleId())
-//                .orElseThrow(() -> new NotFoundException("Pôle introuvable : " + req.getPoleId()));
+        // Resolve pole: bureau member always uses their own pole; otherwise find by type
+        Pole pole = null;
+        if (currentUser instanceof MembreBureau mb && mb.getPole() != null) {
+            pole = mb.getPole();
+        } else if (req.getPoleId() != null) {
+            pole = poleRepository.findById(req.getPoleId())
+                    .orElseThrow(() -> new NotFoundException("Pôle introuvable : " + req.getPoleId()));
+        } else if (req.getTypeOffre() != null) {
+            pole = poleRepository.findFirstByTypesOffreContaining(req.getTypeOffre()).orElse(null);
+        }
 
-//        if (currentUser instanceof MembreBureau membreBureau
-//                && membreBureau.getPoste() == PosteBureau.RESPONSABLE_POLE
-//                && !pole.equals(membreBureau.getPole())) {
-//            throw new BadRequestException("Non autorisé pour ce pôle.");
-//        }
         Offre offre = Offre.builder()
                 .titre(req.getTitre())
                 .description(req.getDescription())
@@ -85,6 +89,7 @@ public class OffreService implements IOffreService {
                 .modePaiement(req.getModePaiement())
                 .avantages(req.getAvantages())
                 .statut(req.getStatut() != null ? req.getStatut() : StatutOffre.OUVERTE)
+                .pole(pole)
                 .build();
 
         if (image != null && !image.isEmpty()) {
@@ -205,18 +210,18 @@ public class OffreService implements IOffreService {
         if (offre.getType() == null)
             throw new BadRequestException("Type d'offre obligatoire.");
 
-        if (offre.getDateDebut() == null)
+        // CONVENTION and ANNONCE are informational — date is optional
+        boolean dateOptional = offre.getType() == TypeOffre.CONVENTION
+                            || offre.getType() == TypeOffre.ANNONCE;
+
+        if (!dateOptional && offre.getDateDebut() == null)
             throw new BadRequestException("Date début obligatoire.");
 
-        switch (offre.getType()) {
-
-            case VOYAGE, SEJOUR -> {
-                if (offre.getDateFin() == null)
-                    throw new BadRequestException("Date fin obligatoire.");
-
-                if (!offre.getDateFin().isAfter(offre.getDateDebut()))
-                    throw new BadRequestException("Date fin doit être après date début.");
-            }
+        if (offre.getType() == TypeOffre.VOYAGE || offre.getType() == TypeOffre.SEJOUR) {
+            if (offre.getDateFin() == null)
+                throw new BadRequestException("Date fin obligatoire.");
+            if (offre.getDateDebut() != null && !offre.getDateFin().isAfter(offre.getDateDebut()))
+                throw new BadRequestException("Date fin doit être après date début.");
         }
     }
 
