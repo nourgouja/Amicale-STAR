@@ -1,6 +1,7 @@
 package tn.star.Pfe.dto.auth;
 
 import jakarta.validation.constraints.Email;
+import tn.star.Pfe.enums.Role;
 
 import java.util.List;
 
@@ -13,5 +14,6 @@ public record UpdateProfilRequest(
         String posteMembre,
         Long poleId,
         String matriculeStar,
-        List<String> typesAutorisees
+        List<String> typesAutorisees,
+        Role role
 ) {}

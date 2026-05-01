@@ -22,6 +22,10 @@ public record CreateUserRequest(
         @NotNull(message = "Le rôle est obligatoire")
         Role role,
 
+        String telephone,
+
+        @NotNull(message = "obligatoire")
+        String matriculeStar,
         String posteMembre,
         Long poleId,
         List<String> typesAutorisees
