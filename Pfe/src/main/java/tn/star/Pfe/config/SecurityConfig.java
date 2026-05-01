@@ -69,6 +69,13 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/inscriptions/offre/**").hasAnyRole("MEMBRE_BUREAU", "ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/api/inscriptions/{id}/paiement").hasAnyRole("MEMBRE_BUREAU", "ADMIN")
 
+                        // sondages
+                        .requestMatchers(HttpMethod.GET, "/api/sondages/**").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/api/sondages/*/voter").hasRole("ADHERENT")
+                        .requestMatchers(HttpMethod.POST, "/api/sondages").hasRole("ADHERENT")
+                        .requestMatchers(HttpMethod.PATCH, "/api/sondages/**").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/api/sondages/**").hasRole("ADHERENT")
+
                         .requestMatchers("/api/utilisateurs/profil").authenticated()
 
                         .anyRequest().authenticated()
