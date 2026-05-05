@@ -1,17 +1,22 @@
 package tn.star.Pfe.service.inscription;
 
+import tn.star.Pfe.dto.inscription.GuestDTO;
 import tn.star.Pfe.dto.inscription.InscriptionResponse;
-import tn.star.Pfe.entity.Adherent;
-import tn.star.Pfe.enums.StatutPaiement;
+import tn.star.Pfe.entity.user.Adherent;
+import tn.star.Pfe.enums.PeriodePaiement;
+import tn.star.Pfe.enums.StatutInscription;
+import tn.star.Pfe.enums.TypeOffre;
 
 import java.util.List;
 
 public interface IInscriptionService {
-    InscriptionResponse inscrire(Long offreId, Adherent adherent);
+    InscriptionResponse inscrire(Long offreId, Adherent adherent, List<GuestDTO> guests, PeriodePaiement periodePaiement);
     InscriptionResponse annuler(Adherent adherent, Long inscriptionId);
     InscriptionResponse confirmer(Long inscriptionId);
     InscriptionResponse refuser(Long inscriptionId);
     List<InscriptionResponse> mesInscriptions(Adherent adherent);
     List<InscriptionResponse> inscritsParOffre(Long offreId);
-    InscriptionResponse mettreAjourPaiement(Long inscriptionId, StatutPaiement statut);
+    List<InscriptionResponse> listerToutesInscriptions();
+    List<InscriptionResponse> listerFiltrees(StatutInscription statut, TypeOffre type, String search);
+    InscriptionResponse getById(Long inscriptionId);
 }

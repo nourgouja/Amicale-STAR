@@ -5,10 +5,10 @@ import org.springframework.stereotype.Service;
 import tn.star.Pfe.dto.dashboard.*;
 import tn.star.Pfe.dto.inscription.InscriptionResponse;
 import tn.star.Pfe.dto.offre.OffreResponse;
-import tn.star.Pfe.entity.Adherent;
-import tn.star.Pfe.entity.Echeance;
-import tn.star.Pfe.entity.Inscription;
-import tn.star.Pfe.entity.Offre;
+import tn.star.Pfe.entity.user.Adherent;
+import tn.star.Pfe.entity.inscription.Echeance;
+import tn.star.Pfe.entity.inscription.Inscription;
+import tn.star.Pfe.entity.offre.Offre;
 import tn.star.Pfe.enums.Role;
 import tn.star.Pfe.enums.StatutOffre;
 import tn.star.Pfe.enums.StatutPaiement;
@@ -208,7 +208,8 @@ public class DashboardService implements IDashboardService {
         // Up to 6 open offers the adherent can still join
         List<OffreResponse> offresDisponibles = offreRepository.findByStatut(StatutOffre.OUVERTE)
                 .stream()
-                .filter(o -> !inscriptionRepository.existsByOffreAndAdherent(o, adherent))
+                .filter(o -> !inscriptionRepository.existsByOffreAndAdherentAndStatutNotIn(
+                        o, adherent, List.of(ANNULEE, REJETEE)))
                 .map(offreMapper::toResponse)
                 .limit(6)
                 .toList();

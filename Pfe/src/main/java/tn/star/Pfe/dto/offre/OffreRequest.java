@@ -39,6 +39,7 @@ public class OffreRequest {
     private ModePaiement modePaiement;
 
     private String avantages;
+    private String lienExterne;
 
     private tn.star.Pfe.enums.StatutOffre statut;
 
@@ -58,5 +59,6 @@ public class OffreRequest {
         private Long agenceId;
         private ModePaiement modePaiement;
         private String avantages;
+        private String lienExterne;
     }
 }

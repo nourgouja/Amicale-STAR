@@ -4,7 +4,7 @@
 //import org.springframework.data.jpa.repository.JpaRepository;
 //import org.springframework.data.jpa.repository.Query;
 //import org.springframework.stereotype.Repository;
-//import tn.star.Pfe.entity.Offre;
+//import tn.star.Pfe.entity.offre.Offre;
 //import tn.star.Pfe.enums.StatutOffre;
 //import tn.star.Pfe.enums.TypeOffre;
 //
@@ -25,7 +25,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import tn.star.Pfe.entity.Offre;
+import tn.star.Pfe.entity.offre.Offre;
 import tn.star.Pfe.enums.StatutOffre;
 import tn.star.Pfe.enums.TypeOffre;
 
@@ -35,6 +35,8 @@ import java.util.List;
 public interface OffreRepository extends JpaRepository<Offre, Long> {
 
     List<Offre> findByStatut(StatutOffre statut);
+
+    List<Offre> findByStatutIn(List<StatutOffre> statuts);
 
     List<Offre> findByType(TypeOffre type);
 

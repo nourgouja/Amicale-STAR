@@ -9,6 +9,7 @@ import java.util.List;
 
 public interface IOffreService {
     List<OffreResponse> listerOffresOuvertes();
+    List<OffreResponse> listerOffresPubliques();
     List<OffreResponse> listerToutesLesOffres();
     OffreResponse trouverParId(Long id);
     List<OffreResponse> rechercherParTitre(String titre);

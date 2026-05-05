@@ -1,12 +1,15 @@
 package tn.star.Pfe.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import tn.star.Pfe.entity.Adherent;
-import tn.star.Pfe.entity.Inscription;
-import tn.star.Pfe.entity.Offre;
+import tn.star.Pfe.entity.user.Adherent;
+import tn.star.Pfe.entity.inscription.Inscription;
+import tn.star.Pfe.entity.offre.Offre;
 import tn.star.Pfe.enums.StatutInscription;
 import tn.star.Pfe.enums.StatutPaiement;
+import tn.star.Pfe.enums.TypeOffre;
 
 import java.util.List;
 import java.util.Optional;
@@ -26,12 +29,22 @@ public interface InscriptionRepository extends JpaRepository<Inscription, Long> 
 
     List<Inscription> findByAdherent(Adherent adherent);
 
-    boolean existsByOffreAndAdherent(Offre offre, Adherent adherent);
+    boolean existsByOffreAndAdherentAndStatutNotIn(Offre offre, Adherent adherent, List<StatutInscription> statuts);
 
     //dashboard
     long countByStatut(StatutInscription statut);
 
-    long countByStatutPaiement(StatutPaiement statut);
-
-    List<Inscription> findByStatutPaiement(StatutPaiement statut);
+    @Query("""
+        SELECT i FROM Inscription i
+        WHERE (:statut IS NULL OR i.statut = :statut)
+          AND (:type IS NULL OR i.offre.type = :type)
+          AND (:search IS NULL OR LOWER(i.adherent.nom) LIKE LOWER(CONCAT('%',:search,'%'))
+               OR LOWER(i.adherent.prenom) LIKE LOWER(CONCAT('%',:search,'%')))
+        ORDER BY i.dateInscription DESC
+        """)
+    List<Inscription> findFiltered(
+        @Param("statut") StatutInscription statut,
+        @Param("type") TypeOffre type,
+        @Param("search") String search
+    );
 }

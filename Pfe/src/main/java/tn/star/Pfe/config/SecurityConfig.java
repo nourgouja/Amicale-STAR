@@ -51,7 +51,6 @@ public class SecurityConfig {
 
                         .requestMatchers(HttpMethod.GET, "/api/offres/**").authenticated()
 
-                        .requestMatchers(HttpMethod.POST, "/api/adhesion/demande").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/offres/**").hasAnyRole("MEMBRE_BUREAU", "ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/api/offres/**").hasAnyRole("MEMBRE_BUREAU", "ADMIN")
                         .requestMatchers(HttpMethod.PATCH, "/api/offres/**").hasAnyRole("MEMBRE_BUREAU", "ADMIN")
@@ -66,15 +65,12 @@ public class SecurityConfig {
 
                         //inscriptions bureau admin
                         .requestMatchers(HttpMethod.PATCH, "/api/inscriptions/confirmer/**").hasAnyRole("MEMBRE_BUREAU", "ADMIN")
+                        .requestMatchers(HttpMethod.PATCH, "/api/inscriptions/refuser/**").hasAnyRole("MEMBRE_BUREAU", "ADMIN")
                         .requestMatchers(HttpMethod.GET, "/api/inscriptions/offre/**").hasAnyRole("MEMBRE_BUREAU", "ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/api/inscriptions/{id}/paiement").hasAnyRole("MEMBRE_BUREAU", "ADMIN")
 
-                        // sondages
-                        .requestMatchers(HttpMethod.GET, "/api/sondages/**").authenticated()
-                        .requestMatchers(HttpMethod.POST, "/api/sondages/*/voter").hasRole("ADHERENT")
-                        .requestMatchers(HttpMethod.POST, "/api/sondages").hasRole("ADHERENT")
-                        .requestMatchers(HttpMethod.PATCH, "/api/sondages/**").authenticated()
-                        .requestMatchers(HttpMethod.DELETE, "/api/sondages/**").hasRole("ADHERENT")
+                        // sondages (fine-grained access via @PreAuthorize on controller methods)
+                        .requestMatchers("/api/v1/sondages/**").authenticated()
 
                         .requestMatchers("/api/utilisateurs/profil").authenticated()
 

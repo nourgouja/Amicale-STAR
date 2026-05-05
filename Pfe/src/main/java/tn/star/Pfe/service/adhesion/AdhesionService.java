@@ -9,7 +9,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import tn.star.Pfe.dto.auth.create.DemandeAdhesionResponse;
 import tn.star.Pfe.dto.auth.create.DemandeRequest;
-import tn.star.Pfe.entity.Adherent;
+import tn.star.Pfe.entity.user.Adherent;
 import tn.star.Pfe.enums.Role;
 import tn.star.Pfe.enums.StatutDemande;
 import tn.star.Pfe.event.AdhesionDemandeEvent;

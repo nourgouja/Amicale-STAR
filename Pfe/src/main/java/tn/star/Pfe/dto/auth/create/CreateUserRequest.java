@@ -23,8 +23,6 @@ public record CreateUserRequest(
         Role role,
 
         String telephone,
-
-        @NotNull(message = "obligatoire")
         String matriculeStar,
         String posteMembre,
         Long poleId,

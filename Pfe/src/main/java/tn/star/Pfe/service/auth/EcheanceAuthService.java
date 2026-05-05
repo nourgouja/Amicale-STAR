@@ -2,9 +2,9 @@ package tn.star.Pfe.service.auth;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import tn.star.Pfe.entity.Echeance;
-import tn.star.Pfe.entity.Pole;
-import tn.star.Pfe.entity.MembreBureau;
+import tn.star.Pfe.entity.inscription.Echeance;
+import tn.star.Pfe.entity.user.Pole;
+import tn.star.Pfe.entity.user.MembreBureau;
 import tn.star.Pfe.enums.PosteBureau;
 import tn.star.Pfe.repository.EcheanceRepository;
 import tn.star.Pfe.repository.UserRepository;

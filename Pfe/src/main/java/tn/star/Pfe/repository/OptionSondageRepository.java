@@ -2,7 +2,7 @@ package tn.star.Pfe.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import tn.star.Pfe.entity.OptionSondage;
+import tn.star.Pfe.entity.sondage.OptionSondage;
 
 import java.util.List;
 

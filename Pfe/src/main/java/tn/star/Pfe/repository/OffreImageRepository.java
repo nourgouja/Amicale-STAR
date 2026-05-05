@@ -2,7 +2,7 @@ package tn.star.Pfe.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import tn.star.Pfe.entity.OffreImage;
+import tn.star.Pfe.entity.offre.OffreImage;
 
 import java.util.List;
 

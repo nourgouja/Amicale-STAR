@@ -17,14 +17,31 @@ public class EcheanceController {
     private final IEcheanceService echeanceService;
 
     @GetMapping("/inscription/{inscriptionId}")
-    @PreAuthorize("hasRole('MEMBRE_BUREAU') or hasRole('ADMIN')")
-    public ResponseEntity<List<EcheanceResponse>> parInscription(
-            @PathVariable Long inscriptionId) {
+    @PreAuthorize("hasAnyRole('MEMBRE_BUREAU', 'ADMIN', 'ADHERENT')")
+    public ResponseEntity<List<EcheanceResponse>> parInscription(@PathVariable Long inscriptionId) {
         return ResponseEntity.ok(echeanceService.parInscription(inscriptionId));
     }
 
+    @GetMapping("/non-payees")
+    @PreAuthorize("hasAnyRole('MEMBRE_BUREAU', 'ADMIN')")
+    public ResponseEntity<List<EcheanceResponse>> nonPayees() {
+        return ResponseEntity.ok(echeanceService.nonPayees());
+    }
+
+    @GetMapping("/toutes")
+    @PreAuthorize("hasAnyRole('MEMBRE_BUREAU', 'ADMIN')")
+    public ResponseEntity<List<EcheanceResponse>> toutes() {
+        return ResponseEntity.ok(echeanceService.toutes());
+    }
+
+    @GetMapping("/prochaines")
+    @PreAuthorize("hasAnyRole('MEMBRE_BUREAU', 'ADMIN')")
+    public ResponseEntity<List<EcheanceResponse>> prochaines() {
+        return ResponseEntity.ok(echeanceService.prochainesEcheances());
+    }
+
     @PatchMapping("/{id}/payer")
-    @PreAuthorize("hasRole('ADMIN') or @echeanceAuthService.canValidate(principal, #id)")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MEMBRE_BUREAU')")
     public ResponseEntity<EcheanceResponse> marquerPayee(@PathVariable Long id) {
         return ResponseEntity.ok(echeanceService.marquerPayee(id));
     }

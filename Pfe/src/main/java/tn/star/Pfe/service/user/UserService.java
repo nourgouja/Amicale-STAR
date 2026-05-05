@@ -18,7 +18,7 @@ import tn.star.Pfe.dto.auth.create.CreateUserRequest;
 import tn.star.Pfe.dto.auth.create.MembreBureauPublicResponse;
 import tn.star.Pfe.dto.auth.login.ChangePasswordRequest;
 import tn.star.Pfe.dto.auth.update.UpdateProfilRequest;
-import tn.star.Pfe.entity.*;
+import tn.star.Pfe.entity.user.*;
 import tn.star.Pfe.enums.PosteBureau;
 import tn.star.Pfe.enums.Role;
 import tn.star.Pfe.enums.TypeOffre;
@@ -130,6 +130,8 @@ public class UserService implements IUserService {
                         .motDePasse(hashedPassword)
                         .nom(request.nom())
                         .prenom(request.prenom())
+                        .telephone(request.telephone())
+                        .matriculeStar(request.matriculeStar())
                         .poste(PosteBureau.valueOf(request.posteMembre()))
                         .pole(pole)
                         .typesAutorisees(types)
@@ -143,6 +145,8 @@ public class UserService implements IUserService {
                     .motDePasse(hashedPassword)
                     .nom(request.nom())
                     .prenom(request.prenom())
+                    .telephone(request.telephone())
+                    .matriculeStar(request.matriculeStar())
                     .role(Role.ADMIN)
                     .actif(true)
                     .build();
@@ -155,7 +159,6 @@ public class UserService implements IUserService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Utilisateur non trouvé avec ID: " + id));
 
-        // Role change requires entity migration (JOINED inheritance)
         if (request.role() != null && request.role() != user.getRole()) {
             return migrateUserRole(user, request);
         }
@@ -166,10 +169,11 @@ public class UserService implements IUserService {
             }
         }
 
-        if (request.nom() != null)       user.setNom(request.nom());
-        if (request.prenom() != null)    user.setPrenom(request.prenom());
-        if (request.email() != null)     user.setEmail(request.email());
-        if (request.telephone() != null) user.setTelephone(request.telephone());
+        if (request.nom() != null)            user.setNom(request.nom());
+        if (request.prenom() != null)         user.setPrenom(request.prenom());
+        if (request.email() != null)          user.setEmail(request.email());
+        if (request.telephone() != null)      user.setTelephone(request.telephone());
+        if (request.matriculeStar() != null)  user.setMatriculeStar(request.matriculeStar());
 
         if (user instanceof MembreBureau mb) {
             if (request.posteMembre() != null && !request.posteMembre().isBlank()) {
@@ -189,8 +193,6 @@ public class UserService implements IUserService {
                 }
                 mb.setTypesAutorisees(types);
             }
-        } else if (user instanceof Adherent adherent) {
-            if (request.matriculeStar() != null) adherent.setMatriculeStar(request.matriculeStar());
         }
 
         return userRepository.save(user);
@@ -201,10 +203,11 @@ public class UserService implements IUserService {
             throw new BadRequestException("Impossible de changer le rôle : l'utilisateur a des inscriptions actives.");
         }
 
-        String email     = request.email()     != null ? request.email()     : existing.getEmail();
-        String nom       = request.nom()       != null ? request.nom()       : existing.getNom();
-        String prenom    = request.prenom()    != null ? request.prenom()    : existing.getPrenom();
-        String telephone = request.telephone() != null ? request.telephone() : existing.getTelephone();
+        String email         = request.email()         != null ? request.email()         : existing.getEmail();
+        String nom           = request.nom()           != null ? request.nom()           : existing.getNom();
+        String prenom        = request.prenom()        != null ? request.prenom()        : existing.getPrenom();
+        String telephone     = request.telephone()     != null ? request.telephone()     : existing.getTelephone();
+        String matriculeStar = request.matriculeStar() != null ? request.matriculeStar() : existing.getMatriculeStar();
 
         if (!email.equals(existing.getEmail()) && userRepository.existsByEmail(email)) {
             throw new BadRequestException("Email déjà utilisé: " + email);
@@ -220,7 +223,7 @@ public class UserService implements IUserService {
         User newUser = switch (request.role()) {
             case ADHERENT -> Adherent.builder()
                     .email(email).motDePasse(existing.getMotDePasse()).nom(nom).prenom(prenom)
-                    .telephone(telephone).matriculeStar(request.matriculeStar())
+                    .telephone(telephone).matriculeStar(matriculeStar)
                     .role(Role.ADHERENT).actif(true).firstLogin(existing.isFirstLogin()).build();
             case MEMBRE_BUREAU -> {
                 if (request.posteMembre() == null || request.posteMembre().isBlank()) {
@@ -230,13 +233,14 @@ public class UserService implements IUserService {
                         ? poleRepository.findById(request.poleId()).orElse(null) : null;
                 yield MembreBureau.builder()
                         .email(email).motDePasse(existing.getMotDePasse()).nom(nom).prenom(prenom)
-                        .telephone(telephone).role(Role.MEMBRE_BUREAU).actif(true)
-                        .firstLogin(existing.isFirstLogin())
+                        .telephone(telephone).matriculeStar(matriculeStar)
+                        .role(Role.MEMBRE_BUREAU).actif(true).firstLogin(existing.isFirstLogin())
                         .poste(PosteBureau.valueOf(request.posteMembre())).pole(pole).build();
             }
             case ADMIN -> Admin.builder()
                     .email(email).motDePasse(existing.getMotDePasse()).nom(nom).prenom(prenom)
-                    .telephone(telephone).role(Role.ADMIN).actif(true).firstLogin(existing.isFirstLogin()).build();
+                    .telephone(telephone).matriculeStar(matriculeStar)
+                    .role(Role.ADMIN).actif(true).firstLogin(existing.isFirstLogin()).build();
         };
 
         return userRepository.save(newUser);

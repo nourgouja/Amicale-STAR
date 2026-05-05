@@ -4,7 +4,6 @@ public enum TypeOffre {
     EVENEMENT,
     VOYAGE,
     SEJOUR,
-    LOISIRS,
     ACTIVITE,
     CONVENTION,
     ANNONCE

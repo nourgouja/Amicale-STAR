@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import tn.star.Pfe.dto.auth.create.CreateUserRequest;
 import tn.star.Pfe.dto.auth.update.UpdateProfilRequest;
 import tn.star.Pfe.dto.auth.create.UserResponse;
-import tn.star.Pfe.entity.User;
+import tn.star.Pfe.entity.user.User;
 import tn.star.Pfe.enums.Role;
 import tn.star.Pfe.mapper.UserMapper;
 import tn.star.Pfe.repository.UserRepository;

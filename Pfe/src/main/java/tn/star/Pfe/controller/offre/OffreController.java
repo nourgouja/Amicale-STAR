@@ -29,6 +29,12 @@ public class OffreController {
         return ResponseEntity.ok(offreService.listerOffresOuvertes());
     }
 
+    /** Returns OUVERTE + FERMEE offers for the adherent home page */
+    @GetMapping("/publiques")
+    public ResponseEntity<List<OffreResponse>> listerPubliques() {
+        return ResponseEntity.ok(offreService.listerOffresPubliques());
+    }
+
     @GetMapping("/all")
     @PreAuthorize("hasAnyRole('MEMBRE_BUREAU', 'ADMIN')")
     public ResponseEntity<List<OffreResponse>> listerToutes() {

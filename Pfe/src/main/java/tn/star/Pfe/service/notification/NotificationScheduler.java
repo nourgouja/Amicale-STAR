@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import tn.star.Pfe.entity.Echeance;
+import tn.star.Pfe.entity.inscription.Echeance;
 import tn.star.Pfe.enums.StatutPaiement;
 import tn.star.Pfe.event.EcheanceOverdueEvent;
 import tn.star.Pfe.repository.EcheanceRepository;

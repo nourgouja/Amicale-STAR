@@ -12,7 +12,7 @@ import tn.star.Pfe.dto.auth.login.ChangePasswordRequest;
 import tn.star.Pfe.dto.auth.update.ForgotPasswordRequest;
 import tn.star.Pfe.dto.auth.login.LoginRequest;
 import tn.star.Pfe.dto.auth.create.UserResponse;
-import tn.star.Pfe.entity.User;
+import tn.star.Pfe.entity.user.User;
 import tn.star.Pfe.mapper.UserMapper;
 import tn.star.Pfe.security.UserPrincipal;
 import tn.star.Pfe.service.auth.IAuthService;
@@ -33,13 +33,6 @@ public class AuthController {
         return ResponseEntity.ok(authService.login(request));
     }
 
-    @PostMapping("/logout")
-    @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<Void> logout() {
-        authService.logout();
-        return ResponseEntity.noContent().build();
-    }
-
     @PostMapping("/forgot-password")
     public ResponseEntity<Void> forgotPassword(@RequestBody @Valid ForgotPasswordRequest request) {
         userService.forgotPasswordByEmail(request.email());
@@ -53,6 +46,12 @@ public class AuthController {
             @RequestBody @Valid ChangePasswordRequest request) {
         userService.changePassword(principal.getId(), request);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/logout")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Void> logout() {
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/currentUser")

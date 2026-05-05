@@ -43,10 +43,6 @@ public class AuthService implements IAuthService {
         }
     }
 
-    public void logout() {
-        log.info("User logged out");
-    }
-
     private AuthResponse buildAuthResponse(UserPrincipal principal) {
         String role = principal.getAuthorities().stream()
                 .findFirst()

@@ -2,7 +2,7 @@ package tn.star.Pfe.mapper;
 
 import org.springframework.stereotype.Component;
 import tn.star.Pfe.dto.offre.OffreResponse;
-import tn.star.Pfe.entity.Offre;
+import tn.star.Pfe.entity.offre.Offre;
 
 import java.util.Base64;
 
@@ -26,6 +26,7 @@ public class OffreMapper {
         res.setPrixParPersonne(offre.getPrixParPersonne());
         res.setModePaiement(offre.getModePaiement());
         res.setAvantages(offre.getAvantages());
+        res.setLienExterne(offre.getLienExterne());
         res.setCreatedAt(offre.getCreatedAt());
         res.setUpdatedAt(offre.getUpdatedAt());
 

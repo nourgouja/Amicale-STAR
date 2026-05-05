@@ -2,9 +2,8 @@ package tn.star.Pfe.mapper;
 
 import org.springframework.stereotype.Component;
 import tn.star.Pfe.dto.auth.create.UserResponse;
-import tn.star.Pfe.entity.Adherent;
-import tn.star.Pfe.entity.MembreBureau;
-import tn.star.Pfe.entity.User;
+import tn.star.Pfe.entity.user.MembreBureau;
+import tn.star.Pfe.entity.user.User;
 
 import java.util.Base64;
 import java.util.List;
@@ -22,6 +21,8 @@ public class UserMapper {
         List<String> poleTypesOffre  = null;
         String       matriculeStar   = null;
 
+        matriculeStar = user.getMatriculeStar();
+
         if (user instanceof MembreBureau mb) {
             posteMembre = mb.getPoste() != null ? mb.getPoste().name() : null;
             if (mb.getPole() != null) {
@@ -34,8 +35,6 @@ public class UserMapper {
                         .sorted()
                         .collect(Collectors.toList());
             }
-        } else if (user instanceof Adherent a) {
-            matriculeStar = a.getMatriculeStar();
         }
 
         String photoBase64 = null;

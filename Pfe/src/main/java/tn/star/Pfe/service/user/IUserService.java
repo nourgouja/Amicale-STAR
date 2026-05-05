@@ -7,7 +7,7 @@ import tn.star.Pfe.dto.auth.create.MembreBureauPublicResponse;
 import tn.star.Pfe.dto.auth.create.UserResponse;
 import tn.star.Pfe.dto.auth.login.ChangePasswordRequest;
 import tn.star.Pfe.dto.auth.update.UpdateProfilRequest;
-import tn.star.Pfe.entity.User;
+import tn.star.Pfe.entity.user.User;
 import tn.star.Pfe.enums.Role;
 
 import java.util.List;

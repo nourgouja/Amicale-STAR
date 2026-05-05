@@ -5,5 +5,4 @@ import tn.star.Pfe.dto.auth.login.LoginRequest;
 
 public interface IAuthService {
     AuthResponse login(LoginRequest request);
-    void logout();
 }

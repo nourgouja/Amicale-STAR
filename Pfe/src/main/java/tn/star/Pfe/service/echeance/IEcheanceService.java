@@ -6,6 +6,10 @@ import java.util.List;
 
 public interface IEcheanceService {
     List<EcheanceResponse> parInscription(Long inscriptionId);
+    List<EcheanceResponse> nonPayees();
+    List<EcheanceResponse> toutes();
+    List<EcheanceResponse> prochainesEcheances();
     EcheanceResponse marquerPayee(Long echeanceId);
     void marquerEnRetard();
+    void envoyerRappels();
 }

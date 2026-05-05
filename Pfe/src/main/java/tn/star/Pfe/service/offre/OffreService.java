@@ -7,17 +7,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import tn.star.Pfe.dto.offre.OffreRequest;
 import tn.star.Pfe.dto.offre.OffreResponse;
-import tn.star.Pfe.entity.Offre;
-import tn.star.Pfe.entity.User;
-import tn.star.Pfe.enums.PosteBureau;
+import tn.star.Pfe.entity.offre.Offre;
+import tn.star.Pfe.entity.user.User;
 import tn.star.Pfe.enums.StatutOffre;
 import tn.star.Pfe.event.OffreCreatedEvent;
 import tn.star.Pfe.exceptions.BadRequestException;
 import tn.star.Pfe.exceptions.NotFoundException;
 import tn.star.Pfe.mapper.OffreMapper;
-import tn.star.Pfe.entity.Pole;
-import tn.star.Pfe.entity.MembreBureau;
-import tn.star.Pfe.entity.OffreImage;
+import tn.star.Pfe.entity.user.Pole;
+import tn.star.Pfe.entity.user.MembreBureau;
+import tn.star.Pfe.entity.offre.OffreImage;
 import tn.star.Pfe.repository.OffreImageRepository;
 import tn.star.Pfe.repository.OffreRepository;
 import tn.star.Pfe.repository.PoleRepository;
@@ -41,6 +40,13 @@ public class OffreService implements IOffreService {
 
     public List<OffreResponse> listerOffresOuvertes() {
         return offreRepository.findByStatut(StatutOffre.OUVERTE)
+                .stream()
+                .map(offreMapper::toResponse)
+                .toList();
+    }
+
+    public List<OffreResponse> listerOffresPubliques() {
+        return offreRepository.findByStatutIn(List.of(StatutOffre.OUVERTE, StatutOffre.FERMEE))
                 .stream()
                 .map(offreMapper::toResponse)
                 .toList();
@@ -88,6 +94,7 @@ public class OffreService implements IOffreService {
                 .capaciteMax(req.getCapaciteMax() != null ? req.getCapaciteMax() : 0)
                 .modePaiement(req.getModePaiement())
                 .avantages(req.getAvantages())
+                .lienExterne(req.getLienExterne())
                 .statut(req.getStatut() != null ? req.getStatut() : StatutOffre.OUVERTE)
                 .pole(pole)
                 .build();
@@ -179,6 +186,7 @@ public class OffreService implements IOffreService {
         if (req.getCapaciteMax()     != null) offre.setCapaciteMax(req.getCapaciteMax());
         if (req.getModePaiement()    != null) offre.setModePaiement(req.getModePaiement());
         if (req.getAvantages()       != null) offre.setAvantages(req.getAvantages());
+        if (req.getLienExterne()     != null) offre.setLienExterne(req.getLienExterne());
 
         if (image != null && !image.isEmpty()) {
             offre.setImage(image.getBytes());

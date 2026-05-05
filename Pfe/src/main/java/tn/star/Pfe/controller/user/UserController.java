@@ -12,7 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 import tn.star.Pfe.dto.auth.create.MembreBureauPublicResponse;
 import tn.star.Pfe.dto.auth.update.UpdateProfilRequest;
 import tn.star.Pfe.dto.auth.create.UserResponse;
-import tn.star.Pfe.entity.User;
+import tn.star.Pfe.entity.user.User;
 import tn.star.Pfe.mapper.UserMapper;
 import tn.star.Pfe.security.UserPrincipal;
 import tn.star.Pfe.service.user.IUserService;

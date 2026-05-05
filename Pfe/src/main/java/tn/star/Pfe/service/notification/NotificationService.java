@@ -8,7 +8,7 @@ import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 import tn.star.Pfe.dto.notification.NotificationDto;
 import tn.star.Pfe.dto.notification.NotificationDto.Severity;
-import tn.star.Pfe.entity.MembreBureau;
+import tn.star.Pfe.entity.user.MembreBureau;
 import tn.star.Pfe.enums.Role;
 import tn.star.Pfe.enums.StatutInscription;
 import tn.star.Pfe.event.*;

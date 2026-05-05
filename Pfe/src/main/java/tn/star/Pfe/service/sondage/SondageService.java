@@ -1,101 +1,260 @@
 package tn.star.Pfe.service.sondage;
 
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import tn.star.Pfe.dto.sondage.*;
-import tn.star.Pfe.entity.*;
+import tn.star.Pfe.dto.sondage.OptionSondageResponse;
+import tn.star.Pfe.dto.sondage.SondageRequest;
+import tn.star.Pfe.dto.sondage.SondageResponse;
+import tn.star.Pfe.dto.sondage.UpdateSondageRequest;
+import tn.star.Pfe.entity.sondage.OptionSondage;
+import tn.star.Pfe.entity.sondage.Sondage;
+import tn.star.Pfe.entity.user.User;
+import tn.star.Pfe.entity.sondage.VoteSondage;
 import tn.star.Pfe.enums.Role;
 import tn.star.Pfe.enums.StatutSondage;
 import tn.star.Pfe.exceptions.BadRequestException;
+import tn.star.Pfe.exceptions.ForbiddenException;
 import tn.star.Pfe.exceptions.NotFoundException;
-import tn.star.Pfe.repository.*;
+import tn.star.Pfe.repository.SondageRepository;
+import tn.star.Pfe.repository.UserRepository;
+import tn.star.Pfe.repository.VoteSondageRepository;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Base64;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
+@Transactional
 public class SondageService implements ISondageService {
 
-    private static final long MAX_IMAGE_BYTES = 1_000_000L;
+    private static final long MAX_IMAGE_SIZE = 1024 * 1024; // 1MB
 
     private final SondageRepository sondageRepository;
-    private final OptionSondageRepository optionSondageRepository;
     private final VoteSondageRepository voteSondageRepository;
     private final UserRepository userRepository;
 
-    // ── helpers ──────────────────────────────────────────────────────────────
+    @Override
+    public SondageResponse creer(SondageRequest req, MultipartFile image1, MultipartFile image2, String username) throws IOException {
+        User creator = findUser(username);
 
-    private User loadUser(String username) {
-        return userRepository.findByEmail(username)
-                .orElseThrow(() -> new NotFoundException("Utilisateur introuvable"));
-    }
+        OptionSondage opt1 = buildOption(req.getOption1(), image1, 0);
+        OptionSondage opt2 = buildOption(req.getOption2(), image2, 1);
 
-    private Adherent requirePresident(User user) {
-        if (!(user instanceof Adherent a) || !"president".equalsIgnoreCase(a.getPoste()))
-            throw new BadRequestException("Seul le président peut effectuer cette action.");
-        return a;
-    }
-
-    private Adherent requireVoter(User user) {
-        if (!(user instanceof Adherent a))
-            throw new BadRequestException("Seuls les adhérents peuvent voter.");
-        if ("president".equalsIgnoreCase(a.getPoste()))
-            throw new BadRequestException("Le président vote via son compte personnel adhérent.");
-        return a;
-    }
-
-    private boolean canSeeAllSurveys(User user) {
-        if (user.getRole() == Role.ADMIN || user.getRole() == Role.MEMBRE_BUREAU) return true;
-        return user instanceof Adherent a && "president".equalsIgnoreCase(a.getPoste());
-    }
-
-    private void validateImage(MultipartFile file, int optionOrdre) {
-        if (file != null && !file.isEmpty() && file.getSize() > MAX_IMAGE_BYTES)
-            throw new BadRequestException("L'image de l'option " + optionOrdre + " ne peut pas dépasser 1 Mo.");
-    }
-
-    private OptionSondage buildOption(Sondage sondage, SondageRequest.OptionRequest req, MultipartFile image, int ordre) throws IOException {
-        OptionSondage opt = OptionSondage.builder()
-                .sondage(sondage)
+        Sondage sondage = Sondage.builder()
                 .titre(req.getTitre())
-                .description(req.getDescription())
-                .ordre(ordre)
+                .createdBy(creator)
                 .build();
-        applyImage(opt, image);
-        return opt;
+        opt1.setSondage(sondage);
+        opt2.setSondage(sondage);
+        sondage.getOptions().add(opt1);
+        sondage.getOptions().add(opt2);
+
+        Sondage saved = sondageRepository.save(sondage);
+        log.info("Sondage créé: {} par {}", saved.getId(), username);
+        return toResponse(saved, creator);
     }
 
-    private void applyImage(OptionSondage opt, MultipartFile image) throws IOException {
-        if (image != null && !image.isEmpty()) {
-            opt.setImage(image.getBytes());
-            opt.setImageNom(image.getOriginalFilename());
-            opt.setImageType(image.getContentType());
+    @Override
+    public SondageResponse modifier(Long id, UpdateSondageRequest req, MultipartFile image1, MultipartFile image2, String username) throws IOException {
+        Sondage sondage = findSondage(id);
+        User user = findUser(username);
+        checkOwnerOrAdmin(sondage, user);
+
+        if (sondage.getStatut() != StatutSondage.DRAFT)
+            throw new BadRequestException("Seuls les sondages en DRAFT peuvent être modifiés");
+
+        if (req.getTitre() != null) sondage.setTitre(req.getTitre());
+
+        List<OptionSondage> options = sondage.getOptions();
+        if (!options.isEmpty() && req.getOption1() != null)
+            updateOption(options.get(0), req.getOption1(), image1);
+        if (options.size() > 1 && req.getOption2() != null)
+            updateOption(options.get(1), req.getOption2(), image2);
+
+        return toResponse(sondageRepository.save(sondage), user);
+    }
+
+    @Override
+    public SondageResponse activer(Long id, String username) {
+        Sondage sondage = findSondage(id);
+        User user = findUser(username);
+        checkOwnerOrAdmin(sondage, user);
+
+        if (sondage.getStatut() != StatutSondage.DRAFT)
+            throw new BadRequestException("Seul un sondage DRAFT peut être activé");
+
+        sondage.setStatut(StatutSondage.ACTIVE);
+        return toResponse(sondageRepository.save(sondage), user);
+    }
+
+    @Override
+    public SondageResponse fermer(Long id, String username) {
+        Sondage sondage = findSondage(id);
+        User user = findUser(username);
+        checkOwnerOrAdmin(sondage, user);
+
+        if (sondage.getStatut() != StatutSondage.ACTIVE)
+            throw new BadRequestException("Seul un sondage ACTIVE peut être fermé");
+
+        sondage.setStatut(StatutSondage.CLOSED);
+        sondage.setClosedAt(LocalDateTime.now());
+        return toResponse(sondageRepository.save(sondage), user);
+    }
+
+    @Override
+    public SondageResponse archiver(Long id, String username) {
+        Sondage sondage = findSondage(id);
+        User user = findUser(username);
+        checkOwnerOrAdmin(sondage, user);
+
+        sondage.setStatut(StatutSondage.ARCHIVED);
+        return toResponse(sondageRepository.save(sondage), user);
+    }
+
+    @Override
+    public void supprimer(Long id, String username) {
+        Sondage sondage = findSondage(id);
+        User user = findUser(username);
+        checkOwnerOrAdmin(sondage, user);
+
+        if (sondage.getStatut() != StatutSondage.DRAFT)
+            throw new BadRequestException("Seuls les sondages en DRAFT peuvent être supprimés");
+
+        sondageRepository.delete(sondage);
+        log.info("Sondage supprimé: {} par {}", id, username);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<SondageResponse> lister(String username) {
+        User user = findUser(username);
+        boolean isPrivileged = isAdminOrBureau(user);
+
+        return sondageRepository.findAllByOrderByCreatedAtDesc().stream()
+                .filter(s -> {
+                    if (isPrivileged) return s.getStatut() != StatutSondage.ARCHIVED;
+                    return s.getStatut() == StatutSondage.ACTIVE || s.getStatut() == StatutSondage.CLOSED;
+                })
+                .map(s -> toResponse(s, user))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public SondageResponse trouverParId(Long id, String username) {
+        Sondage sondage = findSondage(id);
+        User user = findUser(username);
+
+        if (!isAdminOrBureau(user)
+                && sondage.getStatut() != StatutSondage.ACTIVE
+                && sondage.getStatut() != StatutSondage.CLOSED)
+            throw new NotFoundException("Sondage non trouvé");
+
+        return toResponse(sondage, user);
+    }
+
+    @Override
+    public SondageResponse voter(Long sondageId, Long optionId, String username) {
+        Sondage sondage = findSondage(sondageId);
+        User user = findUser(username);
+
+        if (sondage.getStatut() != StatutSondage.ACTIVE)
+            throw new BadRequestException("Impossible de voter sur un sondage qui n'est pas ACTIVE");
+
+        OptionSondage option = sondage.getOptions().stream()
+                .filter(o -> o.getId().equals(optionId))
+                .findFirst()
+                .orElseThrow(() -> new NotFoundException("Option non trouvée"));
+
+        if (voteSondageRepository.existsBySondageIdAndAdherentId(sondageId, user.getId()))
+            throw new BadRequestException("Vous avez déjà voté pour ce sondage");
+
+        VoteSondage vote = VoteSondage.builder()
+                .sondage(sondage)
+                .adherent(user)
+                .option(option)
+                .build();
+        voteSondageRepository.save(vote);
+
+        log.info("Vote enregistré: sondage={}, option={}, user={}", sondageId, optionId, username);
+        return toResponse(sondage, user);
+    }
+
+    // --- Helpers ---
+
+    private User findUser(String username) {
+        return userRepository.findByEmail(username)
+                .orElseThrow(() -> new NotFoundException("Utilisateur non trouvé"));
+    }
+
+    private Sondage findSondage(Long id) {
+        return sondageRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Sondage non trouvé"));
+    }
+
+    private boolean isAdminOrBureau(User user) {
+        return user.getRole() == Role.ADMIN || user.getRole() == Role.MEMBRE_BUREAU;
+    }
+
+    private void checkOwnerOrAdmin(Sondage sondage, User user) {
+        if (!sondage.getCreatedBy().getId().equals(user.getId()) && !isAdminOrBureau(user))
+            throw new ForbiddenException("Accès non autorisé à ce sondage");
+    }
+
+    private OptionSondage buildOption(SondageRequest.OptionRequest optReq, MultipartFile image, int ordre) throws IOException {
+        OptionSondage option = new OptionSondage();
+        option.setTitre(optReq.getTitre());
+        option.setDescription(optReq.getDescription());
+        option.setOrdre(ordre);
+        applyImage(option, image);
+        return option;
+    }
+
+    private void updateOption(OptionSondage option, UpdateSondageRequest.OptionUpdateRequest req, MultipartFile image) throws IOException {
+        if (req.getTitre() != null) option.setTitre(req.getTitre());
+        if (req.getDescription() != null) option.setDescription(req.getDescription());
+        if (image != null && !image.isEmpty()) applyImage(option, image);
+    }
+
+    private void applyImage(OptionSondage option, MultipartFile image) throws IOException {
+        if (image == null || image.isEmpty()) return;
+        if (image.getSize() > MAX_IMAGE_SIZE)
+            throw new BadRequestException("L'image de l'option \"" + option.getTitre() + "\" dépasse la limite de 1MB");
+        option.setImage(image.getBytes());
+        option.setImageNom(image.getOriginalFilename());
+        option.setImageType(image.getContentType());
+    }
+
+    private SondageResponse toResponse(Sondage s, User currentUser) {
+        Long votedOptionId = null;
+        boolean hasVoted = false;
+
+        var existingVote = voteSondageRepository.findBySondageIdAndAdherentId(s.getId(), currentUser.getId());
+        if (existingVote.isPresent()) {
+            hasVoted = true;
+            votedOptionId = existingVote.get().getOption().getId();
         }
-    }
 
-    private SondageResponse toResponse(Sondage s, Long adherentId) {
-        VoteSondage userVote = adherentId != null
-                ? voteSondageRepository.findBySondageIdAndAdherentId(s.getId(), adherentId).orElse(null)
-                : null;
-
-        boolean isClosed = s.getStatut() == StatutSondage.CLOSED;
+        long totalVotes = voteSondageRepository.countBySondageId(s.getId());
 
         List<OptionSondageResponse> optionResponses = s.getOptions().stream()
-                .map(opt -> OptionSondageResponse.builder()
-                        .id(opt.getId())
-                        .titre(opt.getTitre())
-                        .description(opt.getDescription())
-                        .imageBase64(opt.getImage() != null ? Base64.getEncoder().encodeToString(opt.getImage()) : null)
-                        .imageType(opt.getImageType())
-                        .ordre(opt.getOrdre())
-                        .voteCount(isClosed ? voteSondageRepository.countByOptionId(opt.getId()) : null)
+                .map(o -> OptionSondageResponse.builder()
+                        .id(o.getId())
+                        .titre(o.getTitre())
+                        .description(o.getDescription())
+                        .imageBase64(o.getImage() != null ? Base64.getEncoder().encodeToString(o.getImage()) : null)
+                        .imageType(o.getImageType())
+                        .ordre(o.getOrdre())
+                        .voteCount(voteSondageRepository.countByOptionId(o.getId()))
                         .build())
-                .toList();
+                .collect(Collectors.toList());
 
         return SondageResponse.builder()
                 .id(s.getId())
@@ -107,218 +266,9 @@ public class SondageService implements ISondageService {
                 .updatedAt(s.getUpdatedAt())
                 .closedAt(s.getClosedAt())
                 .options(optionResponses)
-                .hasVoted(userVote != null)
-                .votedOptionId(userVote != null ? userVote.getOption().getId() : null)
-                .totalVotes(isClosed ? voteSondageRepository.countBySondageId(s.getId()) : 0)
+                .hasVoted(hasVoted)
+                .votedOptionId(votedOptionId)
+                .totalVotes(totalVotes)
                 .build();
-    }
-
-    // ── CRUD ─────────────────────────────────────────────────────────────────
-
-    @Override
-    @Transactional
-    public SondageResponse creer(SondageRequest req, MultipartFile image1, MultipartFile image2, String username) throws IOException {
-        Adherent president = requirePresident(loadUser(username));
-
-        validateImage(image1, 1);
-        validateImage(image2, 2);
-
-        Sondage sondage = sondageRepository.save(
-                Sondage.builder().titre(req.getTitre()).createdBy(president).build());
-
-        optionSondageRepository.save(buildOption(sondage, req.getOption1(), image1, 1));
-        optionSondageRepository.save(buildOption(sondage, req.getOption2(), image2, 2));
-
-        Sondage saved = sondageRepository.findById(sondage.getId()).orElse(sondage);
-        return toResponse(saved, president.getId());
-    }
-
-    @Override
-    @Transactional
-    public SondageResponse modifier(Long id, UpdateSondageRequest req, MultipartFile image1, MultipartFile image2, String username) throws IOException {
-        User user = loadUser(username);
-        Adherent president = requirePresident(user);
-
-        Sondage sondage = sondageRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Sondage introuvable : " + id));
-
-        if (sondage.getStatut() != StatutSondage.DRAFT)
-            throw new BadRequestException("Seuls les sondages en brouillon peuvent être modifiés.");
-
-        if (!sondage.getCreatedBy().getId().equals(president.getId()))
-            throw new BadRequestException("Vous n'êtes pas autorisé à modifier ce sondage.");
-
-        if (req.getTitre() != null) sondage.setTitre(req.getTitre());
-
-        List<OptionSondage> options = optionSondageRepository.findBySondageIdOrderByOrdre(id);
-
-        if (options.size() >= 1) {
-            OptionSondage opt1 = options.get(0);
-            UpdateSondageRequest.OptionUpdateRequest r1 = req.getOption1();
-            if (r1 != null) {
-                if (r1.getTitre() != null) opt1.setTitre(r1.getTitre());
-                if (r1.getDescription() != null) opt1.setDescription(r1.getDescription());
-            }
-            validateImage(image1, 1);
-            applyImage(opt1, image1);
-            optionSondageRepository.save(opt1);
-        }
-        if (options.size() >= 2) {
-            OptionSondage opt2 = options.get(1);
-            UpdateSondageRequest.OptionUpdateRequest r2 = req.getOption2();
-            if (r2 != null) {
-                if (r2.getTitre() != null) opt2.setTitre(r2.getTitre());
-                if (r2.getDescription() != null) opt2.setDescription(r2.getDescription());
-            }
-            validateImage(image2, 2);
-            applyImage(opt2, image2);
-            optionSondageRepository.save(opt2);
-        }
-
-        return toResponse(sondageRepository.save(sondage), president.getId());
-    }
-
-    @Override
-    @Transactional
-    public SondageResponse activer(Long id, String username) {
-        User user = loadUser(username);
-        Adherent president = requirePresident(user);
-
-        Sondage sondage = sondageRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Sondage introuvable : " + id));
-
-        if (!sondage.getCreatedBy().getId().equals(president.getId()))
-            throw new BadRequestException("Vous n'êtes pas autorisé à activer ce sondage.");
-
-        if (sondage.getStatut() != StatutSondage.DRAFT)
-            throw new BadRequestException("Seuls les sondages en brouillon peuvent être activés.");
-
-        if (sondage.getOptions().stream().anyMatch(o -> o.getImage() == null))
-            throw new BadRequestException("Les deux options doivent avoir une image avant activation.");
-
-        sondage.setStatut(StatutSondage.ACTIVE);
-        return toResponse(sondageRepository.save(sondage), president.getId());
-    }
-
-    @Override
-    @Transactional
-    public SondageResponse fermer(Long id, String username) {
-        User user = loadUser(username);
-
-        Sondage sondage = sondageRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Sondage introuvable : " + id));
-
-        boolean isAdmin = user.getRole() == Role.ADMIN;
-        boolean isCreator = user instanceof Adherent a && sondage.getCreatedBy().getId().equals(a.getId());
-        if (!isAdmin && !isCreator)
-            throw new BadRequestException("Seul le créateur ou un administrateur peut fermer ce sondage.");
-
-        if (sondage.getStatut() != StatutSondage.ACTIVE)
-            throw new BadRequestException("Seuls les sondages actifs peuvent être fermés.");
-
-        sondage.setStatut(StatutSondage.CLOSED);
-        sondage.setClosedAt(LocalDateTime.now());
-
-        Long adherentId = user instanceof Adherent a ? a.getId() : null;
-        return toResponse(sondageRepository.save(sondage), adherentId);
-    }
-
-    @Override
-    @Transactional
-    public SondageResponse archiver(Long id, String username) {
-        User user = loadUser(username);
-        Adherent president = requirePresident(user);
-
-        Sondage sondage = sondageRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Sondage introuvable : " + id));
-
-        if (!sondage.getCreatedBy().getId().equals(president.getId()))
-            throw new BadRequestException("Vous n'êtes pas autorisé à archiver ce sondage.");
-
-        if (sondage.getStatut() != StatutSondage.CLOSED)
-            throw new BadRequestException("Seuls les sondages fermés peuvent être archivés.");
-
-        sondage.setStatut(StatutSondage.ARCHIVED);
-        return toResponse(sondageRepository.save(sondage), president.getId());
-    }
-
-    @Override
-    @Transactional
-    public void supprimer(Long id, String username) {
-        User user = loadUser(username);
-        Adherent president = requirePresident(user);
-
-        Sondage sondage = sondageRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Sondage introuvable : " + id));
-
-        if (!sondage.getCreatedBy().getId().equals(president.getId()))
-            throw new BadRequestException("Vous n'êtes pas autorisé à supprimer ce sondage.");
-
-        if (sondage.getStatut() != StatutSondage.DRAFT)
-            throw new BadRequestException("Seuls les sondages en brouillon peuvent être supprimés.");
-
-        sondageRepository.delete(sondage);
-    }
-
-    @Override
-    @Transactional
-    public List<SondageResponse> lister(String username) {
-        User user = loadUser(username);
-        Long adherentId = user instanceof Adherent a ? a.getId() : null;
-
-        List<Sondage> sondages = canSeeAllSurveys(user)
-                ? sondageRepository.findAllByOrderByCreatedAtDesc()
-                : sondageRepository.findVisibleToAdherents();
-
-        return sondages.stream().map(s -> toResponse(s, adherentId)).toList();
-    }
-
-    @Override
-    @Transactional
-    public SondageResponse trouverParId(Long id, String username) {
-        User user = loadUser(username);
-
-        Sondage sondage = sondageRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Sondage introuvable : " + id));
-
-        if (!canSeeAllSurveys(user)) {
-            if (sondage.getStatut() == StatutSondage.DRAFT || sondage.getStatut() == StatutSondage.ARCHIVED)
-                throw new NotFoundException("Sondage introuvable : " + id);
-        }
-
-        sondage.getOptions().size(); // trigger lazy load
-        Long adherentId = user instanceof Adherent a ? a.getId() : null;
-        return toResponse(sondage, adherentId);
-    }
-
-    @Override
-    @Transactional
-    public SondageResponse voter(Long sondageId, Long optionId, String username) {
-        User user = loadUser(username);
-        Adherent adherent = requireVoter(user);
-
-        Sondage sondage = sondageRepository.findById(sondageId)
-                .orElseThrow(() -> new NotFoundException("Sondage introuvable."));
-
-        if (sondage.getStatut() != StatutSondage.ACTIVE)
-            throw new BadRequestException("Ce sondage n'est pas ouvert au vote.");
-
-        if (voteSondageRepository.existsBySondageIdAndAdherentId(sondageId, adherent.getId()))
-            throw new BadRequestException("Vous avez déjà voté pour ce sondage.");
-
-        OptionSondage option = optionSondageRepository.findById(optionId)
-                .orElseThrow(() -> new NotFoundException("Option introuvable."));
-
-        if (!option.getSondage().getId().equals(sondageId))
-            throw new BadRequestException("Cette option n'appartient pas à ce sondage.");
-
-        voteSondageRepository.save(VoteSondage.builder()
-                .sondage(sondage)
-                .adherent(adherent)
-                .option(option)
-                .build());
-
-        sondage.getOptions().size(); // trigger lazy load
-        return toResponse(sondage, adherent.getId());
     }
 }

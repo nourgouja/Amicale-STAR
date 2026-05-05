@@ -19,11 +19,17 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(DisabledException.class)
     public ResponseEntity<ErrorResponse> handleDisabled(DisabledException ex) {
         return ResponseEntity.status(403)
-                .body(new ErrorResponse(500,"Compte désactivé. Contactez l'administrateur."));
+                .body(new ErrorResponse(403,"Compte désactivé. Contactez l'administrateur."));
     }
 
     @ExceptionHandler(EligibiliteException.class)
     public ResponseEntity<ErrorResponse> handleEligibilite(EligibiliteException ex) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                .body(new ErrorResponse(403, ex.getMessage()));
+    }
+
+    @ExceptionHandler(ForbiddenException.class)
+    public ResponseEntity<ErrorResponse> handleForbidden(ForbiddenException ex) {
         return ResponseEntity.status(HttpStatus.FORBIDDEN)
                 .body(new ErrorResponse(403, ex.getMessage()));
     }

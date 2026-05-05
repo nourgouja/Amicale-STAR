@@ -3,8 +3,7 @@ package tn.star.Pfe.mapper;
 import org.springframework.stereotype.Component;
 import tn.star.Pfe.dto.paiement.EcheanceResponse;
 import tn.star.Pfe.dto.inscription.InscriptionResponse;
-import tn.star.Pfe.entity.Echeance;
-import tn.star.Pfe.entity.Inscription;
+import tn.star.Pfe.entity.inscription.Inscription;
 
 import java.util.Collections;
 import java.util.List;
@@ -17,6 +16,9 @@ public class InscriptionMapper {
                 .id(i.getId())
                 .offreId(i.getOffre().getId())
                 .offreTitre(i.getOffre().getTitre())
+                .typeOffre(i.getOffre().getType() != null ? i.getOffre().getType().name() : null)
+                .modePaiement(i.getOffre().getModePaiement() != null ? i.getOffre().getModePaiement().name() : null)
+                .periodePaiement(i.getPeriodePaiement() != null ? i.getPeriodePaiement().name() : null)
                 .adherentId(i.getAdherent().getId())
                 .mailAdherent(i.getAdherent().getEmail())
                 .adherentNom(i.getAdherent().getNom())
@@ -26,8 +28,10 @@ public class InscriptionMapper {
                 .statutPaiement(i.getStatutPaiement())
                 .dateInscription(i.getDateInscription())
                 .dateAnnulation(i.getDateAnnulation())
-                .commentaire(i.getCommentaire())
+                .nombreAccompagnants(i.getNombreAccompagnants())
+                .totalPeople(i.getTotalPeople())
                 .echeances(mapEcheances(i))
+                .guests(i.getGuests() != null ? i.getGuests() : Collections.emptyList())
                 .build();
     }
 
@@ -42,7 +46,11 @@ public class InscriptionMapper {
                         e.getNumero(),
                         e.getMontant(),
                         e.getDateEcheance(),
-                        e.getStatut()))
+                        e.getStatut(),
+                        e.getDatePaiement(),
+                        e.getDaysUntilDue(),
+                        e.isOverdue(),
+                        null, null, null, null, null, null))
                 .toList();
     }
 }

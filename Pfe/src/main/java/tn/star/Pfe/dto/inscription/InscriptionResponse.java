@@ -18,6 +18,9 @@ public class InscriptionResponse {
     private Long id;
     private Long offreId;
     private String offreTitre;
+    private String typeOffre;
+    private String modePaiement;
+    private String periodePaiement;
     private Long adherentId;
     private String mailAdherent;
     private String adherentNom;
@@ -27,8 +30,10 @@ public class InscriptionResponse {
     private BigDecimal montant;
     private LocalDateTime dateInscription;
     private LocalDateTime dateAnnulation;
-    private String commentaire;
+    private int nombreAccompagnants;
+    private Integer totalPeople;
     private List<EcheanceResponse> echeances;
+    private List<GuestDTO> guests;
 
     public InscriptionResponse(Long id, String offreTitre, String mailAdherent, StatutInscription statut) {
         this.id = id;
@@ -36,6 +41,4 @@ public class InscriptionResponse {
         this.mailAdherent = mailAdherent;
         this.statut = statut;
     }
-
-
 }
