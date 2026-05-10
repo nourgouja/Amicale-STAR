@@ -8,7 +8,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 import tn.star.Pfe.entity.inscription.Inscription;
 import tn.star.Pfe.entity.user.Adherent;
 import tn.star.Pfe.entity.user.Pole;
-import tn.star.Pfe.enums.ModePaiement;
 import tn.star.Pfe.enums.StatutInscription;
 import tn.star.Pfe.enums.StatutOffre;
 import tn.star.Pfe.enums.TypeOffre;
@@ -71,15 +70,16 @@ public class Offre {
     private Adherent adherent;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "created_by_id")
+    private tn.star.Pfe.entity.user.User createdBy;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "pole_id")
     private Pole pole;
     @Column(columnDefinition = "TEXT")
     private String avantages;
 
     private String lienExterne;
-
-    @Enumerated(EnumType.STRING)
-    private ModePaiement modePaiement;
 
     @Builder.Default
     @Enumerated(EnumType.STRING)
@@ -104,7 +104,4 @@ public class Offre {
         return capaciteMax - occupied;
     }
 
-    public boolean supportsPaymentModes() {
-        return this.type == TypeOffre.VOYAGE || this.type == TypeOffre.SEJOUR;
-    }
 }

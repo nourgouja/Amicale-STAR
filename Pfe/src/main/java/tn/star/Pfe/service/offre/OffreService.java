@@ -92,11 +92,11 @@ public class OffreService implements IOffreService {
                 .dateFin(req.getDateFin())
                 .prixParPersonne(req.getPrixParPersonne())
                 .capaciteMax(req.getCapaciteMax() != null ? req.getCapaciteMax() : 0)
-                .modePaiement(req.getModePaiement())
                 .avantages(req.getAvantages())
                 .lienExterne(req.getLienExterne())
                 .statut(req.getStatut() != null ? req.getStatut() : StatutOffre.OUVERTE)
                 .pole(pole)
+                .createdBy(currentUser)
                 .build();
 
         if (image != null && !image.isEmpty()) {
@@ -184,7 +184,6 @@ public class OffreService implements IOffreService {
         if (req.getDateFin()         != null) offre.setDateFin(req.getDateFin());
         if (req.getPrixParPersonne() != null) offre.setPrixParPersonne(req.getPrixParPersonne());
         if (req.getCapaciteMax()     != null) offre.setCapaciteMax(req.getCapaciteMax());
-        if (req.getModePaiement()    != null) offre.setModePaiement(req.getModePaiement());
         if (req.getAvantages()       != null) offre.setAvantages(req.getAvantages());
         if (req.getLienExterne()     != null) offre.setLienExterne(req.getLienExterne());
 
@@ -218,9 +217,8 @@ public class OffreService implements IOffreService {
         if (offre.getType() == null)
             throw new BadRequestException("Type d'offre obligatoire.");
 
-        // CONVENTION and ANNONCE are informational — date is optional
-        boolean dateOptional = offre.getType() == TypeOffre.CONVENTION
-                            || offre.getType() == TypeOffre.ANNONCE;
+        // CONVENTION is informational — date is optional
+        boolean dateOptional = offre.getType() == TypeOffre.CONVENTION;
 
         if (!dateOptional && offre.getDateDebut() == null)
             throw new BadRequestException("Date début obligatoire.");

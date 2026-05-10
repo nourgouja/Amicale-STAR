@@ -7,7 +7,6 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
-import tn.star.Pfe.enums.ModePaiement;
 import tn.star.Pfe.enums.TypeOffre;
 
 import java.math.BigDecimal;
@@ -36,8 +35,6 @@ public class OffreRequest {
     @Min(1)
     private Integer capaciteMax;
 
-    private ModePaiement modePaiement;
-
     private String avantages;
     private String lienExterne;
 
@@ -57,7 +54,6 @@ public class OffreRequest {
         private BigDecimal prixParPersonne;
         private String lieu;
         private Long agenceId;
-        private ModePaiement modePaiement;
         private String avantages;
         private String lienExterne;
     }

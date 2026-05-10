@@ -24,11 +24,16 @@ public class OffreMapper {
         res.setCapaciteMax(offre.getCapaciteMax());
         res.setPlacesRestantes(offre.getPlacesRestantes());
         res.setPrixParPersonne(offre.getPrixParPersonne());
-        res.setModePaiement(offre.getModePaiement());
         res.setAvantages(offre.getAvantages());
         res.setLienExterne(offre.getLienExterne());
         res.setCreatedAt(offre.getCreatedAt());
         res.setUpdatedAt(offre.getUpdatedAt());
+
+        if (offre.getCreatedBy() != null) {
+            tn.star.Pfe.entity.user.User cb = offre.getCreatedBy();
+            String nom = ((cb.getPrenom() != null ? cb.getPrenom() : "") + " " + (cb.getNom() != null ? cb.getNom() : "")).trim();
+            res.setCreatedByNom(nom.isEmpty() ? cb.getEmail() : nom);
+        }
 
         if (offre.getPole() != null) {
             res.setPoleId(offre.getPole().getId());

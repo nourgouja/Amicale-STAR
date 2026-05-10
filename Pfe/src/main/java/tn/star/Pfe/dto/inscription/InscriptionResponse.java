@@ -19,7 +19,6 @@ public class InscriptionResponse {
     private Long offreId;
     private String offreTitre;
     private String typeOffre;
-    private String modePaiement;
     private String periodePaiement;
     private Long adherentId;
     private String mailAdherent;

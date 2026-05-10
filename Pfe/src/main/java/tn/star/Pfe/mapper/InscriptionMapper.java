@@ -17,7 +17,6 @@ public class InscriptionMapper {
                 .offreId(i.getOffre().getId())
                 .offreTitre(i.getOffre().getTitre())
                 .typeOffre(i.getOffre().getType() != null ? i.getOffre().getType().name() : null)
-                .modePaiement(i.getOffre().getModePaiement() != null ? i.getOffre().getModePaiement().name() : null)
                 .periodePaiement(i.getPeriodePaiement() != null ? i.getPeriodePaiement().name() : null)
                 .adherentId(i.getAdherent().getId())
                 .mailAdherent(i.getAdherent().getEmail())

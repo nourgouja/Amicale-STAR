@@ -67,7 +67,8 @@ public class InscriptionService implements IInscriptionService {
                 ? offre.getPrixParPersonne().multiply(java.math.BigDecimal.valueOf(totalPersonnes))
                 : null;
 
-        PeriodePaiement periode = offre.supportsPaymentModes()
+        boolean supportsPaymentModes = offre.getType() == TypeOffre.VOYAGE || offre.getType() == TypeOffre.SEJOUR;
+        PeriodePaiement periode = supportsPaymentModes
                 ? (periodePaiement != null ? periodePaiement : PeriodePaiement.COMPTANT)
                 : PeriodePaiement.COMPTANT;
 

@@ -1,7 +1,6 @@
 package tn.star.Pfe.dto.offre;
 
 import lombok.*;
-import tn.star.Pfe.enums.ModePaiement;
 import tn.star.Pfe.enums.StatutOffre;
 import tn.star.Pfe.enums.TypeOffre;
 
@@ -43,8 +42,8 @@ public class OffreResponse {
     private String avantages;
     private String lienExterne;
 
-    private ModePaiement modePaiement;
-
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+
+    private String createdByNom;
 }
