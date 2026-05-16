@@ -3,7 +3,7 @@ package tn.star.Pfe.service.echeance;
 import tn.star.Pfe.entity.inscription.Echeance;
 import tn.star.Pfe.entity.inscription.Inscription;
 import tn.star.Pfe.enums.PeriodePaiement;
-import tn.star.Pfe.enums.StatutPaiement;
+import tn.star.Pfe.enums.PaymentStatus;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -48,7 +48,7 @@ public class EcheanceFactory {
                     .numero(i + 1)
                     .montant(montant)
                     .dateEcheance(base.plusDays((long) daysBetween * i))
-                    .statut(StatutPaiement.EN_ATTENTE)
+                    .statut(PaymentStatus.PENDING)
                     .build());
         }
 

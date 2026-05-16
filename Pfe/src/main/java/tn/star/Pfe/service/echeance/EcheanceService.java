@@ -9,7 +9,7 @@ import tn.star.Pfe.dto.notification.NotificationDto;
 import tn.star.Pfe.dto.paiement.EcheanceResponse;
 import tn.star.Pfe.entity.inscription.Echeance;
 import tn.star.Pfe.entity.inscription.Inscription;
-import tn.star.Pfe.enums.StatutPaiement;
+import tn.star.Pfe.enums.PaymentStatus;
 import tn.star.Pfe.event.EcheanceOverdueEvent;
 import tn.star.Pfe.exceptions.BadRequestException;
 import tn.star.Pfe.exceptions.NotFoundException;
@@ -46,7 +46,7 @@ public class EcheanceService implements IEcheanceService {
 
     public List<EcheanceResponse> nonPayees() {
         return echeanceRepository
-                .findByStatutIn(List.of(StatutPaiement.EN_ATTENTE, StatutPaiement.EN_RETARD))
+                .findByStatutIn(List.of(PaymentStatus.PENDING, PaymentStatus.OVERDUE))
                 .stream()
                 .map(this::toResponse)
                 .toList();
@@ -63,7 +63,7 @@ public class EcheanceService implements IEcheanceService {
         LocalDate today   = LocalDate.now();
         LocalDate in7Days = today.plusDays(7);
         return echeanceRepository
-                .findByDateEcheanceBetweenAndStatut(today, in7Days, StatutPaiement.EN_ATTENTE)
+                .findByDateEcheanceBetweenAndStatut(today, in7Days, PaymentStatus.PENDING)
                 .stream()
                 .map(this::toResponse)
                 .toList();
@@ -74,10 +74,10 @@ public class EcheanceService implements IEcheanceService {
         Echeance echeance = echeanceRepository.findById(echeanceId)
                 .orElseThrow(() -> new NotFoundException("Échéance introuvable"));
 
-        if (echeance.getStatut() == StatutPaiement.PAYEE)
+        if (echeance.getStatut() == PaymentStatus.PAID)
             throw new BadRequestException("Cette échéance est déjà payée.");
 
-        echeance.setStatut(StatutPaiement.PAYEE);
+        echeance.setStatut(PaymentStatus.PAID);
         echeance.setDatePaiement(LocalDateTime.now());
         Echeance saved = echeanceRepository.save(echeance);
 
@@ -88,21 +88,21 @@ public class EcheanceService implements IEcheanceService {
     @Transactional
     public void marquerEnRetard() {
         List<Echeance> enRetard = echeanceRepository
-                .findByStatutAndDateEcheanceBefore(StatutPaiement.EN_ATTENTE, LocalDate.now());
+                .findByStatutAndDateEcheanceBefore(PaymentStatus.PENDING, LocalDate.now());
 
         enRetard.forEach(e -> {
-            e.setStatut(StatutPaiement.EN_RETARD);
+            e.setStatut(PaymentStatus.OVERDUE);
             publisher.publishEvent(new EcheanceOverdueEvent(e));
         });
         echeanceRepository.saveAll(enRetard);
 
         if (!enRetard.isEmpty())
-            log.info("{} échéance(s) marquées EN_RETARD", enRetard.size());
+            log.info("{} échéance(s) marquées OVERDUE", enRetard.size());
     }
 
     public void envoyerRappels() {
         List<Echeance> unpaid = echeanceRepository
-                .findByStatutIn(List.of(StatutPaiement.EN_ATTENTE, StatutPaiement.EN_RETARD));
+                .findByStatutIn(List.of(PaymentStatus.PENDING, PaymentStatus.OVERDUE));
 
         for (Echeance e : unpaid) {
             int days = e.getDaysUntilDue();
@@ -119,7 +119,7 @@ public class EcheanceService implements IEcheanceService {
         Inscription ins  = e.getInscription();
         long total = ins.getEcheances().size();
         long paid  = ins.getEcheances().stream()
-                .filter(ec -> ec.getStatut() == StatutPaiement.PAYEE).count();
+                .filter(ec -> ec.getStatut() == PaymentStatus.PAID).count();
 
         String msg = paid == total
                 ? "Tous les versements pour \"" + ins.getOffre().getTitre() + "\" ont été reçus."

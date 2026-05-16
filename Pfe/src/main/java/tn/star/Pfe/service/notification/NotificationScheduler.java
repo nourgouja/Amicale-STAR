@@ -6,7 +6,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import tn.star.Pfe.entity.inscription.Echeance;
-import tn.star.Pfe.enums.StatutPaiement;
+import tn.star.Pfe.enums.PaymentStatus;
 import tn.star.Pfe.event.EcheanceOverdueEvent;
 import tn.star.Pfe.repository.inscription.EcheanceRepository;
 
@@ -23,7 +23,7 @@ public class NotificationScheduler {
     @Scheduled(cron = "0 0 8 * * *")
     public void checkOverdueEcheances() {
         List<Echeance> overdue = echeanceRepository
-                .findByDateEcheanceBeforeAndStatut(LocalDate.now(), StatutPaiement.EN_ATTENTE);
+                .findByDateEcheanceBeforeAndStatut(LocalDate.now(), PaymentStatus.PENDING);
         overdue.forEach(e -> publisher.publishEvent(new EcheanceOverdueEvent(e)));
     }
 }

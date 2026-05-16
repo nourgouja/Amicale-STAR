@@ -7,7 +7,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-import tn.star.Pfe.enums.StatutSondage;
+import tn.star.Pfe.enums.LifecycleStatus;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
@@ -37,7 +37,7 @@ public class Election {
     @NotNull(message = "Status cannot be null")
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private StatutSondage status;
+    private LifecycleStatus status;
 
     @NotNull(message = "Voting start date cannot be null")
     @Column(nullable = false)

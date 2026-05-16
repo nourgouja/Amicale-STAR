@@ -5,14 +5,14 @@
 //import org.springframework.data.jpa.repository.Query;
 //import org.springframework.stereotype.Repository;
 //import tn.star.Pfe.entity.offre.Offre;
-//import tn.star.Pfe.enums.StatutOffre;
+//import tn.star.Pfe.enums.OfferStatus;
 //import tn.star.Pfe.enums.TypeOffre;
 //
 //import java.util.List;
 //
 //@Repository
 //public interface OffreRepository extends JpaRepository<Offre, Integer> {
-//    List<Offre> findByStatut(StatutOffre statutOffre);
+//    List<Offre> findByStatut(OfferStatus statutOffre);
 //    List<Offre> findByType(TypeOffre typeOffre);
 //
 //    @Query( "select count(i) from Inscription i where i.offre.id = :offreId and i.statut = 'CONFIRMEE'")
@@ -26,7 +26,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import tn.star.Pfe.entity.offre.Offre;
-import tn.star.Pfe.enums.StatutOffre;
+import tn.star.Pfe.enums.OfferStatus;
 import tn.star.Pfe.enums.TypeOffre;
 
 import java.util.List;
@@ -34,22 +34,22 @@ import java.util.List;
 @Repository
 public interface OffreRepository extends JpaRepository<Offre, Long> {
 
-    List<Offre> findByStatut(StatutOffre statut);
+    List<Offre> findByStatut(OfferStatus statut);
 
-    List<Offre> findByStatutIn(List<StatutOffre> statuts);
+    List<Offre> findByStatutIn(List<OfferStatus> statuts);
 
     List<Offre> findByType(TypeOffre type);
 
     List<Offre> findByTitreContainingIgnoreCase(String titre);
 
-    List<Offre> findByStatutAndType(StatutOffre statut, TypeOffre type);
+    List<Offre> findByStatutAndType(OfferStatus statut, TypeOffre type);
 
     //dashboard
-    long countByStatut(StatutOffre statut);
+    long countByStatut(OfferStatus statut);
 
     @Query("SELECT COUNT(i) FROM Inscription i " +
             "WHERE i.offre.id = :offreId " +
-            "AND i.statut = 'CONFIRMEE'")
+            "AND i.statut = 'APPROVED'")
     int countInscritsConfirmes(@Param("offreId") Long offreId);
 
 }

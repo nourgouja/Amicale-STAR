@@ -1,11 +1,11 @@
 package tn.star.Pfe.dto.dashboard;
 
-import tn.star.Pfe.enums.StatutOffre;
+import tn.star.Pfe.enums.OfferStatus;
 
 public record OffreDashboardItem(
         Long id,
         String titre,
-        StatutOffre statut,
+        OfferStatus statut,
         int placesRestantes,
         long totalInscrits
 ) {}

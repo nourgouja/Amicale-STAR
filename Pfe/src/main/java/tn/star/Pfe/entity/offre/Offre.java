@@ -8,8 +8,8 @@ import org.hibernate.annotations.UpdateTimestamp;
 import tn.star.Pfe.entity.inscription.Inscription;
 import tn.star.Pfe.entity.user.Adherent;
 import tn.star.Pfe.entity.user.Pole;
-import tn.star.Pfe.enums.StatutInscription;
-import tn.star.Pfe.enums.StatutOffre;
+import tn.star.Pfe.enums.ApprovalStatus;
+import tn.star.Pfe.enums.OfferStatus;
 import tn.star.Pfe.enums.TypeOffre;
 
 import java.math.BigDecimal;
@@ -84,7 +84,7 @@ public class Offre {
     @Builder.Default
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private StatutOffre statut = StatutOffre.BROUILLON;
+    private OfferStatus statut = OfferStatus.DRAFT;
 
     @OneToMany(mappedBy = "offre", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @Builder.Default
@@ -98,7 +98,7 @@ public class Offre {
 
     public int getPlacesRestantes(){
         int occupied = inscriptions.stream()
-                .filter(i -> i.getStatut() == StatutInscription.CONFIRMEE)
+                .filter(i -> i.getStatut() == ApprovalStatus.APPROVED)
                 .mapToInt(Inscription::getTotalPeople)
                 .sum();
         return capaciteMax - occupied;

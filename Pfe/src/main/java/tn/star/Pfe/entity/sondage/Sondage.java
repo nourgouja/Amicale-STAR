@@ -5,7 +5,7 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import tn.star.Pfe.entity.user.User;
-import tn.star.Pfe.enums.StatutSondage;
+import tn.star.Pfe.enums.LifecycleStatus;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -25,7 +25,7 @@ public class Sondage {
 
     @Enumerated(EnumType.STRING)
     @Builder.Default
-    private StatutSondage statut = StatutSondage.DRAFT;
+    private LifecycleStatus statut = LifecycleStatus.DRAFT;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "created_by_id", nullable = false)

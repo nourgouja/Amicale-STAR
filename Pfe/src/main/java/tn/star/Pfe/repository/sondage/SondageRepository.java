@@ -11,6 +11,6 @@ public interface SondageRepository extends JpaRepository<Sondage, Long> {
 
     List<Sondage> findAllByOrderByCreatedAtDesc();
 
-    @Query("SELECT s FROM Sondage s WHERE s.statut IN ('ACTIVE', 'CLOSED') ORDER BY s.createdAt DESC")
+    @Query("SELECT s FROM Sondage s WHERE s.statut IN ('OPEN', 'CLOSED') ORDER BY s.createdAt DESC")
     List<Sondage> findVisibleToAdherents();
 }

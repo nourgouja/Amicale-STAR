@@ -5,73 +5,119 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9eb97705-73c2-4459-8719-a6433c0ff1ba" name="Changes" comment="inscription et cotisation">
-      <change afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/controller/election/ElectionCallController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/controller/election/ElectionController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/dto/election/candidate/AddCandidateRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/dto/election/candidate/ApplyRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/dto/election/candidate/CandidateApplicationResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/dto/election/candidate/CandidateResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/dto/election/candidate/CandidateResultResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/dto/election/candidate/UserSummaryResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/dto/election/election/CreateElectionCallRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/dto/election/election/CreateElectionRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/dto/election/election/ElectionCallResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/dto/election/election/ElectionResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/dto/election/election/ElectionVoteRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/entity/election/Candidate.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/entity/election/CandidateApplication.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/entity/election/CandidateVote.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/entity/election/Election.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/entity/election/ElectionCall.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/enums/CallStatus.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/repository/election/CandidateApplicationRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/repository/election/CandidateRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/repository/election/CandidateVoteRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/repository/election/ElectionCallRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/repository/election/ElectionRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/election/ElectionCallService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/election/ElectionService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/election/IElectionCallService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/election/IElectionService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/config/DataInitializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/config/DataInitializer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/controller/dashboard/DashboardController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/controller/dashboard/DashboardController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/controller/inscription/InscriptionController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/controller/inscription/InscriptionController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/controller/user/AdminController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/controller/user/AdminController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/dto/dashboard/TresorierDashboardResponse.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/dto/dashboard/EcheanceSummary.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/dto/dashboard/EcheanceSummary.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/dto/dashboard/InscriptionSummary.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/dto/dashboard/InscriptionSummary.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/dto/dashboard/OffreDashboardItem.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/dto/dashboard/OffreDashboardItem.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/dto/election/candidate/CandidateApplicationResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/dto/election/candidate/CandidateApplicationResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/dto/election/election/ElectionCallResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/dto/election/election/ElectionCallResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/dto/election/election/ElectionResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/dto/election/election/ElectionResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/dto/inscription/InscriptionResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/dto/inscription/InscriptionResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/dto/offre/OffreRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/dto/offre/OffreRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/dto/offre/OffreResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/dto/offre/OffreResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/dto/paiement/EcheanceResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/dto/paiement/EcheanceResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/entity/election/CandidateApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/entity/election/CandidateApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/entity/election/Election.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/entity/election/Election.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/entity/election/ElectionCall.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/entity/election/ElectionCall.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/entity/inscription/Echeance.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/entity/inscription/Echeance.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/entity/inscription/Inscription.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/entity/inscription/Inscription.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/entity/offre/Offre.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/entity/offre/Offre.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/enums/PosteBureau.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/enums/PosteBureau.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/enums/StatutOffre.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/enums/StatutOffre.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/enums/StatutSondage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/enums/StatutSondage.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/exceptions/GlobalExceptionHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/exceptions/GlobalExceptionHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/repository/EcheanceRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/repository/inscription/EcheanceRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/repository/GuestRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/repository/inscription/GuestRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/repository/InscriptionRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/repository/inscription/InscriptionRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/repository/OffreImageRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/repository/offer/OffreImageRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/repository/OffreRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/repository/offer/OffreRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/repository/OptionSondageRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/repository/sondage/OptionSondageRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/repository/PoleRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/repository/user/PoleRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/repository/SondageRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/repository/sondage/SondageRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/repository/UserRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/repository/user/UserRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/repository/VoteSondageRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/repository/sondage/VoteSondageRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/security/CustomUserDetailsService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/security/CustomUserDetailsService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/entity/sondage/Sondage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/entity/sondage/Sondage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/entity/user/Adherent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/entity/user/Adherent.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/enums/CallStatus.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/enums/ModePaiement.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/enums/StatutDemande.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/enums/StatutInscription.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/enums/StatutOffre.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/enums/StatutPaiement.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/enums/StatutSondage.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/enums/TypeOffre.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/enums/TypeOffre.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/event/ApplicationStatusChangedEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/event/ApplicationStatusChangedEvent.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/event/InscriptionStatusChangedEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/event/InscriptionStatusChangedEvent.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/repository/election/CandidateApplicationRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/repository/election/CandidateApplicationRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/repository/election/ElectionCallRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/repository/election/ElectionCallRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/repository/election/ElectionRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/repository/election/ElectionRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/repository/inscription/EcheanceRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/repository/inscription/EcheanceRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/repository/inscription/InscriptionRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/repository/inscription/InscriptionRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/repository/offer/OffreRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/repository/offer/OffreRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/repository/sondage/SondageRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/repository/sondage/SondageRepository.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/adhesion/AdhesionService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/adhesion/AdhesionService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/auth/EcheanceAuthService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/auth/EcheanceAuthService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/auth/OffreAuthService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/auth/OffreAuthService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/dashboard/DashboardService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/dashboard/DashboardService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/dashboard/IDashboardService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/dashboard/IDashboardService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/echeance/EcheanceFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/echeance/EcheanceFactory.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/echeance/EcheanceService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/echeance/EcheanceService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/email/EmailService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/email/EmailService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/email/IEmailService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/email/IEmailService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/inscription/GuestService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/inscription/GuestService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/election/ElectionCallService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/election/ElectionCallService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/election/ElectionService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/election/ElectionService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/inscription/IInscriptionService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/inscription/IInscriptionService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/inscription/InscriptionService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/inscription/InscriptionService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/notification/NotificationScheduler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/notification/NotificationScheduler.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/notification/NotificationService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/notification/NotificationService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/offre/OffreService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/offre/OffreService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/pole/PoleService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/pole/PoleService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/sondage/SondageService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/sondage/SondageService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/user/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/user/UserService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/tn/star/Pfe/controller/TestController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/tn/star/Pfe/controller/TestController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tn/star/Pfe/controller/inscription/InscriptionController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/tn/star/Pfe/controller/inscription/InscriptionController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tn/star/Pfe/dto/dashboard/EcheanceSummary.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/tn/star/Pfe/dto/dashboard/EcheanceSummary.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tn/star/Pfe/dto/dashboard/InscriptionSummary.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/tn/star/Pfe/dto/dashboard/InscriptionSummary.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tn/star/Pfe/dto/dashboard/OffreDashboardItem.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/tn/star/Pfe/dto/dashboard/OffreDashboardItem.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tn/star/Pfe/dto/election/candidate/CandidateApplicationResponse$CandidateApplicationResponseBuilder.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/tn/star/Pfe/dto/election/candidate/CandidateApplicationResponse$CandidateApplicationResponseBuilder.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tn/star/Pfe/dto/election/candidate/CandidateApplicationResponse.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/tn/star/Pfe/dto/election/candidate/CandidateApplicationResponse.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tn/star/Pfe/dto/election/election/ElectionCallResponse$ElectionCallResponseBuilder.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/tn/star/Pfe/dto/election/election/ElectionCallResponse$ElectionCallResponseBuilder.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tn/star/Pfe/dto/election/election/ElectionCallResponse.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/tn/star/Pfe/dto/election/election/ElectionCallResponse.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tn/star/Pfe/dto/election/election/ElectionResponse$ElectionResponseBuilder.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/tn/star/Pfe/dto/election/election/ElectionResponse$ElectionResponseBuilder.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tn/star/Pfe/dto/election/election/ElectionResponse.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/tn/star/Pfe/dto/election/election/ElectionResponse.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tn/star/Pfe/dto/inscription/InscriptionResponse$InscriptionResponseBuilder.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/tn/star/Pfe/dto/inscription/InscriptionResponse$InscriptionResponseBuilder.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tn/star/Pfe/dto/inscription/InscriptionResponse.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/tn/star/Pfe/dto/inscription/InscriptionResponse.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tn/star/Pfe/dto/offre/OffreRequest.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/tn/star/Pfe/dto/offre/OffreRequest.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tn/star/Pfe/dto/offre/OffreResponse$OffreResponseBuilder.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/tn/star/Pfe/dto/offre/OffreResponse$OffreResponseBuilder.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tn/star/Pfe/dto/offre/OffreResponse.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/tn/star/Pfe/dto/offre/OffreResponse.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tn/star/Pfe/dto/paiement/EcheanceResponse.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/tn/star/Pfe/dto/paiement/EcheanceResponse.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tn/star/Pfe/entity/election/CandidateApplication$CandidateApplicationBuilder.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/tn/star/Pfe/entity/election/CandidateApplication$CandidateApplicationBuilder.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tn/star/Pfe/entity/election/CandidateApplication.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/tn/star/Pfe/entity/election/CandidateApplication.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tn/star/Pfe/entity/election/Election$ElectionBuilder.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/tn/star/Pfe/entity/election/Election$ElectionBuilder.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tn/star/Pfe/entity/election/Election.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/tn/star/Pfe/entity/election/Election.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tn/star/Pfe/entity/election/ElectionCall$ElectionCallBuilder.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/tn/star/Pfe/entity/election/ElectionCall$ElectionCallBuilder.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tn/star/Pfe/entity/election/ElectionCall.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/tn/star/Pfe/entity/election/ElectionCall.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tn/star/Pfe/entity/inscription/Echeance$EcheanceBuilder.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/tn/star/Pfe/entity/inscription/Echeance$EcheanceBuilder.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tn/star/Pfe/entity/inscription/Echeance.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/tn/star/Pfe/entity/inscription/Echeance.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tn/star/Pfe/entity/inscription/Inscription$InscriptionBuilder.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/tn/star/Pfe/entity/inscription/Inscription$InscriptionBuilder.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tn/star/Pfe/entity/inscription/Inscription.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/tn/star/Pfe/entity/inscription/Inscription.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tn/star/Pfe/entity/offre/Offre$OffreBuilder.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/tn/star/Pfe/entity/offre/Offre$OffreBuilder.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tn/star/Pfe/entity/offre/Offre.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/tn/star/Pfe/entity/offre/Offre.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tn/star/Pfe/entity/sondage/Sondage$SondageBuilder.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/tn/star/Pfe/entity/sondage/Sondage$SondageBuilder.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tn/star/Pfe/entity/sondage/Sondage.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/tn/star/Pfe/entity/sondage/Sondage.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tn/star/Pfe/entity/user/Adherent$AdherentBuilder.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/tn/star/Pfe/entity/user/Adherent$AdherentBuilder.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tn/star/Pfe/entity/user/Adherent.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/tn/star/Pfe/entity/user/Adherent.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tn/star/Pfe/enums/CallStatus.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tn/star/Pfe/enums/ModePaiement.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tn/star/Pfe/enums/StatutDemande.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tn/star/Pfe/enums/StatutInscription.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tn/star/Pfe/enums/StatutOffre.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tn/star/Pfe/enums/StatutPaiement.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tn/star/Pfe/enums/StatutSondage.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tn/star/Pfe/event/ApplicationStatusChangedEvent.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/tn/star/Pfe/event/ApplicationStatusChangedEvent.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tn/star/Pfe/event/InscriptionStatusChangedEvent.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/tn/star/Pfe/event/InscriptionStatusChangedEvent.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tn/star/Pfe/listener/ElectionEventListener.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/tn/star/Pfe/listener/ElectionEventListener.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tn/star/Pfe/mapper/InscriptionMapper.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/tn/star/Pfe/mapper/InscriptionMapper.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tn/star/Pfe/mapper/OffreMapper.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/tn/star/Pfe/mapper/OffreMapper.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tn/star/Pfe/repository/election/CandidateApplicationRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/tn/star/Pfe/repository/election/CandidateApplicationRepository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tn/star/Pfe/repository/election/ElectionCallRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/tn/star/Pfe/repository/election/ElectionCallRepository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tn/star/Pfe/repository/election/ElectionRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/tn/star/Pfe/repository/election/ElectionRepository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tn/star/Pfe/repository/inscription/EcheanceRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/tn/star/Pfe/repository/inscription/EcheanceRepository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tn/star/Pfe/repository/inscription/InscriptionRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/tn/star/Pfe/repository/inscription/InscriptionRepository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tn/star/Pfe/repository/offer/OffreRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/tn/star/Pfe/repository/offer/OffreRepository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tn/star/Pfe/repository/sondage/SondageRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/tn/star/Pfe/repository/sondage/SondageRepository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tn/star/Pfe/service/adhesion/AdhesionService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/tn/star/Pfe/service/adhesion/AdhesionService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tn/star/Pfe/service/dashboard/DashboardService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/tn/star/Pfe/service/dashboard/DashboardService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tn/star/Pfe/service/echeance/EcheanceFactory.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/tn/star/Pfe/service/echeance/EcheanceFactory.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tn/star/Pfe/service/echeance/EcheanceService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/tn/star/Pfe/service/echeance/EcheanceService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tn/star/Pfe/service/election/ElectionCallService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/tn/star/Pfe/service/election/ElectionCallService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tn/star/Pfe/service/election/ElectionService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/tn/star/Pfe/service/election/ElectionService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tn/star/Pfe/service/inscription/IInscriptionService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/tn/star/Pfe/service/inscription/IInscriptionService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tn/star/Pfe/service/inscription/InscriptionService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/tn/star/Pfe/service/inscription/InscriptionService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tn/star/Pfe/service/notification/NotificationScheduler.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/tn/star/Pfe/service/notification/NotificationScheduler.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tn/star/Pfe/service/notification/NotificationService$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/tn/star/Pfe/service/notification/NotificationService$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tn/star/Pfe/service/notification/NotificationService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/tn/star/Pfe/service/notification/NotificationService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tn/star/Pfe/service/offre/OffreService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/tn/star/Pfe/service/offre/OffreService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tn/star/Pfe/service/sondage/SondageService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/tn/star/Pfe/service/sondage/SondageService.class" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -111,7 +157,7 @@
     <urls />
   </component>
   <component name="ProblemsViewState">
-    <option name="selectedTabId" value="ProjectErrors" />
+    <option name="selectedTabId" value="CurrentFile" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 7

@@ -11,7 +11,7 @@ import tn.star.Pfe.dto.auth.create.DemandeAdhesionResponse;
 import tn.star.Pfe.dto.auth.create.DemandeRequest;
 import tn.star.Pfe.entity.user.Adherent;
 import tn.star.Pfe.enums.Role;
-import tn.star.Pfe.enums.StatutDemande;
+import tn.star.Pfe.enums.ApprovalStatus;
 import tn.star.Pfe.event.AdhesionDemandeEvent;
 import tn.star.Pfe.exceptions.BadRequestException;
 import tn.star.Pfe.exceptions.NotFoundException;
@@ -51,7 +51,7 @@ public class AdhesionService implements IAdhesionService {
                 .poste(request.poste())
                 .motDePasse(passwordEncoder.encode(tempPassword))
                 .role(Role.ADHERENT)
-                .statut(StatutDemande.PENDING)
+                .statut(ApprovalStatus.PENDING)
                 .firstLogin(true)
                 .actif(false)
                 .build();
@@ -92,7 +92,7 @@ public class AdhesionService implements IAdhesionService {
         adherent.setMotDePasse(passwordEncoder.encode(tempPassword));
 
 
-        adherent.setStatut(StatutDemande.APPROVED);
+        adherent.setStatut(ApprovalStatus.APPROVED);
         adherent.setActif(true);
         adherent.setFirstLogin(true);
         userRepository.save(adherent);
@@ -106,7 +106,7 @@ public class AdhesionService implements IAdhesionService {
     public void rejeter(Long id) {
         Adherent adherent = findPendingAdherent(id);
 
-        adherent.setStatut(StatutDemande.REJECTED);
+        adherent.setStatut(ApprovalStatus.REJECTED);
 
         userRepository.save(adherent);
 
@@ -123,7 +123,7 @@ public class AdhesionService implements IAdhesionService {
         return userRepository.findById(id)
                 .filter(u -> u instanceof Adherent)
                 .map(u -> (Adherent) u)
-                .filter(a -> a.getStatut() == StatutDemande.PENDING)
+                .filter(a -> a.getStatut() == ApprovalStatus.PENDING)
                 .orElseThrow(() -> new NotFoundException("Demande introuvable ou déjà traitée."));
     }
 }

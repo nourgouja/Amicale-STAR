@@ -104,7 +104,7 @@ import tn.star.Pfe.dto.inscription.InscriptionCreateRequest;
 import tn.star.Pfe.dto.inscription.InscriptionResponse;
 import tn.star.Pfe.entity.user.Adherent;
 import tn.star.Pfe.enums.PeriodePaiement;
-import tn.star.Pfe.enums.StatutInscription;
+import tn.star.Pfe.enums.ApprovalStatus;
 import tn.star.Pfe.enums.TypeOffre;
 import tn.star.Pfe.exceptions.EligibiliteException;
 import tn.star.Pfe.exceptions.NotFoundException;
@@ -134,9 +134,9 @@ public class InscriptionController {
             @RequestParam(required = false) String statut,
             @RequestParam(required = false) String type,
             @RequestParam(required = false) String search) {
-        StatutInscription statutEnum = null;
+        ApprovalStatus statutEnum = null;
         TypeOffre typeEnum = null;
-        try { if (statut != null && !statut.isBlank()) statutEnum = StatutInscription.valueOf(statut); } catch (IllegalArgumentException ignored) {}
+        try { if (statut != null && !statut.isBlank()) statutEnum = ApprovalStatus.valueOf(statut); } catch (IllegalArgumentException ignored) {}
         try { if (type   != null && !type.isBlank())   typeEnum   = TypeOffre.valueOf(type);           } catch (IllegalArgumentException ignored) {}
         return ResponseEntity.ok(inscriptionService.listerFiltrees(statutEnum, typeEnum, search));
     }

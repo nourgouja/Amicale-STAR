@@ -20,8 +20,8 @@ import tn.star.Pfe.entity.election.CandidateVote;
 import tn.star.Pfe.entity.election.Election;
 import tn.star.Pfe.entity.election.ElectionCall;
 import tn.star.Pfe.entity.user.User;
+import tn.star.Pfe.enums.LifecycleStatus;
 import tn.star.Pfe.enums.PosteBureau;
-import tn.star.Pfe.enums.StatutSondage;
 import tn.star.Pfe.event.ElectionResultsPublishedEvent;
 import tn.star.Pfe.event.ExtraRoundCreatedEvent;
 import tn.star.Pfe.repository.election.CandidateRepository;
@@ -75,14 +75,14 @@ public class ElectionService implements IElectionService {
     @Override
     @Transactional(readOnly = true)
     public Page<ElectionResponse> getAllActiveElections(Pageable pageable, Long voterId) {
-        return electionRepository.findByStatus(StatutSondage.ACTIVE, pageable)
+        return electionRepository.findByStatus(LifecycleStatus.OPEN, pageable)
                 .map(e -> toResponse(e, voterId));
     }
 
     @Override
     @Transactional(readOnly = true)
     public Page<ElectionResponse> getAllClosedElections(Pageable pageable) {
-        return electionRepository.findByStatus(StatutSondage.CLOSED, pageable)
+        return electionRepository.findByStatus(LifecycleStatus.CLOSED, pageable)
                 .map(e -> toResponse(e, null));
     }
 
@@ -92,10 +92,10 @@ public class ElectionService implements IElectionService {
         log.info("Closing election {} by user {}", id, userId);
         Election election = electionRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Election not found: " + id));
-        if (election.getStatus() != StatutSondage.ACTIVE) {
+        if (election.getStatus() != LifecycleStatus.OPEN) {
             throw new IllegalStateException("Election is not active");
         }
-        election.setStatus(StatutSondage.CLOSED);
+        election.setStatus(LifecycleStatus.CLOSED);
         election.setUpdatedBy(userId);
         Election saved = electionRepository.save(election);
         log.info("Election {} closed", id);
@@ -108,8 +108,8 @@ public class ElectionService implements IElectionService {
         log.info("Deleting election {} by user {}", id, userId);
         Election election = electionRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Election not found: " + id));
-        voteRepository.deleteInBatch(voteRepository.findAllByElection(election.getId()));
-        candidateRepository.deleteInBatch(candidateRepository.findByElection(election, Pageable.unpaged()).getContent());
+        voteRepository.deleteAllInBatch(voteRepository.findAllByElection(election.getId()));
+        candidateRepository.deleteAllInBatch(candidateRepository.findByElection(election, Pageable.unpaged()).getContent());
         electionRepository.delete(election);
         log.info("Election {} deleted", id);
     }
@@ -142,7 +142,7 @@ public class ElectionService implements IElectionService {
         Election election = electionRepository.findById(electionId)
                 .orElseThrow(() -> new IllegalArgumentException("Election not found: " + electionId));
 
-        if (election.getStatus() != StatutSondage.DRAFT) {
+        if (election.getStatus() != LifecycleStatus.DRAFT) {
             throw new IllegalStateException("Cannot add candidates to non-draft election");
         }
 
@@ -180,7 +180,7 @@ public class ElectionService implements IElectionService {
             throw new IllegalStateException("You are not eligible to vote in this election");
         }
 
-        if (election.getStatus() != StatutSondage.ACTIVE) {
+        if (election.getStatus() != LifecycleStatus.OPEN) {
             throw new IllegalStateException("Election is not active for voting");
         }
 
@@ -259,11 +259,11 @@ public class ElectionService implements IElectionService {
         Election election = electionRepository.findById(electionId)
                 .orElseThrow(() -> new IllegalArgumentException("Election not found: " + electionId));
 
-        if (election.getStatus() != StatutSondage.CLOSED) {
+        if (election.getStatus() != LifecycleStatus.CLOSED) {
             throw new IllegalStateException("Cannot publish results for non-closed election");
         }
 
-        election.setStatus(StatutSondage.RESULTS_PUBLISHED);
+        election.setStatus(LifecycleStatus.RESULTS_PUBLISHED);
         election.setResultsPublishedAt(LocalDateTime.now());
         election.setUpdatedBy(userId);
 
@@ -282,8 +282,8 @@ public class ElectionService implements IElectionService {
         Election parentElection = electionRepository.findById(electionId)
                 .orElseThrow(() -> new IllegalArgumentException("Election not found: " + electionId));
 
-        if (parentElection.getStatus() != StatutSondage.RESULTS_PUBLISHED &&
-                parentElection.getStatus() != StatutSondage.CLOSED) {
+        if (parentElection.getStatus() != LifecycleStatus.RESULTS_PUBLISHED &&
+                parentElection.getStatus() != LifecycleStatus.CLOSED) {
             throw new IllegalStateException("Extra round can only be created for closed elections");
         }
 
@@ -297,7 +297,7 @@ public class ElectionService implements IElectionService {
         Election extraRound = Election.builder()
                 .titre(parentElection.getTitre() + " - Tour supplémentaire")
                 .description(parentElection.getDescription())
-                .status(StatutSondage.ACTIVE)
+                .status(LifecycleStatus.OPEN)
                 .dateDebut(LocalDateTime.now())
                 .dateFin(LocalDateTime.now().plusDays(2))
                 .parentElection(parentElection)
@@ -383,8 +383,8 @@ public class ElectionService implements IElectionService {
             boolean hasTieForPos = maxVotes > 0 && countWithMax > 1;
             boolean autoSelected = posCandidates.size() == 1;
 
-            if (hasTieForPos && (election.getStatus() == StatutSondage.CLOSED ||
-                    election.getStatus() == StatutSondage.RESULTS_PUBLISHED)) {
+            if (hasTieForPos && (election.getStatus() == LifecycleStatus.CLOSED ||
+                    election.getStatus() == LifecycleStatus.RESULTS_PUBLISHED)) {
                 tiedPositions.add(pos.name());
             }
 
@@ -433,8 +433,8 @@ public class ElectionService implements IElectionService {
         }
 
         long totalVotes = voteRepository.countByElection(election);
-        boolean closed = election.getStatus() == StatutSondage.CLOSED ||
-                election.getStatus() == StatutSondage.RESULTS_PUBLISHED;
+        boolean closed = election.getStatus() == LifecycleStatus.CLOSED ||
+                election.getStatus() == LifecycleStatus.RESULTS_PUBLISHED;
 
         return ElectionResponse.builder()
                 .id(election.getId())
@@ -451,10 +451,10 @@ public class ElectionService implements IElectionService {
                 .createdAt(election.getCreatedAt())
                 .updatedAt(election.getUpdatedAt())
                 .resultsPublishedAt(election.getResultsPublishedAt())
-                .isResultsPublished(election.getStatus() == StatutSondage.RESULTS_PUBLISHED)
-                .resultsPublished(election.getStatus() == StatutSondage.RESULTS_PUBLISHED)
-                .canVote(election.getStatus() == StatutSondage.ACTIVE)
-                .canPublishResults(election.getStatus() == StatutSondage.CLOSED)
+                .isResultsPublished(election.getStatus() == LifecycleStatus.RESULTS_PUBLISHED)
+                .resultsPublished(election.getStatus() == LifecycleStatus.RESULTS_PUBLISHED)
+                .canVote(election.getStatus() == LifecycleStatus.OPEN)
+                .canPublishResults(election.getStatus() == LifecycleStatus.CLOSED)
                 .candidates(summaries)
                 .candidatesByPosition(byPositionMap)
                 .votedPositions(votedPositions)

@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import tn.star.Pfe.enums.StatutDemande;
+import tn.star.Pfe.enums.ApprovalStatus;
 import tn.star.Pfe.enums.PosteBureau;
 
 import java.time.LocalDateTime;
@@ -22,7 +22,7 @@ public class CandidateApplicationResponse {
     private PosteBureau position;
     private String motivation;
     private byte[] photo;
-    private StatutDemande status;
+    private ApprovalStatus status;
     private LocalDateTime createdAt;
     private LocalDateTime reviewedAt;
     private String rejectionReason;

@@ -7,7 +7,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-import tn.star.Pfe.enums.CallStatus;
+import tn.star.Pfe.enums.LifecycleStatus;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -35,7 +35,7 @@ public class ElectionCall {
     @NotNull(message = "Status cannot be null")
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private CallStatus status;
+    private LifecycleStatus status;
 
     @NotNull(message = "Application deadline cannot be null")
     @Column(nullable = false)

@@ -9,7 +9,7 @@ import tn.star.Pfe.dto.offre.OffreRequest;
 import tn.star.Pfe.dto.offre.OffreResponse;
 import tn.star.Pfe.entity.offre.Offre;
 import tn.star.Pfe.entity.user.User;
-import tn.star.Pfe.enums.StatutOffre;
+import tn.star.Pfe.enums.OfferStatus;
 import tn.star.Pfe.event.OffreCreatedEvent;
 import tn.star.Pfe.exceptions.BadRequestException;
 import tn.star.Pfe.exceptions.NotFoundException;
@@ -39,14 +39,14 @@ public class OffreService implements IOffreService {
 
 
     public List<OffreResponse> listerOffresOuvertes() {
-        return offreRepository.findByStatut(StatutOffre.OUVERTE)
+        return offreRepository.findByStatut(OfferStatus.OPEN)
                 .stream()
                 .map(offreMapper::toResponse)
                 .toList();
     }
 
     public List<OffreResponse> listerOffresPubliques() {
-        return offreRepository.findByStatutIn(List.of(StatutOffre.OUVERTE, StatutOffre.FERMEE))
+        return offreRepository.findByStatutIn(List.of(OfferStatus.OPEN, OfferStatus.CLOSED))
                 .stream()
                 .map(offreMapper::toResponse)
                 .toList();
@@ -94,7 +94,7 @@ public class OffreService implements IOffreService {
                 .capaciteMax(req.getCapaciteMax() != null ? req.getCapaciteMax() : 0)
                 .avantages(req.getAvantages())
                 .lienExterne(req.getLienExterne())
-                .statut(req.getStatut() != null ? req.getStatut() : StatutOffre.OUVERTE)
+                .statut(req.getStatut() != null ? req.getStatut() : OfferStatus.OPEN)
                 .pole(pole)
                 .createdBy(currentUser)
                 .build();
@@ -145,7 +145,7 @@ public class OffreService implements IOffreService {
         Offre offre = offreRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Offre introuvable : " + id));
 
-        if (offre.getStatut() == StatutOffre.ANNULEE)
+        if (offre.getStatut() == OfferStatus.CANCELLED)
             throw new BadRequestException("Impossible de modifier une offre annulée.");
 
         if (req.getTitre() != null)
@@ -173,7 +173,7 @@ public class OffreService implements IOffreService {
         Offre offre = offreRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Offre introuvable : " + id));
 
-        if (offre.getStatut() == StatutOffre.ANNULEE)
+        if (offre.getStatut() == OfferStatus.CANCELLED)
             throw new BadRequestException("Impossible de modifier une offre annulée.");
 
         if (req.getTitre()           != null) offre.setTitre(req.getTitre());
@@ -201,7 +201,7 @@ public class OffreService implements IOffreService {
     public OffreResponse fermer(Long id) {
         Offre offre = offreRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Offre introuvable : " + id));
-        offre.setStatut(StatutOffre.FERMEE);
+        offre.setStatut(OfferStatus.CLOSED);
         return offreMapper.toResponse(offreRepository.save(offre));
     }
 
@@ -209,7 +209,7 @@ public class OffreService implements IOffreService {
     public void supprimer(Long id) {
         Offre offre = offreRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Offre introuvable : " + id));
-        offre.setStatut(StatutOffre.ANNULEE);
+        offre.setStatut(OfferStatus.CANCELLED);
         offreRepository.save(offre);
     }
 
@@ -236,11 +236,11 @@ public class OffreService implements IOffreService {
         Offre offre = offreRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Offre introuvable"));
 
-        if (offre.getStatut() != StatutOffre.BROUILLON)
+        if (offre.getStatut() != OfferStatus.DRAFT)
             throw new BadRequestException("Seules les offres en brouillon peuvent être publiées. Statut actuel: " + offre.getStatut());
 
         validerParType(offre);
-        offre.setStatut(StatutOffre.OUVERTE);
+        offre.setStatut(OfferStatus.OPEN);
         return offreMapper.toResponse(offreRepository.save(offre));
     }
 
@@ -248,7 +248,7 @@ public class OffreService implements IOffreService {
     public OffreResponse archiver(Long id) {
         Offre offre = offreRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Offre introuvable"));
-        offre.setStatut(StatutOffre.ARCHIVEE);
+        offre.setStatut(OfferStatus.ARCHIVEE);
         return offreMapper.toResponse(offreRepository.save(offre));
     }
 

@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import tn.star.Pfe.entity.inscription.Inscription;
-import tn.star.Pfe.enums.StatutDemande;
+import tn.star.Pfe.enums.ApprovalStatus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +25,7 @@ public class Adherent extends User {
 
     @Enumerated(EnumType.STRING)
     @Builder.Default
-    private StatutDemande statut = StatutDemande.APPROVED;
+    private ApprovalStatus statut = ApprovalStatus.APPROVED;
 
     //statut de ses paiements
 }

@@ -1,6 +1,6 @@
 package tn.star.Pfe.dto.dashboard;
 
-import tn.star.Pfe.enums.StatutPaiement;
+import tn.star.Pfe.enums.PaymentStatus;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -10,6 +10,6 @@ public record EcheanceSummary(
         String offreTitre,
         BigDecimal montant,
         LocalDate dateEcheance,
-        StatutPaiement statut,
+        PaymentStatus statut,
         Integer numero
 ) {}

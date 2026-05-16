@@ -1,11 +1,11 @@
 package tn.star.Pfe.event;
 
 import tn.star.Pfe.entity.inscription.Inscription;
-import tn.star.Pfe.enums.StatutInscription;
+import tn.star.Pfe.enums.ApprovalStatus;
 
 public record InscriptionStatusChangedEvent (
         Inscription inscription,
-        StatutInscription oldStatut,
-        StatutInscription newStatut
+        ApprovalStatus oldStatut,
+        ApprovalStatus newStatut
 ) {
 }

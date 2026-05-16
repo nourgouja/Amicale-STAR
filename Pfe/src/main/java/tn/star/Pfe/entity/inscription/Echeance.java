@@ -2,7 +2,7 @@ package tn.star.Pfe.entity.inscription;
 
 import jakarta.persistence.*;
 import lombok.*;
-import tn.star.Pfe.enums.StatutPaiement;
+import tn.star.Pfe.enums.PaymentStatus;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -38,13 +38,13 @@ public class Echeance {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     @Builder.Default
-    private StatutPaiement statut = StatutPaiement.EN_ATTENTE;
+    private PaymentStatus statut = PaymentStatus.PENDING;
 
     @Column
     private LocalDateTime datePaiement;
 
     public boolean isOverdue() {
-        return statut == StatutPaiement.EN_ATTENTE && LocalDate.now().isAfter(dateEcheance);
+        return statut == PaymentStatus.PENDING && LocalDate.now().isAfter(dateEcheance);
     }
 
     public int getDaysUntilDue() {

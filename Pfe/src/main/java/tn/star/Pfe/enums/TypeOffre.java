@@ -7,3 +7,4 @@ public enum TypeOffre {
     ACTIVITE,
     CONVENTION
 }
+

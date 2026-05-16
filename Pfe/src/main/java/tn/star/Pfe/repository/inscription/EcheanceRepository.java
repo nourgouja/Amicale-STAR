@@ -7,7 +7,7 @@ import tn.star.Pfe.entity.user.Adherent;
 import tn.star.Pfe.entity.inscription.Echeance;
 import tn.star.Pfe.entity.inscription.Inscription;
 import tn.star.Pfe.entity.user.Pole;
-import tn.star.Pfe.enums.StatutPaiement;
+import tn.star.Pfe.enums.PaymentStatus;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -19,24 +19,24 @@ public interface EcheanceRepository extends JpaRepository<Echeance, Long> {
 
     List<Echeance> findByInscription_Adherent(Adherent adherent);
 
-    List<Echeance> findByStatutAndDateEcheanceBefore(StatutPaiement statut, LocalDate date);
+    List<Echeance> findByStatutAndDateEcheanceBefore(PaymentStatus statut, LocalDate date);
 
-    List<Echeance> findByDateEcheanceBeforeAndStatut(LocalDate date, StatutPaiement statut);
+    List<Echeance> findByDateEcheanceBeforeAndStatut(LocalDate date, PaymentStatus statut);
 
-    List<Echeance> findByStatutIn(List<StatutPaiement> statuts);
+    List<Echeance> findByStatutIn(List<PaymentStatus> statuts);
 
-    List<Echeance> findByStatutOrderByDateEcheanceAsc(StatutPaiement statut);
+    List<Echeance> findByStatutOrderByDateEcheanceAsc(PaymentStatus statut);
 
-    List<Echeance> findByDateEcheanceBetweenAndStatut(LocalDate start, LocalDate end, StatutPaiement statut);
+    List<Echeance> findByDateEcheanceBetweenAndStatut(LocalDate start, LocalDate end, PaymentStatus statut);
 
-    List<Echeance> findByDateEcheanceAndStatut(LocalDate date, StatutPaiement statut);
+    List<Echeance> findByDateEcheanceAndStatut(LocalDate date, PaymentStatus statut);
 
-    long countByStatut(StatutPaiement statut);
+    long countByStatut(PaymentStatus statut);
 
     @Query("SELECT COALESCE(SUM(e.montant), 0) FROM Echeance e WHERE e.statut = :statut")
-    BigDecimal sumMontantByStatut(@Param("statut") StatutPaiement statut);
+    BigDecimal sumMontantByStatut(@Param("statut") PaymentStatus statut);
 
     @Query("SELECT COALESCE(SUM(e.montant), 0) FROM Echeance e " +
            "WHERE e.statut = :statut AND e.inscription.offre.pole = :pole")
-    BigDecimal sumMontantByPoleAndStatut(@Param("pole") Pole pole, @Param("statut") StatutPaiement statut);
+    BigDecimal sumMontantByPoleAndStatut(@Param("pole") Pole pole, @Param("statut") PaymentStatus statut);
 }

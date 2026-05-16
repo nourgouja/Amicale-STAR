@@ -10,7 +10,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import tn.star.Pfe.entity.user.User;
 import tn.star.Pfe.enums.PosteBureau;
-import tn.star.Pfe.enums.StatutDemande;
+import tn.star.Pfe.enums.ApprovalStatus;
 
 import java.time.LocalDateTime;
 
@@ -47,7 +47,7 @@ public class CandidateApplication {
     @NotNull(message = "Status cannot be null")
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private StatutDemande status;
+    private ApprovalStatus status;
 
     @Lob
     @Column(columnDefinition = "LONGBLOB")

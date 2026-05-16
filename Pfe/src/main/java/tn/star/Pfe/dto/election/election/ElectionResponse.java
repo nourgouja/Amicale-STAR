@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import tn.star.Pfe.dto.election.candidate.CandidateSummary;
-import tn.star.Pfe.enums.StatutSondage;
+import tn.star.Pfe.enums.LifecycleStatus;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -20,7 +20,7 @@ public class ElectionResponse {
     private Long id;
     private String titre;
     private String description;
-    private StatutSondage status;
+    private LifecycleStatus status;
     private LocalDateTime dateDebut;
     private LocalDateTime dateFin;
     private LocalDateTime closedAt;

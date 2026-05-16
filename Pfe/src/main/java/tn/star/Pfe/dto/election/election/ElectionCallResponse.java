@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import tn.star.Pfe.enums.CallStatus;
+import tn.star.Pfe.enums.LifecycleStatus;
 
 import java.time.LocalDateTime;
 
@@ -18,7 +18,7 @@ public class ElectionCallResponse {
     private Long id;
     private String titre;
     private String description;
-    private CallStatus status;
+    private LifecycleStatus status;
     private LocalDateTime dateFinCandidature;
     private LocalDateTime dateDebut;
     private LocalDateTime dateFin;

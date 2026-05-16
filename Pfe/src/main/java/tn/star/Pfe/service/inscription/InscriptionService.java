@@ -11,8 +11,8 @@ import tn.star.Pfe.entity.inscription.Echeance;
 import tn.star.Pfe.entity.inscription.Inscription;
 import tn.star.Pfe.entity.offre.Offre;
 import tn.star.Pfe.enums.PeriodePaiement;
-import tn.star.Pfe.enums.StatutInscription;
-import tn.star.Pfe.enums.StatutOffre;
+import tn.star.Pfe.enums.ApprovalStatus;
+import tn.star.Pfe.enums.OfferStatus;
 import tn.star.Pfe.enums.TypeOffre;
 import org.springframework.lang.Nullable;
 import tn.star.Pfe.event.InscriptionCreeeEvent;
@@ -45,14 +45,14 @@ public class InscriptionService implements IInscriptionService {
         if (offre.getType() == TypeOffre.CONVENTION)
             throw new BadRequestException("Les conventions sont des partenariats publiés — aucune inscription possible.");
 
-        if (offre.getStatut() != StatutOffre.OUVERTE)
+        if (offre.getStatut() != OfferStatus.OPEN)
             throw new OffreFermee("L'offre n'est pas ouverte");
 
         if (offre.getDateFin() != null && offre.getDateFin().isBefore(LocalDate.now()))
             throw new BadRequestException("L'offre est expirée");
 
         if (inscriptionRepository.existsByOffreAndAdherentAndStatutNotIn(
-                offre, adherent, List.of(StatutInscription.ANNULEE, StatutInscription.REJETEE)))
+                offre, adherent, List.of(ApprovalStatus.CANCELLED, ApprovalStatus.REJECTED)))
             throw new InscriptionExistants("Déjà inscrit à cette offre");
 
         List<GuestDTO> guestList = guests != null ? guests : new ArrayList<>();
@@ -118,7 +118,7 @@ public class InscriptionService implements IInscriptionService {
     }
 
     public List<InscriptionResponse> listerFiltrees(
-            @Nullable StatutInscription statut,
+            @Nullable ApprovalStatus statut,
             @Nullable TypeOffre type,
             @Nullable String search) {
         String searchParam = (search != null && !search.isBlank()) ? search.trim() : null;
@@ -134,12 +134,12 @@ public class InscriptionService implements IInscriptionService {
                 .findByIdAndAdherent(inscriptionId, adherent)
                 .orElseThrow(() -> new NotFoundException("Inscription introuvable"));
 
-        StatutInscription oldStatut = inscription.getStatut();
-        inscription.setStatut(StatutInscription.ANNULEE);
+        ApprovalStatus oldStatut = inscription.getStatut();
+        inscription.setStatut(ApprovalStatus.CANCELLED);
         inscription.setDateAnnulation(LocalDateTime.now());
         Inscription saved = inscriptionRepository.save(inscription);
 
-        publisher.publishEvent(new InscriptionStatusChangedEvent(saved, oldStatut, StatutInscription.ANNULEE));
+        publisher.publishEvent(new InscriptionStatusChangedEvent(saved, oldStatut, ApprovalStatus.CANCELLED));
         return inscriptionMapper.toResponse(saved);
     }
 
@@ -148,11 +148,11 @@ public class InscriptionService implements IInscriptionService {
         Inscription inscription = inscriptionRepository.findById(inscriptionId)
                 .orElseThrow(() -> new NotFoundException("Inscription introuvable"));
 
-        StatutInscription oldStatut = inscription.getStatut();
-        inscription.setStatut(StatutInscription.CONFIRMEE);
+        ApprovalStatus oldStatut = inscription.getStatut();
+        inscription.setStatut(ApprovalStatus.APPROVED);
         Inscription saved = inscriptionRepository.save(inscription);
 
-        publisher.publishEvent(new InscriptionStatusChangedEvent(saved, oldStatut, StatutInscription.CONFIRMEE));
+        publisher.publishEvent(new InscriptionStatusChangedEvent(saved, oldStatut, ApprovalStatus.APPROVED));
         return inscriptionMapper.toResponse(saved);
     }
 
@@ -161,11 +161,11 @@ public class InscriptionService implements IInscriptionService {
         Inscription inscription = inscriptionRepository.findById(inscriptionId)
                 .orElseThrow(() -> new NotFoundException("Inscription introuvable"));
 
-        StatutInscription oldStatut = inscription.getStatut();
-        inscription.setStatut(StatutInscription.REJETEE);
+        ApprovalStatus oldStatut = inscription.getStatut();
+        inscription.setStatut(ApprovalStatus.REJECTED);
         Inscription saved = inscriptionRepository.save(inscription);
 
-        publisher.publishEvent(new InscriptionStatusChangedEvent(saved, oldStatut, StatutInscription.REJETEE));
+        publisher.publishEvent(new InscriptionStatusChangedEvent(saved, oldStatut, ApprovalStatus.REJECTED));
         return inscriptionMapper.toResponse(saved);
     }
 

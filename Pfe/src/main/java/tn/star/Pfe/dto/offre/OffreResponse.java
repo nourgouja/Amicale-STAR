@@ -1,7 +1,7 @@
 package tn.star.Pfe.dto.offre;
 
 import lombok.*;
-import tn.star.Pfe.enums.StatutOffre;
+import tn.star.Pfe.enums.OfferStatus;
 import tn.star.Pfe.enums.TypeOffre;
 
 import java.math.BigDecimal;
@@ -16,7 +16,7 @@ public class OffreResponse {
     private String description;
     private String lieu;
     private TypeOffre typeOffre;
-    private StatutOffre statutOffre;
+    private OfferStatus statutOffre;
     private LocalDate dateDebut;
     private LocalDate dateFin;
     private Integer capaciteMax;

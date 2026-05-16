@@ -4,7 +4,7 @@ import tn.star.Pfe.dto.inscription.GuestDTO;
 import tn.star.Pfe.dto.inscription.InscriptionResponse;
 import tn.star.Pfe.entity.user.Adherent;
 import tn.star.Pfe.enums.PeriodePaiement;
-import tn.star.Pfe.enums.StatutInscription;
+import tn.star.Pfe.enums.ApprovalStatus;
 import tn.star.Pfe.enums.TypeOffre;
 
 import java.util.List;
@@ -17,6 +17,6 @@ public interface IInscriptionService {
     List<InscriptionResponse> mesInscriptions(Adherent adherent);
     List<InscriptionResponse> inscritsParOffre(Long offreId);
     List<InscriptionResponse> listerToutesInscriptions();
-    List<InscriptionResponse> listerFiltrees(StatutInscription statut, TypeOffre type, String search);
+    List<InscriptionResponse> listerFiltrees(ApprovalStatus statut, TypeOffre type, String search);
     InscriptionResponse getById(Long inscriptionId);
 }

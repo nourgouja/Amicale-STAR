@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import tn.star.Pfe.entity.user.Adherent;
 import tn.star.Pfe.entity.inscription.Inscription;
 import tn.star.Pfe.entity.offre.Offre;
-import tn.star.Pfe.enums.StatutInscription;
+import tn.star.Pfe.enums.ApprovalStatus;
 import tn.star.Pfe.enums.TypeOffre;
 
 import java.util.List;
@@ -18,20 +18,20 @@ public interface InscriptionRepository extends JpaRepository<Inscription, Long> 
 
     List<Inscription> findByOffre(Offre offre);
 
-    List<Inscription> findByStatut(StatutInscription statut);
+    List<Inscription> findByStatut(ApprovalStatus statut);
 
-    List<Inscription> findByOffreAndStatut(Offre offre, StatutInscription statut);
+    List<Inscription> findByOffreAndStatut(Offre offre, ApprovalStatus statut);
 
-    int countByOffreAndStatut(Offre offre, StatutInscription statut);
+    int countByOffreAndStatut(Offre offre, ApprovalStatus statut);
 
     Optional<Inscription> findByIdAndAdherent(Long id, Adherent adherent);
 
     List<Inscription> findByAdherent(Adherent adherent);
 
-    boolean existsByOffreAndAdherentAndStatutNotIn(Offre offre, Adherent adherent, List<StatutInscription> statuts);
+    boolean existsByOffreAndAdherentAndStatutNotIn(Offre offre, Adherent adherent, List<ApprovalStatus> statuts);
 
     //dashboard
-    long countByStatut(StatutInscription statut);
+    long countByStatut(ApprovalStatus statut);
 
     @Query("""
         SELECT i FROM Inscription i
@@ -42,7 +42,7 @@ public interface InscriptionRepository extends JpaRepository<Inscription, Long> 
         ORDER BY i.dateInscription DESC
         """)
     List<Inscription> findFiltered(
-        @Param("statut") StatutInscription statut,
+        @Param("statut") ApprovalStatus statut,
         @Param("type") TypeOffre type,
         @Param("search") String search
     );

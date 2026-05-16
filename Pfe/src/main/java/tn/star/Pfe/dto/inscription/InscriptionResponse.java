@@ -2,8 +2,8 @@ package tn.star.Pfe.dto.inscription;
 
 import lombok.*;
 import tn.star.Pfe.dto.paiement.EcheanceResponse;
-import tn.star.Pfe.enums.StatutInscription;
-import tn.star.Pfe.enums.StatutPaiement;
+import tn.star.Pfe.enums.ApprovalStatus;
+import tn.star.Pfe.enums.PaymentStatus;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -24,8 +24,8 @@ public class InscriptionResponse {
     private String mailAdherent;
     private String adherentNom;
     private String adherentPrenom;
-    private StatutInscription statut;
-    private StatutPaiement statutPaiement;
+    private ApprovalStatus statut;
+    private PaymentStatus statutPaiement;
     private BigDecimal montant;
     private LocalDateTime dateInscription;
     private LocalDateTime dateAnnulation;
@@ -34,7 +34,7 @@ public class InscriptionResponse {
     private List<EcheanceResponse> echeances;
     private List<GuestDTO> guests;
 
-    public InscriptionResponse(Long id, String offreTitre, String mailAdherent, StatutInscription statut) {
+    public InscriptionResponse(Long id, String offreTitre, String mailAdherent, ApprovalStatus statut) {
         this.id = id;
         this.offreTitre = offreTitre;
         this.mailAdherent = mailAdherent;

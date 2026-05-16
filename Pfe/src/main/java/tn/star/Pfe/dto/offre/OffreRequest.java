@@ -38,7 +38,7 @@ public class OffreRequest {
     private String avantages;
     private String lienExterne;
 
-    private tn.star.Pfe.enums.StatutOffre statut;
+    private tn.star.Pfe.enums.OfferStatus statut;
 
     private Long poleId;
 

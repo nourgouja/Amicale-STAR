@@ -19,10 +19,9 @@ import tn.star.Pfe.entity.election.CandidateApplication;
 import tn.star.Pfe.entity.election.Election;
 import tn.star.Pfe.entity.election.ElectionCall;
 import tn.star.Pfe.entity.user.User;
-import tn.star.Pfe.enums.CallStatus;
+import tn.star.Pfe.enums.ApprovalStatus;
+import tn.star.Pfe.enums.LifecycleStatus;
 import tn.star.Pfe.enums.PosteBureau;
-import tn.star.Pfe.enums.StatutDemande;
-import tn.star.Pfe.enums.StatutSondage;
 import tn.star.Pfe.event.ApplicationStatusChangedEvent;
 import tn.star.Pfe.event.CandidacySubmittedEvent;
 import tn.star.Pfe.event.ElectionCallCreatedEvent;
@@ -60,7 +59,7 @@ public class ElectionCallService implements IElectionCallService {
         ElectionCall call = ElectionCall.builder()
                 .titre(request.getTitre())
                 .description(request.getDescription())
-                .status(CallStatus.OPEN)
+                .status(LifecycleStatus.OPEN)
                 .dateFinCandidature(request.getDateFinCandidature())
                 .createdBy(userId)
                 .updatedBy(userId)
@@ -84,7 +83,7 @@ public class ElectionCallService implements IElectionCallService {
     @Override
     @Transactional(readOnly = true)
     public Page<ElectionCallResponse> getAllOpenCalls(Pageable pageable) {
-        return electionCallRepository.findByStatus(CallStatus.OPEN, pageable)
+        return electionCallRepository.findByStatus(LifecycleStatus.OPEN, pageable)
                 .map(this::toResponse);
     }
 
@@ -98,7 +97,7 @@ public class ElectionCallService implements IElectionCallService {
     @Override
     @Transactional(readOnly = true)
     public Optional<ElectionCallResponse> getActiveCall() {
-        return electionCallRepository.findFirstByStatusOrderByCreatedAtDesc(CallStatus.OPEN)
+        return electionCallRepository.findFirstByStatusOrderByCreatedAtDesc(LifecycleStatus.OPEN)
                 .map(this::toResponse);
     }
 
@@ -108,10 +107,10 @@ public class ElectionCallService implements IElectionCallService {
         log.info("Closing election call {} by user {}", id, userId);
         ElectionCall call = electionCallRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Election call not found: " + id));
-        if (call.getStatus() != CallStatus.OPEN) {
+        if (call.getStatus() != LifecycleStatus.OPEN) {
             throw new IllegalStateException("Election call is not open");
         }
-        call.setStatus(CallStatus.CLOSED);
+        call.setStatus(LifecycleStatus.CLOSED);
         call.setUpdatedBy(userId);
         return toResponse(electionCallRepository.save(call));
     }
@@ -143,8 +142,8 @@ public class ElectionCallService implements IElectionCallService {
 
         Election election = call.getPublishedElection();
         if (election != null) {
-            voteRepository.deleteInBatch(voteRepository.findAllByElection(election.getId()));
-            candidateRepository.deleteInBatch(candidateRepository.findByElection(election, Pageable.unpaged()).getContent());
+            voteRepository.deleteAllInBatch(voteRepository.findAllByElection(election.getId()));
+            candidateRepository.deleteAllInBatch(candidateRepository.findByElection(election, Pageable.unpaged()).getContent());
             electionRepository.delete(election);
         }
 
@@ -162,7 +161,7 @@ public class ElectionCallService implements IElectionCallService {
         ElectionCall call = electionCallRepository.findById(callId)
                 .orElseThrow(() -> new IllegalArgumentException("Election call not found: " + callId));
 
-        if (call.getStatus() != CallStatus.OPEN) {
+        if (call.getStatus() != LifecycleStatus.OPEN) {
             throw new IllegalStateException("Election call is not open for applications");
         }
 
@@ -192,7 +191,7 @@ public class ElectionCallService implements IElectionCallService {
                 .position(request.getPosition())
                 .motivation(request.getMotivation())
                 .photo(photoBytes)
-                .status(StatutDemande.PENDING)
+                .status(ApprovalStatus.PENDING)
                 .build();
 
         CandidateApplication saved;
@@ -227,11 +226,11 @@ public class ElectionCallService implements IElectionCallService {
         ElectionCall call = electionCallRepository.findById(callId)
                 .orElseThrow(() -> new IllegalArgumentException("Election call not found: " + callId));
 
-        if (call.getStatus() != CallStatus.OPEN) {
+        if (call.getStatus() != LifecycleStatus.OPEN) {
             throw new IllegalStateException("Election call is not open");
         }
 
-        long totalApproved = applicationRepository.countByCallAndStatus(call, StatutDemande.APPROVED);
+        long totalApproved = applicationRepository.countByCallAndStatus(call, ApprovalStatus.APPROVED);
         if (totalApproved == 0) {
             throw new IllegalStateException("Aucun candidat approuvé pour cette élection");
         }
@@ -242,7 +241,7 @@ public class ElectionCallService implements IElectionCallService {
         Election election = Election.builder()
                 .titre(call.getTitre())
                 .description(call.getDescription())
-                .status(StatutSondage.ACTIVE)
+                .status(LifecycleStatus.OPEN)
                 .dateDebut(voteStart)
                 .dateFin(voteEnd)
                 .call(call)
@@ -254,7 +253,7 @@ public class ElectionCallService implements IElectionCallService {
 
         // Create Candidate entities from approved applications
         List<CandidateApplication> approved = applicationRepository
-                .findByCallAndStatus(call, StatutDemande.APPROVED, Pageable.unpaged()).getContent();
+                .findByCallAndStatus(call, ApprovalStatus.APPROVED, Pageable.unpaged()).getContent();
         for (CandidateApplication app : approved) {
             Candidate candidate = Candidate.builder()
                     .user(app.getUser())
@@ -267,7 +266,7 @@ public class ElectionCallService implements IElectionCallService {
         }
 
         call.setPublishedElection(savedElection);
-        call.setStatus(CallStatus.CLOSED);
+        call.setStatus(LifecycleStatus.CLOSED);
         call.setUpdatedBy(userId);
         electionCallRepository.save(call);
 
@@ -301,17 +300,17 @@ public class ElectionCallService implements IElectionCallService {
 
         CandidateApplication application = loadAndValidateApplication(callId, appId);
 
-        if (application.getStatus() != StatutDemande.PENDING) {
+        if (application.getStatus() != ApprovalStatus.PENDING) {
             throw new IllegalStateException("Application is not pending");
         }
 
-        StatutDemande oldStatus = application.getStatus();
-        application.setStatus(StatutDemande.APPROVED);
+        ApprovalStatus oldStatus = application.getStatus();
+        application.setStatus(ApprovalStatus.APPROVED);
         application.setReviewedAt(LocalDateTime.now());
         application.setReviewedBy(adminId);
 
         CandidateApplication saved = applicationRepository.save(application);
-        eventPublisher.publishEvent(new ApplicationStatusChangedEvent(this, saved, oldStatus, StatutDemande.APPROVED, adminId));
+        eventPublisher.publishEvent(new ApplicationStatusChangedEvent(this, saved, oldStatus, ApprovalStatus.APPROVED, adminId));
 
         log.info("Application {} approved", appId);
         return toApplicationResponse(saved);
@@ -324,18 +323,18 @@ public class ElectionCallService implements IElectionCallService {
 
         CandidateApplication application = loadAndValidateApplication(callId, appId);
 
-        if (application.getStatus() != StatutDemande.PENDING) {
+        if (application.getStatus() != ApprovalStatus.PENDING) {
             throw new IllegalStateException("Application is not pending");
         }
 
-        StatutDemande oldStatus = application.getStatus();
-        application.setStatus(StatutDemande.REJECTED);
+        ApprovalStatus oldStatus = application.getStatus();
+        application.setStatus(ApprovalStatus.REJECTED);
         application.setReviewedAt(LocalDateTime.now());
         application.setReviewedBy(adminId);
         application.setRejectionReason(reason);
 
         CandidateApplication saved = applicationRepository.save(application);
-        eventPublisher.publishEvent(new ApplicationStatusChangedEvent(this, saved, oldStatus, StatutDemande.REJECTED, adminId));
+        eventPublisher.publishEvent(new ApplicationStatusChangedEvent(this, saved, oldStatus, ApprovalStatus.REJECTED, adminId));
 
         log.info("Application {} rejected", appId);
         return toApplicationResponse(saved);
@@ -352,7 +351,7 @@ public class ElectionCallService implements IElectionCallService {
     }
 
     private ElectionCallResponse toResponse(ElectionCall call) {
-        long approvedCount = applicationRepository.countByCallAndStatus(call, StatutDemande.APPROVED);
+        long approvedCount = applicationRepository.countByCallAndStatus(call, ApprovalStatus.APPROVED);
         long totalCount = call.getCandidateApplications().size();
 
         return ElectionCallResponse.builder()
@@ -369,9 +368,9 @@ public class ElectionCallService implements IElectionCallService {
                 .totalApplicationsCount(totalCount)
                 .createdAt(call.getCreatedAt())
                 .updatedAt(call.getUpdatedAt())
-                .canApply(call.getStatus() == CallStatus.OPEN &&
+                .canApply(call.getStatus() == LifecycleStatus.OPEN &&
                         LocalDateTime.now().isBefore(call.getDateFinCandidature()))
-                .canPublish(call.getStatus() == CallStatus.OPEN && approvedCount > 0)
+                .canPublish(call.getStatus() == LifecycleStatus.OPEN && approvedCount > 0)
                 .build();
     }
 
@@ -394,7 +393,7 @@ public class ElectionCallService implements IElectionCallService {
                 .createdAt(app.getCreatedAt())
                 .reviewedAt(app.getReviewedAt())
                 .rejectionReason(app.getRejectionReason())
-                .canApply(app.getStatus() == StatutDemande.PENDING)
+                .canApply(app.getStatus() == ApprovalStatus.PENDING)
                 .build();
     }
 }

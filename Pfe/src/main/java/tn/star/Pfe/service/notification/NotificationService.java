@@ -11,9 +11,8 @@ import tn.star.Pfe.dto.notification.NotificationDto.Severity;
 import tn.star.Pfe.entity.election.CandidateApplication;
 import tn.star.Pfe.entity.user.MembreBureau;
 import tn.star.Pfe.entity.user.User;
+import tn.star.Pfe.enums.ApprovalStatus;
 import tn.star.Pfe.enums.Role;
-import tn.star.Pfe.enums.StatutDemande;
-import tn.star.Pfe.enums.StatutInscription;
 import tn.star.Pfe.event.*;
 import tn.star.Pfe.repository.user.UserRepository;
 import tn.star.Pfe.service.email.IEmailService;
@@ -177,7 +176,7 @@ public class NotificationService {
             var offre    = ins.getOffre();
             var newStatut = event.newStatut();
 
-            if (newStatut == StatutInscription.CONFIRMEE) {
+            if (newStatut == ApprovalStatus.APPROVED) {
                 store.push(adherent.getId(), new NotificationDto(
                         UUID.randomUUID().toString(),
                         "INSCRIPTION_CONFIRMEE",
@@ -186,7 +185,7 @@ public class NotificationService {
                         Severity.SUCCESS,
                         LocalDateTime.now()
                 ));
-            } else if (newStatut == StatutInscription.REJETEE) {
+            } else if (newStatut == ApprovalStatus.REJECTED) {
                 store.push(adherent.getId(), new NotificationDto(
                         UUID.randomUUID().toString(),
                         "INSCRIPTION_REJETEE",
@@ -304,7 +303,7 @@ public class NotificationService {
             User applicant = app.getUser();
             String callTitre = app.getCall().getTitre();
             String position  = app.getPosition().getLabel();
-            boolean approved = event.newStatus() == StatutDemande.APPROVED;
+            boolean approved = event.newStatus() == ApprovalStatus.APPROVED;
 
             String msg = approved
                     ? "Félicitations ! Votre candidature pour " + position + " dans «" + callTitre + "» a été approuvée."

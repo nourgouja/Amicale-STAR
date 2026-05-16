@@ -9,7 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import tn.star.Pfe.entity.election.Election;
 import tn.star.Pfe.entity.election.ElectionCall;
-import tn.star.Pfe.enums.StatutSondage;
+import tn.star.Pfe.enums.LifecycleStatus;
 
 
 import java.time.LocalDateTime;
@@ -20,17 +20,17 @@ import java.util.Optional;
 public interface ElectionRepository extends JpaRepository<Election, Long> {
     Optional<Election> findByCall(ElectionCall call);
 
-    Page<Election> findByStatus(StatutSondage status, Pageable pageable);
+    Page<Election> findByStatus(LifecycleStatus status, Pageable pageable);
 
-    Optional<Election> findByIdAndStatus(Long id, StatutSondage status);
+    Optional<Election> findByIdAndStatus(Long id, LifecycleStatus status);
 
     @Query("SELECT e FROM Election e WHERE e.status = :status AND e.dateFin < :now")
     Page<Election> findClosedElections(
-            @Param("status") StatutSondage status,
+            @Param("status") LifecycleStatus status,
             @Param("now") LocalDateTime now,
             Pageable pageable);
 
-    @Query("SELECT e FROM Election e WHERE e.status IN ('ACTIVE', 'CLOSED') " +
+    @Query("SELECT e FROM Election e WHERE e.status IN ('OPEN', 'CLOSED') " +
             "AND e.dateFin < :now AND e.resultsJson IS NULL")
     List<Election> findElectionsNeedingResults(@Param("now") LocalDateTime now);
 

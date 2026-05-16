@@ -15,7 +15,7 @@ import tn.star.Pfe.entity.sondage.Sondage;
 import tn.star.Pfe.entity.user.User;
 import tn.star.Pfe.entity.sondage.VoteSondage;
 import tn.star.Pfe.enums.Role;
-import tn.star.Pfe.enums.StatutSondage;
+import tn.star.Pfe.enums.LifecycleStatus;
 import tn.star.Pfe.event.SondageClosedEvent;
 import tn.star.Pfe.exceptions.BadRequestException;
 import tn.star.Pfe.exceptions.ForbiddenException;
@@ -53,7 +53,7 @@ public class SondageService implements ISondageService {
 
         Sondage sondage = Sondage.builder()
                 .titre(req.getTitre())
-                .statut(StatutSondage.ACTIVE)
+                .statut(LifecycleStatus.OPEN)
                 .createdBy(creator)
                 .build();
         opt1.setSondage(sondage);
@@ -72,7 +72,7 @@ public class SondageService implements ISondageService {
         User user = findUser(username);
         checkOwnerOrAdmin(sondage, user);
 
-        if (sondage.getStatut() != StatutSondage.DRAFT)
+        if (sondage.getStatut() != LifecycleStatus.DRAFT)
             throw new BadRequestException("Seuls les sondages en DRAFT peuvent être modifiés");
 
         if (req.getTitre() != null) sondage.setTitre(req.getTitre());
@@ -94,10 +94,10 @@ public class SondageService implements ISondageService {
         User user = findUser(username);
         checkOwnerOrAdmin(sondage, user);
 
-        if (sondage.getStatut() != StatutSondage.DRAFT)
+        if (sondage.getStatut() != LifecycleStatus.DRAFT)
             throw new BadRequestException("Seul un sondage DRAFT peut être activé");
 
-        sondage.setStatut(StatutSondage.ACTIVE);
+        sondage.setStatut(LifecycleStatus.OPEN);
         Sondage saved = sondageRepository.save(sondage);
         log.info("Sondage activé: id={} par {}", id, username);
         return toResponse(saved, user);
@@ -109,10 +109,10 @@ public class SondageService implements ISondageService {
         User user = findUser(username);
         checkOwnerOrAdmin(sondage, user);
 
-        if (sondage.getStatut() != StatutSondage.ACTIVE)
+        if (sondage.getStatut() != LifecycleStatus.OPEN)
             throw new BadRequestException("Seul un sondage ACTIVE peut être fermé");
 
-        sondage.setStatut(StatutSondage.CLOSED);
+        sondage.setStatut(LifecycleStatus.CLOSED);
         sondage.setClosedAt(LocalDateTime.now());
         Sondage saved = sondageRepository.save(sondage);
 
@@ -127,10 +127,10 @@ public class SondageService implements ISondageService {
         User user = findUser(username);
         checkOwnerOrAdmin(sondage, user);
 
-        if (sondage.getStatut() != StatutSondage.CLOSED)
+        if (sondage.getStatut() != LifecycleStatus.CLOSED)
             throw new BadRequestException("Seul un sondage CLOSED peut être archivé");
 
-        sondage.setStatut(StatutSondage.ARCHIVED);
+        sondage.setStatut(LifecycleStatus.ARCHIVED);
         Sondage saved = sondageRepository.save(sondage);
         log.info("Sondage archivé: id={} par {}", id, username);
         return toResponse(saved, user);
@@ -169,8 +169,8 @@ public class SondageService implements ISondageService {
         User user = findUser(username);
 
         if (!isAdminOrBureau(user)
-                && sondage.getStatut() != StatutSondage.ACTIVE
-                && sondage.getStatut() != StatutSondage.CLOSED)
+                && sondage.getStatut() != LifecycleStatus.OPEN
+                && sondage.getStatut() != LifecycleStatus.CLOSED)
             throw new NotFoundException("Sondage non trouvé");
 
         log.info("Sondage récupéré: id={} par {}", id, username);
@@ -182,7 +182,7 @@ public class SondageService implements ISondageService {
         Sondage sondage = findSondage(sondageId);
         User user = findUser(username);
 
-        if (sondage.getStatut() != StatutSondage.ACTIVE)
+        if (sondage.getStatut() != LifecycleStatus.OPEN)
             throw new BadRequestException("Impossible de voter sur un sondage qui n'est pas ACTIVE");
 
         OptionSondage option = sondage.getOptions().stream()

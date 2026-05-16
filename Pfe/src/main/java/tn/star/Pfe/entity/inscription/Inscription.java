@@ -8,8 +8,8 @@ import tn.star.Pfe.dto.inscription.GuestDTO;
 import tn.star.Pfe.entity.offre.Offre;
 import tn.star.Pfe.entity.user.Adherent;
 import tn.star.Pfe.enums.PeriodePaiement;
-import tn.star.Pfe.enums.StatutInscription;
-import tn.star.Pfe.enums.StatutPaiement;
+import tn.star.Pfe.enums.ApprovalStatus;
+import tn.star.Pfe.enums.PaymentStatus;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -42,7 +42,7 @@ public class Inscription {
 
     @Enumerated(EnumType.STRING)
     @Builder.Default
-    private StatutInscription statut = StatutInscription.EN_ATTENTE;
+    private ApprovalStatus statut = ApprovalStatus.PENDING;
 
     private LocalDateTime dateAnnulation;
 
@@ -68,23 +68,23 @@ public class Inscription {
         return 1 + (guests != null ? guests.size() : 0);
     }
 
-    public StatutPaiement getStatutPaiement() {
-        if (echeances == null || echeances.isEmpty()) return StatutPaiement.EN_ATTENTE;
+    public PaymentStatus getStatutPaiement() {
+        if (echeances == null || echeances.isEmpty()) return PaymentStatus.PENDING;
         long paid = echeances.stream()
-                .filter(e -> e.getStatut() == StatutPaiement.PAYEE)
+                .filter(e -> e.getStatut() == PaymentStatus.PAID)
                 .count();
-        if (paid == echeances.size()) return StatutPaiement.PAYEE;
+        if (paid == echeances.size()) return PaymentStatus.PAID;
         long overdue = echeances.stream()
-                .filter(e -> e.getStatut() == StatutPaiement.EN_RETARD)
+                .filter(e -> e.getStatut() == PaymentStatus.OVERDUE)
                 .count();
-        if (overdue > 0) return StatutPaiement.EN_RETARD;
-        return StatutPaiement.EN_ATTENTE;
+        if (overdue > 0) return PaymentStatus.OVERDUE;
+        return PaymentStatus.PENDING;
     }
 
     public int getPaidCount() {
         if (echeances == null) return 0;
         return (int) echeances.stream()
-                .filter(e -> e.getStatut() == StatutPaiement.PAYEE)
+                .filter(e -> e.getStatut() == PaymentStatus.PAID)
                 .count();
     }
 
