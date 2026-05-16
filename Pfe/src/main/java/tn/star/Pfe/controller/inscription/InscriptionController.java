@@ -11,7 +11,7 @@
 //import tn.star.Pfe.enums.StatutPaiement;
 //import tn.star.Pfe.exceptions.EligibiliteException;
 //import tn.star.Pfe.exceptions.NotFoundException;
-//import tn.star.Pfe.repository.UserRepository;
+//import tn.star.Pfe.repository.user.UserRepository;
 //import tn.star.Pfe.security.UserPrincipal;
 //import tn.star.Pfe.service.inscription.IInscriptionService;
 //
@@ -108,7 +108,7 @@ import tn.star.Pfe.enums.StatutInscription;
 import tn.star.Pfe.enums.TypeOffre;
 import tn.star.Pfe.exceptions.EligibiliteException;
 import tn.star.Pfe.exceptions.NotFoundException;
-import tn.star.Pfe.repository.UserRepository;
+import tn.star.Pfe.repository.user.UserRepository;
 import tn.star.Pfe.security.UserPrincipal;
 import tn.star.Pfe.service.inscription.IInscriptionService;
 

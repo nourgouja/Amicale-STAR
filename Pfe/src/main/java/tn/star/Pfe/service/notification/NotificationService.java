@@ -8,15 +8,19 @@ import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 import tn.star.Pfe.dto.notification.NotificationDto;
 import tn.star.Pfe.dto.notification.NotificationDto.Severity;
+import tn.star.Pfe.entity.election.CandidateApplication;
 import tn.star.Pfe.entity.user.MembreBureau;
+import tn.star.Pfe.entity.user.User;
 import tn.star.Pfe.enums.Role;
+import tn.star.Pfe.enums.StatutDemande;
 import tn.star.Pfe.enums.StatutInscription;
 import tn.star.Pfe.event.*;
-import tn.star.Pfe.repository.UserRepository;
+import tn.star.Pfe.repository.user.UserRepository;
 import tn.star.Pfe.service.email.IEmailService;
 import tn.star.Pfe.event.InscriptionCreeeEvent;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
 @Slf4j
@@ -225,5 +229,160 @@ public class NotificationService {
         } catch (Exception e) {
             log.error("Error processing offer created event", e);
         }
+    }
+
+    // ── Election notifications ──────────────────────────────────────────────
+
+    @Async
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    public void onElectionCallCreated(ElectionCallCreatedEvent event) {
+        try {
+            String msg = "Nouvel appel à candidature : «" + event.call().getTitre() + "»";
+            userRepository.findByRole(Role.ADMIN).forEach(admin -> {
+                try {
+                    store.push(admin.getId(), new NotificationDto(
+                            UUID.randomUUID().toString(),
+                            "ELECTION_CALL_CREATED",
+                            msg,
+                            "/admin/elections",
+                            Severity.INFO,
+                            LocalDateTime.now()
+                    ));
+                } catch (Exception e) {
+                    log.error("Failed to notify admin {} of new election call", admin.getId(), e);
+                }
+            });
+        } catch (Exception e) {
+            log.error("Error processing ElectionCallCreatedEvent notification", e);
+        }
+    }
+
+    @Async
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    public void onCandidacySubmitted(CandidacySubmittedEvent event) {
+        try {
+            CandidateApplication app = event.application();
+            User applicant = app.getUser();
+            String callTitre = app.getCall().getTitre();
+            String position  = app.getPosition().getLabel();
+
+            store.push(applicant.getId(), new NotificationDto(
+                    UUID.randomUUID().toString(),
+                    "CANDIDACY_SUBMITTED",
+                    "Votre candidature pour " + position + " dans «" + callTitre + "» a bien été reçue.",
+                    electionsPath(applicant),
+                    Severity.SUCCESS,
+                    LocalDateTime.now()
+            ));
+
+            String adminMsg = applicant.getPrenom() + " " + applicant.getNom()
+                    + " a soumis sa candidature pour le poste de " + position + " dans «" + callTitre + "».";
+            userRepository.findByRole(Role.ADMIN).forEach(admin -> {
+                try {
+                    store.push(admin.getId(), new NotificationDto(
+                            UUID.randomUUID().toString(),
+                            "CANDIDACY_SUBMITTED",
+                            adminMsg,
+                            "/admin/elections",
+                            Severity.INFO,
+                            LocalDateTime.now()
+                    ));
+                } catch (Exception e) {
+                    log.error("Failed to notify admin {} of new candidacy", admin.getId(), e);
+                }
+            });
+        } catch (Exception e) {
+            log.error("Error processing CandidacySubmittedEvent notification", e);
+        }
+    }
+
+    @Async
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    public void onApplicationStatusChanged(ApplicationStatusChangedEvent event) {
+        try {
+            CandidateApplication app = event.application();
+            User applicant = app.getUser();
+            String callTitre = app.getCall().getTitre();
+            String position  = app.getPosition().getLabel();
+            boolean approved = event.newStatus() == StatutDemande.APPROVED;
+
+            String msg = approved
+                    ? "Félicitations ! Votre candidature pour " + position + " dans «" + callTitre + "» a été approuvée."
+                    : "Votre candidature pour " + position + " dans «" + callTitre + "» n'a pas été retenue.";
+
+            store.push(applicant.getId(), new NotificationDto(
+                    UUID.randomUUID().toString(),
+                    approved ? "CANDIDACY_APPROVED" : "CANDIDACY_REJECTED",
+                    msg,
+                    electionsPath(applicant),
+                    approved ? Severity.SUCCESS : Severity.ERROR,
+                    LocalDateTime.now()
+            ));
+        } catch (Exception e) {
+            log.error("Error processing ApplicationStatusChangedEvent notification", e);
+        }
+    }
+
+    @Async
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    public void onElectionPublished(ElectionPublishedEvent event) {
+        try {
+            DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+            String titre = event.election().getTitre();
+            String start = event.election().getDateDebut().format(fmt);
+            String end   = event.election().getDateFin().format(fmt);
+            String msg   = "L'élection «" + titre + "» est ouverte au vote du " + start + " au " + end + ".";
+
+            userRepository.findAll().stream()
+                    .filter(User::isActif)
+                    .forEach(user -> {
+                        try {
+                            store.push(user.getId(), new NotificationDto(
+                                    UUID.randomUUID().toString(),
+                                    "ELECTION_OPENED",
+                                    msg,
+                                    electionsPath(user),
+                                    Severity.INFO,
+                                    LocalDateTime.now()
+                            ));
+                        } catch (Exception e) {
+                            log.error("Failed to notify user {} of election opening", user.getId(), e);
+                        }
+                    });
+        } catch (Exception e) {
+            log.error("Error processing ElectionPublishedEvent notification", e);
+        }
+    }
+
+    @Async
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    public void onElectionResultsPublished(ElectionResultsPublishedEvent event) {
+        try {
+            String msg = "Les résultats de l'élection «" + event.election().getTitre() + "» ont été publiés.";
+            userRepository.findByRole(Role.ADMIN).forEach(admin -> {
+                try {
+                    store.push(admin.getId(), new NotificationDto(
+                            UUID.randomUUID().toString(),
+                            "ELECTION_RESULTS_PUBLISHED",
+                            msg,
+                            "/admin/elections",
+                            Severity.SUCCESS,
+                            LocalDateTime.now()
+                    ));
+                } catch (Exception e) {
+                    log.error("Failed to notify admin {} of election results", admin.getId(), e);
+                }
+            });
+        } catch (Exception e) {
+            log.error("Error processing ElectionResultsPublishedEvent notification", e);
+        }
+    }
+
+    private String electionsPath(User user) {
+        return switch (user.getRole()) {
+            case ADMIN         -> "/admin/elections";
+            case MEMBRE_BUREAU -> "/bureau/elections";
+            default            -> "/adherent/elections";
+        };
     }
 }

@@ -13,8 +13,8 @@ import tn.star.Pfe.enums.StatutPaiement;
 import tn.star.Pfe.event.EcheanceOverdueEvent;
 import tn.star.Pfe.exceptions.BadRequestException;
 import tn.star.Pfe.exceptions.NotFoundException;
-import tn.star.Pfe.repository.EcheanceRepository;
-import tn.star.Pfe.repository.InscriptionRepository;
+import tn.star.Pfe.repository.inscription.EcheanceRepository;
+import tn.star.Pfe.repository.inscription.InscriptionRepository;
 import tn.star.Pfe.service.email.IEmailService;
 import tn.star.Pfe.service.notification.NotificationStore;
 

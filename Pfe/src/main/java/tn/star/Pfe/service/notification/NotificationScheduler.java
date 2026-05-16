@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 import tn.star.Pfe.entity.inscription.Echeance;
 import tn.star.Pfe.enums.StatutPaiement;
 import tn.star.Pfe.event.EcheanceOverdueEvent;
-import tn.star.Pfe.repository.EcheanceRepository;
+import tn.star.Pfe.repository.inscription.EcheanceRepository;
 
 import java.time.LocalDate;
 import java.util.List;

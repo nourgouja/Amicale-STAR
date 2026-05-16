@@ -19,7 +19,7 @@
 //    int countInscritsConfirmes(int offreId);
 //}
 //
-package tn.star.Pfe.repository;
+package tn.star.Pfe.repository.offer;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -51,4 +51,5 @@ public interface OffreRepository extends JpaRepository<Offre, Long> {
             "WHERE i.offre.id = :offreId " +
             "AND i.statut = 'CONFIRMEE'")
     int countInscritsConfirmes(@Param("offreId") Long offreId);
+
 }

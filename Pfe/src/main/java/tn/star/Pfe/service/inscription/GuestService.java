@@ -9,8 +9,8 @@ import tn.star.Pfe.entity.inscription.Guest;
 import tn.star.Pfe.entity.inscription.Inscription;
 import tn.star.Pfe.exceptions.BadRequestException;
 import tn.star.Pfe.exceptions.NotFoundException;
-import tn.star.Pfe.repository.GuestRepository;
-import tn.star.Pfe.repository.InscriptionRepository;
+import tn.star.Pfe.repository.inscription.GuestRepository;
+import tn.star.Pfe.repository.inscription.InscriptionRepository;
 
 import java.util.List;
 

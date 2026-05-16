@@ -15,7 +15,7 @@ import tn.star.Pfe.enums.StatutDemande;
 import tn.star.Pfe.event.AdhesionDemandeEvent;
 import tn.star.Pfe.exceptions.BadRequestException;
 import tn.star.Pfe.exceptions.NotFoundException;
-import tn.star.Pfe.repository.UserRepository;
+import tn.star.Pfe.repository.user.UserRepository;
 import tn.star.Pfe.service.email.IEmailService;
 import tn.star.Pfe.service.email.PasswordGenerator;
 

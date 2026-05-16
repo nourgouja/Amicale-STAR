@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import tn.star.Pfe.dto.pole.PoleRequest;
 import tn.star.Pfe.dto.pole.PoleResponse;
 import tn.star.Pfe.entity.user.Pole;
-import tn.star.Pfe.repository.PoleRepository;
+import tn.star.Pfe.repository.user.PoleRepository;
 
 import java.util.List;
 

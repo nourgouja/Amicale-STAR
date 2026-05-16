@@ -7,8 +7,8 @@ import tn.star.Pfe.entity.user.MembreBureau;
 import tn.star.Pfe.entity.user.Pole;
 import tn.star.Pfe.entity.user.User;
 import tn.star.Pfe.enums.TypeOffre;
-import tn.star.Pfe.repository.OffreRepository;
-import tn.star.Pfe.repository.UserRepository;
+import tn.star.Pfe.repository.offer.OffreRepository;
+import tn.star.Pfe.repository.user.UserRepository;
 import tn.star.Pfe.security.UserPrincipal;
 
 @Service("offreAuthService")
@@ -20,7 +20,7 @@ public class OffreAuthService {
 
     /**
      * Bureau member can create an offer only if the requested typeOffre is in their pole's typesOffre.
-     * Members without a pole (PRESIDENT, TRESORIER, SECRETAIRE) can create any type.
+     * Members without a pole (PRESIDENT, TREASURER, SECRETARY) can create any type.
      */
     public boolean canCreate(UserDetails principal, String typeOffreName) {
         MembreBureau mb = resolveMembre(principal);

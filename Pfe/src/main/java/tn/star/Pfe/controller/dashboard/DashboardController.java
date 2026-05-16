@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RestController;
 import tn.star.Pfe.dto.dashboard.AdherentDashboardResponse;
 import tn.star.Pfe.dto.dashboard.AdminDashboardResponse;
 import tn.star.Pfe.dto.dashboard.BureauDashboardResponse;
-import tn.star.Pfe.dto.dashboard.TresorierDashboardResponse;
 import tn.star.Pfe.security.UserPrincipal;
 import tn.star.Pfe.service.dashboard.IDashboardService;
 
@@ -32,12 +31,6 @@ public class DashboardController {
     public ResponseEntity<BureauDashboardResponse> bureauDashboard(
             @AuthenticationPrincipal UserPrincipal principal) {
         return ResponseEntity.ok(dashboardService.getBureauDashboard(principal.getUsername()));
-    }
-
-    @GetMapping("/bureau/tresorier")
-    @PreAuthorize("hasAnyRole('MEMBRE_BUREAU', 'ADMIN')")
-    public ResponseEntity<TresorierDashboardResponse> tresorierDashboard() {
-        return ResponseEntity.ok(dashboardService.getTresorierDashboard());
     }
 
     @GetMapping("/adherent/dashboard")

@@ -6,7 +6,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import tn.star.Pfe.entity.user.User;
-import tn.star.Pfe.repository.UserRepository;
+import tn.star.Pfe.repository.user.UserRepository;
 
 
 @Service

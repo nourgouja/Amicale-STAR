@@ -14,12 +14,14 @@ import tn.star.Pfe.enums.StatutOffre;
 import tn.star.Pfe.enums.StatutPaiement;
 import tn.star.Pfe.exceptions.NotFoundException;
 import tn.star.Pfe.mapper.OffreMapper;
-import tn.star.Pfe.repository.*;
+import tn.star.Pfe.repository.inscription.EcheanceRepository;
+import tn.star.Pfe.repository.inscription.InscriptionRepository;
+import tn.star.Pfe.repository.offer.OffreRepository;
+import tn.star.Pfe.repository.user.UserRepository;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -31,16 +33,12 @@ import static tn.star.Pfe.enums.StatutPaiement.*;
 @RequiredArgsConstructor
 public class DashboardService implements IDashboardService {
 
-    private final UserRepository         userRepository;
-    private final OffreRepository        offreRepository;
-    private final InscriptionRepository  inscriptionRepository;
-    private final EcheanceRepository     echeanceRepository;
-    private final PoleRepository         poleRepository;
-    private final OffreMapper            offreMapper;        // needed for adherent dashboard
+    private final UserRepository userRepository;
+    private final OffreRepository offreRepository;
+    private final InscriptionRepository inscriptionRepository;
+    private final EcheanceRepository echeanceRepository;
+    private final OffreMapper            offreMapper;
 
-    // ─────────────────────────────────────────────────────────────────────────
-    // ADMIN
-    // ─────────────────────────────────────────────────────────────────────────
     @Override
     public AdminDashboardResponse getAdminDashboard() {
 
@@ -51,7 +49,6 @@ public class DashboardService implements IDashboardService {
                 "MEMBRE_BUREAU", userRepository.countByRole(Role.MEMBRE_BUREAU)
         );
 
-        // Load once — avoids repeating findAll()
         List<Offre> toutes = offreRepository.findAll();
 
         List<OffreDashboardItem> offres = toutes.stream()
@@ -83,13 +80,9 @@ public class DashboardService implements IDashboardService {
         );
     }
 
-    // ─────────────────────────────────────────────────────────────────────────
-    // BUREAU
-    // ─────────────────────────────────────────────────────────────────────────
     @Override
     public BureauDashboardResponse getBureauDashboard(String email) {
-        // Offre has no creePar field — all bureau members see all offers.
-        // Future: add creePar to Offre for per-member scoping.
+
         List<Offre> toutes = offreRepository.findAll();
 
         List<OffreDashboardItem> mesOffres = toutes.stream()
@@ -130,29 +123,6 @@ public class DashboardService implements IDashboardService {
         );
     }
 
-    // ─────────────────────────────────────────────────────────────────────────
-    // TRESORIER (was orphan — now exposed via DashboardController)
-    // ─────────────────────────────────────────────────────────────────────────
-    @Override
-    public TresorierDashboardResponse getTresorierDashboard() {
-        Map<String, BigDecimal> collecteParPole = new HashMap<>();
-        Map<String, BigDecimal> attenduParPole  = new HashMap<>();
-
-        poleRepository.findAll().forEach(pole -> {
-            collecteParPole.put(pole.getNom(),
-                    echeanceRepository.sumMontantByPoleAndStatut(pole, PAYEE));
-            attenduParPole.put(pole.getNom(),
-                    echeanceRepository.sumMontantByPoleAndStatut(pole, StatutPaiement.EN_ATTENTE));
-        });
-
-        long totalEnRetard = echeanceRepository.countByStatut(EN_RETARD);
-
-        return new TresorierDashboardResponse(collecteParPole, attenduParPole, totalEnRetard);
-    }
-
-    // ─────────────────────────────────────────────────────────────────────────
-    // ADHERENT (new)
-    // ─────────────────────────────────────────────────────────────────────────
     @Override
     public AdherentDashboardResponse getAdherentDashboard(Long adherentId) {
         var user = userRepository.findById(adherentId)
@@ -176,7 +146,6 @@ public class DashboardService implements IDashboardService {
                 .map(Echeance::getMontant)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-        // Next 3 confirmed upcoming events, soonest first
         List<InscriptionSummary> prochainsEvenements = mesInscriptions.stream()
                 .filter(i -> i.getStatut() == CONFIRMEE
                         && i.getOffre().getDateDebut() != null
@@ -191,7 +160,6 @@ public class DashboardService implements IDashboardService {
                         i.getStatut()))
                 .toList();
 
-        // Next 3 unpaid echeances, most urgent first
         List<EcheanceSummary> prochainesEcheances = mesEcheances.stream()
                 .filter(e -> e.getStatut() != PAYEE)
                 .sorted(Comparator.comparing(Echeance::getDateEcheance))
@@ -205,7 +173,7 @@ public class DashboardService implements IDashboardService {
                         e.getNumero()))
                 .toList();
 
-        // Up to 6 open offers the adherent can still join
+        //Hedhi important barcha tansech taawed tchoufha
         List<OffreResponse> offresDisponibles = offreRepository.findByStatut(StatutOffre.OUVERTE)
                 .stream()
                 .filter(o -> !inscriptionRepository.existsByOffreAndAdherentAndStatutNotIn(

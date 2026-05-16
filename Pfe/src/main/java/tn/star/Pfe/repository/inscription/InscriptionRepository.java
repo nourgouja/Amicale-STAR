@@ -1,4 +1,4 @@
-package tn.star.Pfe.repository;
+package tn.star.Pfe.repository.inscription;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -8,7 +8,6 @@ import tn.star.Pfe.entity.user.Adherent;
 import tn.star.Pfe.entity.inscription.Inscription;
 import tn.star.Pfe.entity.offre.Offre;
 import tn.star.Pfe.enums.StatutInscription;
-import tn.star.Pfe.enums.StatutPaiement;
 import tn.star.Pfe.enums.TypeOffre;
 
 import java.util.List;

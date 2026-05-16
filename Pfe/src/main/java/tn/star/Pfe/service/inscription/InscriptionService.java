@@ -19,8 +19,8 @@ import tn.star.Pfe.event.InscriptionCreeeEvent;
 import tn.star.Pfe.event.InscriptionStatusChangedEvent;
 import tn.star.Pfe.exceptions.*;
 import tn.star.Pfe.mapper.InscriptionMapper;
-import tn.star.Pfe.repository.InscriptionRepository;
-import tn.star.Pfe.repository.OffreRepository;
+import tn.star.Pfe.repository.inscription.InscriptionRepository;
+import tn.star.Pfe.repository.offer.OffreRepository;
 import tn.star.Pfe.service.echeance.EcheanceFactory;
 
 import java.time.LocalDate;

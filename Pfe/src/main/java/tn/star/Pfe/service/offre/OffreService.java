@@ -17,10 +17,10 @@ import tn.star.Pfe.mapper.OffreMapper;
 import tn.star.Pfe.entity.user.Pole;
 import tn.star.Pfe.entity.user.MembreBureau;
 import tn.star.Pfe.entity.offre.OffreImage;
-import tn.star.Pfe.repository.OffreImageRepository;
-import tn.star.Pfe.repository.OffreRepository;
-import tn.star.Pfe.repository.PoleRepository;
-import tn.star.Pfe.repository.UserRepository;
+import tn.star.Pfe.repository.offer.OffreImageRepository;
+import tn.star.Pfe.repository.offer.OffreRepository;
+import tn.star.Pfe.repository.user.PoleRepository;
+import tn.star.Pfe.repository.user.UserRepository;
 import tn.star.Pfe.enums.TypeOffre;
 
 import java.io.IOException;

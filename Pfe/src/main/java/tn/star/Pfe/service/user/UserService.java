@@ -26,8 +26,8 @@ import tn.star.Pfe.exceptions.BadRequestException;
 import tn.star.Pfe.exceptions.NotFoundException;
 import tn.star.Pfe.exceptions.ServiceException;
 import tn.star.Pfe.mapper.UserMapper;
-import tn.star.Pfe.repository.PoleRepository;
-import tn.star.Pfe.repository.UserRepository;
+import tn.star.Pfe.repository.user.PoleRepository;
+import tn.star.Pfe.repository.user.UserRepository;
 import tn.star.Pfe.service.email.IEmailService;
 import tn.star.Pfe.service.email.PasswordGenerator;
 

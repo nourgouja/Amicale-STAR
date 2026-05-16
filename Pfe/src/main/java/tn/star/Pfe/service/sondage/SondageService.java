@@ -2,6 +2,7 @@ package tn.star.Pfe.service.sondage;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -15,17 +16,19 @@ import tn.star.Pfe.entity.user.User;
 import tn.star.Pfe.entity.sondage.VoteSondage;
 import tn.star.Pfe.enums.Role;
 import tn.star.Pfe.enums.StatutSondage;
+import tn.star.Pfe.event.SondageClosedEvent;
 import tn.star.Pfe.exceptions.BadRequestException;
 import tn.star.Pfe.exceptions.ForbiddenException;
 import tn.star.Pfe.exceptions.NotFoundException;
-import tn.star.Pfe.repository.SondageRepository;
-import tn.star.Pfe.repository.UserRepository;
-import tn.star.Pfe.repository.VoteSondageRepository;
+import tn.star.Pfe.repository.sondage.SondageRepository;
+import tn.star.Pfe.repository.user.UserRepository;
+import tn.star.Pfe.repository.sondage.VoteSondageRepository;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Base64;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -39,6 +42,7 @@ public class SondageService implements ISondageService {
     private final SondageRepository sondageRepository;
     private final VoteSondageRepository voteSondageRepository;
     private final UserRepository userRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Override
     public SondageResponse creer(SondageRequest req, MultipartFile image1, MultipartFile image2, String username) throws IOException {
@@ -49,6 +53,7 @@ public class SondageService implements ISondageService {
 
         Sondage sondage = Sondage.builder()
                 .titre(req.getTitre())
+                .statut(StatutSondage.ACTIVE)
                 .createdBy(creator)
                 .build();
         opt1.setSondage(sondage);
@@ -57,7 +62,7 @@ public class SondageService implements ISondageService {
         sondage.getOptions().add(opt2);
 
         Sondage saved = sondageRepository.save(sondage);
-        log.info("Sondage créé: {} par {}", saved.getId(), username);
+        log.info("Sondage créé et activé: id={} par {}", saved.getId(), username);
         return toResponse(saved, creator);
     }
 
@@ -78,7 +83,9 @@ public class SondageService implements ISondageService {
         if (options.size() > 1 && req.getOption2() != null)
             updateOption(options.get(1), req.getOption2(), image2);
 
-        return toResponse(sondageRepository.save(sondage), user);
+        Sondage saved = sondageRepository.save(sondage);
+        log.info("Sondage modifié: id={} par {}", id, username);
+        return toResponse(saved, user);
     }
 
     @Override
@@ -91,7 +98,9 @@ public class SondageService implements ISondageService {
             throw new BadRequestException("Seul un sondage DRAFT peut être activé");
 
         sondage.setStatut(StatutSondage.ACTIVE);
-        return toResponse(sondageRepository.save(sondage), user);
+        Sondage saved = sondageRepository.save(sondage);
+        log.info("Sondage activé: id={} par {}", id, username);
+        return toResponse(saved, user);
     }
 
     @Override
@@ -105,7 +114,11 @@ public class SondageService implements ISondageService {
 
         sondage.setStatut(StatutSondage.CLOSED);
         sondage.setClosedAt(LocalDateTime.now());
-        return toResponse(sondageRepository.save(sondage), user);
+        Sondage saved = sondageRepository.save(sondage);
+
+        eventPublisher.publishEvent(new SondageClosedEvent(this, saved, username));
+        log.info("Sondage fermé: id={} par {}", id, username);
+        return toResponse(saved, user);
     }
 
     @Override
@@ -114,8 +127,13 @@ public class SondageService implements ISondageService {
         User user = findUser(username);
         checkOwnerOrAdmin(sondage, user);
 
+        if (sondage.getStatut() != StatutSondage.CLOSED)
+            throw new BadRequestException("Seul un sondage CLOSED peut être archivé");
+
         sondage.setStatut(StatutSondage.ARCHIVED);
-        return toResponse(sondageRepository.save(sondage), user);
+        Sondage saved = sondageRepository.save(sondage);
+        log.info("Sondage archivé: id={} par {}", id, username);
+        return toResponse(saved, user);
     }
 
     @Override
@@ -124,11 +142,8 @@ public class SondageService implements ISondageService {
         User user = findUser(username);
         checkOwnerOrAdmin(sondage, user);
 
-        if (sondage.getStatut() != StatutSondage.DRAFT)
-            throw new BadRequestException("Seuls les sondages en DRAFT peuvent être supprimés");
-
         sondageRepository.delete(sondage);
-        log.info("Sondage supprimé: {} par {}", id, username);
+        log.info("Sondage supprimé: id={} par {}", id, username);
     }
 
     @Override
@@ -137,11 +152,12 @@ public class SondageService implements ISondageService {
         User user = findUser(username);
         boolean isPrivileged = isAdminOrBureau(user);
 
-        return sondageRepository.findAllByOrderByCreatedAtDesc().stream()
-                .filter(s -> {
-                    if (isPrivileged) return s.getStatut() != StatutSondage.ARCHIVED;
-                    return s.getStatut() == StatutSondage.ACTIVE || s.getStatut() == StatutSondage.CLOSED;
-                })
+        List<Sondage> sondages = isPrivileged
+                ? sondageRepository.findAllByOrderByCreatedAtDesc()
+                : sondageRepository.findVisibleToAdherents();
+
+        log.info("Listage sondages: privileged={}, count={}, user={}", isPrivileged, sondages.size(), username);
+        return sondages.stream()
                 .map(s -> toResponse(s, user))
                 .collect(Collectors.toList());
     }
@@ -157,6 +173,7 @@ public class SondageService implements ISondageService {
                 && sondage.getStatut() != StatutSondage.CLOSED)
             throw new NotFoundException("Sondage non trouvé");
 
+        log.info("Sondage récupéré: id={} par {}", id, username);
         return toResponse(sondage, user);
     }
 
@@ -233,16 +250,18 @@ public class SondageService implements ISondageService {
     }
 
     private SondageResponse toResponse(Sondage s, User currentUser) {
-        Long votedOptionId = null;
-        boolean hasVoted = false;
-
         var existingVote = voteSondageRepository.findBySondageIdAndAdherentId(s.getId(), currentUser.getId());
-        if (existingVote.isPresent()) {
-            hasVoted = true;
-            votedOptionId = existingVote.get().getOption().getId();
-        }
+        boolean hasVoted = existingVote.isPresent();
+        Long votedOptionId = hasVoted ? existingVote.get().getOption().getId() : null;
 
         long totalVotes = voteSondageRepository.countBySondageId(s.getId());
+
+        List<Long> optionIds = s.getOptions().stream()
+                .map(OptionSondage::getId)
+                .collect(Collectors.toList());
+        Map<Long, Long> voteCounts = optionIds.isEmpty()
+                ? Map.of()
+                : voteSondageRepository.countsByOptionIds(optionIds);
 
         List<OptionSondageResponse> optionResponses = s.getOptions().stream()
                 .map(o -> OptionSondageResponse.builder()
@@ -252,7 +271,7 @@ public class SondageService implements ISondageService {
                         .imageBase64(o.getImage() != null ? Base64.getEncoder().encodeToString(o.getImage()) : null)
                         .imageType(o.getImageType())
                         .ordre(o.getOrdre())
-                        .voteCount(voteSondageRepository.countByOptionId(o.getId()))
+                        .voteCount(voteCounts.getOrDefault(o.getId(), 0L))
                         .build())
                 .collect(Collectors.toList());
 

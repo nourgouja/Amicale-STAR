@@ -143,6 +143,190 @@ public class EmailService implements IEmailService {
         }
     }
 
+    @Async
+    @Override
+    public void sendElectionCallCreatedToAdmins(String to, String callTitre, String description) {
+        try {
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setFrom(fromEmail);
+            message.setTo(to);
+            message.setSubject("Nouvel appel à candidature : " + callTitre);
+            message.setText("""
+                    Bonjour,
+
+                    Un nouvel appel à candidature a été créé sur la plateforme Amicale STAR.
+
+                    Titre : %s
+                    Description : %s
+
+                    Veuillez vous connecter à l'administration pour consulter les détails.
+
+                    Cordialement,
+                    L'équipe Amicale STAR
+                    """.formatted(callTitre, description));
+            mailSender.send(message);
+            log.info("Election call created email sent to admin: {}", to);
+        } catch (Exception e) {
+            log.error("Failed to send election call created email to: {}", to, e);
+            eventPublisher.publishEvent(new EmailFailedEvent(to, e.getMessage()));
+        }
+    }
+
+    @Async
+    @Override
+    public void sendCandidacyConfirmationToApplicant(String to, String firstName, String callTitre, String position) {
+        try {
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setFrom(fromEmail);
+            message.setTo(to);
+            message.setSubject("Confirmation de votre candidature – " + callTitre);
+            message.setText("""
+                    Bonjour %s,
+
+                    Votre candidature pour le poste de %s dans le cadre de l'appel "%s" a bien été reçue.
+
+                    Votre dossier sera examiné par l'administration dans les meilleurs délais.
+                    Vous serez informé(e) de la décision par email.
+
+                    Cordialement,
+                    L'équipe Amicale STAR
+                    """.formatted(firstName, position, callTitre));
+            mailSender.send(message);
+            log.info("Candidacy confirmation email sent to: {}", to);
+        } catch (Exception e) {
+            log.error("Failed to send candidacy confirmation email to: {}", to, e);
+            eventPublisher.publishEvent(new EmailFailedEvent(to, e.getMessage()));
+        }
+    }
+
+    @Async
+    @Override
+    public void sendNewCandidacyToAdmins(String to, String adminName, String applicantName, String callTitre, String position) {
+        try {
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setFrom(fromEmail);
+            message.setTo(to);
+            message.setSubject("Nouvelle candidature reçue – " + callTitre);
+            message.setText("""
+                    Bonjour %s,
+
+                    Une nouvelle candidature a été soumise pour l'appel "%s".
+
+                    Candidat : %s
+                    Poste sollicité : %s
+
+                    Connectez-vous à l'administration pour examiner le dossier.
+
+                    Cordialement,
+                    L'équipe Amicale STAR
+                    """.formatted(adminName, callTitre, applicantName, position));
+            mailSender.send(message);
+            log.info("New candidacy admin notification sent to: {}", to);
+        } catch (Exception e) {
+            log.error("Failed to send new candidacy admin email to: {}", to, e);
+            eventPublisher.publishEvent(new EmailFailedEvent(to, e.getMessage()));
+        }
+    }
+
+    @Async
+    @Override
+    public void sendApplicationDecisionToApplicant(String to, String firstName, String callTitre, String position, boolean approved, String rejectionReason) {
+        try {
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setFrom(fromEmail);
+            message.setTo(to);
+            if (approved) {
+                message.setSubject("Candidature approuvée – " + callTitre);
+                message.setText("""
+                        Bonjour %s,
+
+                        Félicitations ! Votre candidature pour le poste de %s dans le cadre de l'appel "%s" a été APPROUVÉE.
+
+                        Vous figurerez parmi les candidats officiels lors du scrutin.
+
+                        Cordialement,
+                        L'équipe Amicale STAR
+                        """.formatted(firstName, position, callTitre));
+            } else {
+                message.setSubject("Candidature non retenue – " + callTitre);
+                message.setText("""
+                        Bonjour %s,
+
+                        Nous regrettons de vous informer que votre candidature pour le poste de %s dans le cadre de l'appel "%s" n'a pas été retenue.
+
+                        %s
+
+                        Pour toute question, veuillez contacter l'administration.
+
+                        Cordialement,
+                        L'équipe Amicale STAR
+                        """.formatted(firstName, position, callTitre,
+                        rejectionReason != null && !rejectionReason.isBlank()
+                                ? "Motif : " + rejectionReason
+                                : ""));
+            }
+            mailSender.send(message);
+            log.info("Application decision email sent to: {} (approved={})", to, approved);
+        } catch (Exception e) {
+            log.error("Failed to send application decision email to: {}", to, e);
+            eventPublisher.publishEvent(new EmailFailedEvent(to, e.getMessage()));
+        }
+    }
+
+    @Async
+    @Override
+    public void sendElectionOpenToVoter(String to, String firstName, String electionTitre, String startDate, String endDate) {
+        try {
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setFrom(fromEmail);
+            message.setTo(to);
+            message.setSubject("Scrutin ouvert : " + electionTitre);
+            message.setText("""
+                    Bonjour %s,
+
+                    L'élection "%s" est maintenant ouverte au vote.
+
+                    Période de vote : du %s au %s
+
+                    Connectez-vous à la plateforme Amicale STAR pour consulter les candidats et voter.
+
+                    Cordialement,
+                    L'équipe Amicale STAR
+                    """.formatted(firstName, electionTitre, startDate, endDate));
+            mailSender.send(message);
+            log.info("Election open notification sent to voter: {}", to);
+        } catch (Exception e) {
+            log.error("Failed to send election open email to: {}", to, e);
+            eventPublisher.publishEvent(new EmailFailedEvent(to, e.getMessage()));
+        }
+    }
+
+    @Async
+    @Override
+    public void sendResultsToAdmin(String to, String adminName, String electionTitre) {
+        try {
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setFrom(fromEmail);
+            message.setTo(to);
+            message.setSubject("Résultats publiés : " + electionTitre);
+            message.setText("""
+                    Bonjour %s,
+
+                    Les résultats de l'élection "%s" ont été publiés sur la plateforme Amicale STAR.
+
+                    Connectez-vous au tableau de bord administrateur pour consulter et archiver les résultats.
+
+                    Cordialement,
+                    L'équipe Amicale STAR
+                    """.formatted(adminName, electionTitre));
+            mailSender.send(message);
+            log.info("Results published email sent to admin: {}", to);
+        } catch (Exception e) {
+            log.error("Failed to send results email to: {}", to, e);
+            eventPublisher.publishEvent(new EmailFailedEvent(to, e.getMessage()));
+        }
+    }
+
     private String buildBody(String tempPassword) {
         return """
                 Bonjour,

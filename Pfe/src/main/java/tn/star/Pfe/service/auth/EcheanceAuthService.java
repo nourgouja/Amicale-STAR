@@ -6,8 +6,8 @@ import tn.star.Pfe.entity.inscription.Echeance;
 import tn.star.Pfe.entity.user.Pole;
 import tn.star.Pfe.entity.user.MembreBureau;
 import tn.star.Pfe.enums.PosteBureau;
-import tn.star.Pfe.repository.EcheanceRepository;
-import tn.star.Pfe.repository.UserRepository;
+import tn.star.Pfe.repository.inscription.EcheanceRepository;
+import tn.star.Pfe.repository.user.UserRepository;
 import tn.star.Pfe.security.UserPrincipal;
 
 @Service

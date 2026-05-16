@@ -1,4 +1,4 @@
-package tn.star.Pfe.repository;
+package tn.star.Pfe.repository.offer;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

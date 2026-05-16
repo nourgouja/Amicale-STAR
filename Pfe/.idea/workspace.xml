@@ -5,16 +5,73 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9eb97705-73c2-4459-8719-a6433c0ff1ba" name="Changes" comment="inscription et cotisation">
+      <change afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/controller/election/ElectionCallController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/controller/election/ElectionController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/dto/election/candidate/AddCandidateRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/dto/election/candidate/ApplyRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/dto/election/candidate/CandidateApplicationResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/dto/election/candidate/CandidateResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/dto/election/candidate/CandidateResultResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/dto/election/candidate/UserSummaryResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/dto/election/election/CreateElectionCallRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/dto/election/election/CreateElectionRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/dto/election/election/ElectionCallResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/dto/election/election/ElectionResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/dto/election/election/ElectionVoteRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/entity/election/Candidate.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/entity/election/CandidateApplication.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/entity/election/CandidateVote.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/entity/election/Election.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/entity/election/ElectionCall.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/enums/CallStatus.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/repository/election/CandidateApplicationRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/repository/election/CandidateRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/repository/election/CandidateVoteRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/repository/election/ElectionCallRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/repository/election/ElectionRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/election/ElectionCallService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/election/ElectionService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/election/IElectionCallService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/election/IElectionService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/dto/inscription/InscriptionResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/dto/inscription/InscriptionResponse.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/dto/offre/OffreRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/dto/offre/OffreRequest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/dto/offre/OffreResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/dto/offre/OffreResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/config/DataInitializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/config/DataInitializer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/controller/dashboard/DashboardController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/controller/dashboard/DashboardController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/controller/inscription/InscriptionController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/controller/inscription/InscriptionController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/controller/user/AdminController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/controller/user/AdminController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/dto/dashboard/TresorierDashboardResponse.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/entity/offre/Offre.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/entity/offre/Offre.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/enums/TypeOffre.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/enums/TypeOffre.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/mapper/InscriptionMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/mapper/InscriptionMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/mapper/OffreMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/mapper/OffreMapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/enums/PosteBureau.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/enums/PosteBureau.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/enums/StatutOffre.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/enums/StatutOffre.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/enums/StatutSondage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/enums/StatutSondage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/exceptions/GlobalExceptionHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/exceptions/GlobalExceptionHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/repository/EcheanceRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/repository/inscription/EcheanceRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/repository/GuestRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/repository/inscription/GuestRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/repository/InscriptionRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/repository/inscription/InscriptionRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/repository/OffreImageRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/repository/offer/OffreImageRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/repository/OffreRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/repository/offer/OffreRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/repository/OptionSondageRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/repository/sondage/OptionSondageRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/repository/PoleRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/repository/user/PoleRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/repository/SondageRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/repository/sondage/SondageRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/repository/UserRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/repository/user/UserRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/repository/VoteSondageRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/repository/sondage/VoteSondageRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/security/CustomUserDetailsService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/security/CustomUserDetailsService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/adhesion/AdhesionService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/adhesion/AdhesionService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/auth/EcheanceAuthService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/auth/EcheanceAuthService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/auth/OffreAuthService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/auth/OffreAuthService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/dashboard/DashboardService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/dashboard/DashboardService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/dashboard/IDashboardService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/dashboard/IDashboardService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/echeance/EcheanceService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/echeance/EcheanceService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/email/EmailService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/email/EmailService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/email/IEmailService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/email/IEmailService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/inscription/GuestService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/inscription/GuestService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/inscription/InscriptionService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/inscription/InscriptionService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/notification/NotificationScheduler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/notification/NotificationScheduler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/notification/NotificationService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/notification/NotificationService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/offre/OffreService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/offre/OffreService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/pole/PoleService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/pole/PoleService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/sondage/SondageService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/sondage/SondageService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/user/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/user/UserService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/tn/star/Pfe/controller/TestController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/tn/star/Pfe/controller/TestController.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -24,8 +81,9 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Enum" />
         <option value="Record" />
+        <option value="Enum" />
+        <option value="Interface" />
         <option value="Class" />
       </list>
     </option>
@@ -59,31 +117,36 @@
   &quot;associatedIndex&quot;: 7
 }</component>
   <component name="ProjectId" id="3COIUKyAqKWMgwjiWdiyRscf3qb" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;JavaMethodFindUsagesOptions.isImplementingMethods&quot;: &quot;true&quot;,
-    &quot;Maven.Pfe [clean].executor&quot;: &quot;Run&quot;,
-    &quot;Maven.Pfe [compile].executor&quot;: &quot;Run&quot;,
-    &quot;Maven.Pfe [validate].executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.MCP Project settings loaded&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;Spring Boot.PfeApplication.executor&quot;: &quot;Debug&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/nourg/IdeaProjects/BACKEND_STAR/Pfe/pom.xml&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "JavaMethodFindUsagesOptions.isImplementingMethods": "true",
+    "Maven.Pfe [clean].executor": "Run",
+    "Maven.Pfe [compile].executor": "Run",
+    "Maven.Pfe [validate].executor": "Run",
+    "RunOnceActivity.MCP Project settings loaded": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "Spring Boot.PfeApplication.executor": "Debug",
+    "git-widget-placeholder": "main",
+    "ignore.virus.scanning.warn.message": "true",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/nourg/IdeaProjects/BACKEND_STAR/Pfe/pom.xml",
+    "settings.editor.selected.configurable": "advanced.settings"
   },
-  &quot;keyToStringList&quot;: {
-    &quot;DatabaseDriversLRU&quot;: [
-      &quot;mysql&quot;
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "mysql"
     ]
   }
-}</component>
+}]]></component>
   <component name="RunManager">
     <configuration default="true" type="AZURE_FUNCTION_SUPPORT" factoryName="Run Functions">
       <option name="appName" />
@@ -213,6 +276,10 @@
         <breakpoint enabled="true" type="java-exception">
           <properties class="java.sql.SQLSyntaxErrorException" package="java.sql" />
           <option name="timeStamp" value="3" />
+        </breakpoint>
+        <breakpoint enabled="true" type="java-exception">
+          <properties class="org.hibernate.metamodel.UnsupportedMappingException" package="org.hibernate.metamodel" />
+          <option name="timeStamp" value="4" />
         </breakpoint>
       </breakpoints>
     </breakpoint-manager>
