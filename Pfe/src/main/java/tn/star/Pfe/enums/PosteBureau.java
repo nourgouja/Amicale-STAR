@@ -2,9 +2,11 @@ package tn.star.Pfe.enums;
 
 public enum PosteBureau {
     PRESIDENT("Président"),
-    VICE_PRESIDENT("Vice-Président"),
     SECRETARY("Secrétaire"),
-    TRESORIER("Trésorier"),
+    TREASURER("Trésorier"),
+    RESPONSABLE_POLE_VOYAGE_SEJOURS("Responsable Pôle Voyage & Séjours"),
+    RESPONSABLE_POLE_ACTIVITES_LOISIRS("Responsable Pôle Activités & Loisirs"),
+    RESPONSABLE_POLE_EVENEMENTS_CONVENTIONS("Responsable Pôle Événements & Conventions"),
     RESPONSABLE_POLE("Responsable de Pôle"),
     MEMBER("Membre");
 

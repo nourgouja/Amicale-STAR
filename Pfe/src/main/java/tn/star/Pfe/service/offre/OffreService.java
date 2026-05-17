@@ -46,7 +46,8 @@ public class OffreService implements IOffreService {
     }
 
     public List<OffreResponse> listerOffresPubliques() {
-        return offreRepository.findByStatutIn(List.of(OfferStatus.OPEN, OfferStatus.CLOSED))
+        return offreRepository.findByStatutInOrType(
+                        List.of(OfferStatus.OPEN, OfferStatus.CLOSED), TypeOffre.CONVENTION)
                 .stream()
                 .map(offreMapper::toResponse)
                 .toList();

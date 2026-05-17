@@ -54,9 +54,7 @@ public class OffreController {
     private static final long MAX_IMAGE_BYTES = 1_000_000L; // 1 MB — MySQL max_allowed_packet limit
 
     @PostMapping(value = "/creer", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @PreAuthorize("hasRole('ADMIN') or " +
-            "(hasRole('MEMBRE_BUREAU') and " +
-            "@offreAuthService.canCreate(principal, #req.typeOffre.name()))")
+    @PreAuthorize("hasAnyRole('MEMBRE_BUREAU', 'ADMIN')")
     public ResponseEntity<OffreResponse> creer(
             @RequestPart("req") OffreRequest req,
             @RequestPart(value = "image", required = false) MultipartFile image,
@@ -79,7 +77,7 @@ public class OffreController {
     }
 
     @PatchMapping(value = "/{id}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @PreAuthorize("hasRole('ADMIN') or (hasRole('MEMBRE_BUREAU') and @offreAuthService.canManage(principal, #id))")
+    @PreAuthorize("hasAnyRole('MEMBRE_BUREAU', 'ADMIN')")
     public ResponseEntity<OffreResponse> uploadImage(
             @PathVariable Long id,
             @RequestPart("image") MultipartFile image) {

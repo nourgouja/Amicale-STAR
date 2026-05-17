@@ -29,6 +29,8 @@ public class InscriptionMapper {
                 .dateAnnulation(i.getDateAnnulation())
                 .nombreAccompagnants(i.getNombreAccompagnants())
                 .totalPeople(i.getTotalPeople())
+                .prixParPersonne(i.getOffre().getPrixParPersonne())
+                .placesRestantes(i.getOffre().getPlacesRestantes())
                 .echeances(mapEcheances(i))
                 .guests(i.getGuests() != null ? i.getGuests() : Collections.emptyList())
                 .build();

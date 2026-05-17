@@ -19,4 +19,5 @@ public interface IInscriptionService {
     List<InscriptionResponse> listerToutesInscriptions();
     List<InscriptionResponse> listerFiltrees(ApprovalStatus statut, TypeOffre type, String search);
     InscriptionResponse getById(Long inscriptionId);
+    InscriptionResponse modifier(Adherent adherent, Long inscriptionId, List<GuestDTO> guests, PeriodePaiement periodePaiement);
 }

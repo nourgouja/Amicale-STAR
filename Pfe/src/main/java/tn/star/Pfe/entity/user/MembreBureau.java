@@ -25,7 +25,7 @@ public class MembreBureau extends User {
     @JoinColumn(name = "pole_id")
     private Pole pole;
 
-    @Column
+    @Column(columnDefinition = "VARCHAR(50)")
     @Enumerated(EnumType.STRING)
     private PosteBureau poste;
 

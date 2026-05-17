@@ -99,7 +99,14 @@ public class ElectionCallService implements IElectionCallService {
     @Override
     @Transactional(readOnly = true)
     public Optional<ElectionCallResponse> getActiveCall() {
-        return electionCallRepository.findFirstByStatusOrderByCreatedAtDesc(LifecycleStatus.OPEN)
+        // Phase 1: candidacy open
+        Optional<ElectionCall> openCall = electionCallRepository.findFirstByStatusOrderByCreatedAtDesc(LifecycleStatus.OPEN);
+        if (openCall.isPresent()) return openCall.map(this::toResponse);
+        // Phase 2: voting in progress (call closed, published election still open)
+        Optional<ElectionCall> votingCall = electionCallRepository.findFirstByPublishedElection_StatusOrderByCreatedAtDesc(LifecycleStatus.OPEN);
+        if (votingCall.isPresent()) return votingCall.map(this::toResponse);
+        // Phase 3: results published
+        return electionCallRepository.findFirstByPublishedElection_StatusOrderByCreatedAtDesc(LifecycleStatus.RESULTS_PUBLISHED)
                 .map(this::toResponse);
     }
 
@@ -192,6 +199,7 @@ public class ElectionCallService implements IElectionCallService {
                 .call(call)
                 .position(request.getPosition())
                 .motivation(request.getMotivation())
+                .poleNom(request.getPoleNom())
                 .photo(photoBytes)
                 .status(ApprovalStatus.PENDING)
                 .build();
@@ -237,8 +245,9 @@ public class ElectionCallService implements IElectionCallService {
             throw new IllegalStateException("Aucun candidat approuvé pour cette élection");
         }
 
-        LocalDateTime voteStart = call.getDateDebut() != null ? call.getDateDebut() : LocalDateTime.now();
-        LocalDateTime voteEnd   = call.getDateFin()   != null ? call.getDateFin()   : voteStart.plusDays(30);
+        // Voting starts the moment the election is published, ends at the call's dateFin
+        LocalDateTime voteStart = LocalDateTime.now();
+        LocalDateTime voteEnd   = call.getDateFin() != null ? call.getDateFin() : voteStart.plusDays(30);
 
         Election election = Election.builder()
                 .titre(call.getTitre())
@@ -390,6 +399,7 @@ public class ElectionCallService implements IElectionCallService {
                 .callId(app.getCall().getId())
                 .position(app.getPosition())
                 .motivation(app.getMotivation())
+                .poleNom(app.getPoleNom())
                 .photo(app.getPhoto())
                 .status(app.getStatus())
                 .createdAt(app.getCreatedAt())

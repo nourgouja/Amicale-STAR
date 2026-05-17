@@ -60,8 +60,9 @@ public class InscriptionService implements IInscriptionService {
 
         int nombreAccompagnants = guestList.size();
         int totalPersonnes = 1 + nombreAccompagnants;
-        if (offre.getPlacesRestantes() < totalPersonnes)
-            throw new CapaciteMaxAtteint("Plus assez de places disponibles (" + offre.getPlacesRestantes() + " restante(s))");
+        Integer placesRestantes = offre.getPlacesRestantes();
+        if (placesRestantes != null && placesRestantes < totalPersonnes)
+            throw new CapaciteMaxAtteint("Plus assez de places disponibles (" + placesRestantes + " restante(s))");
 
         java.math.BigDecimal montantTotal = offre.getPrixParPersonne() != null
                 ? offre.getPrixParPersonne().multiply(java.math.BigDecimal.valueOf(totalPersonnes))
@@ -129,12 +130,58 @@ public class InscriptionService implements IInscriptionService {
     }
 
     @Transactional
+    public InscriptionResponse modifier(Adherent adherent, Long inscriptionId,
+                                        List<GuestDTO> guests, PeriodePaiement periodePaiement) {
+        Inscription inscription = inscriptionRepository
+                .findByIdAndAdherent(inscriptionId, adherent)
+                .orElseThrow(() -> new NotFoundException("Inscription introuvable"));
+
+        if (inscription.getStatut() != ApprovalStatus.PENDING)
+            throw new BadRequestException("Seules les inscriptions en attente peuvent être modifiées.");
+
+        List<GuestDTO> guestList = guests != null ? guests : new ArrayList<>();
+        validateGuests(guestList);
+
+        Offre offre = inscription.getOffre();
+        int totalPersonnes = 1 + guestList.size();
+        int previousTotal = 1 + inscription.getNombreAccompagnants();
+        int diff = totalPersonnes - previousTotal;
+
+        Integer placesRestantesMod = offre.getPlacesRestantes();
+        if (diff > 0 && placesRestantesMod != null && placesRestantesMod < diff)
+            throw new CapaciteMaxAtteint("Plus assez de places disponibles (" + placesRestantesMod + " restante(s))");
+
+        inscription.setGuests(guestList);
+        inscription.setNombreAccompagnants(guestList.size());
+
+        if (offre.getPrixParPersonne() != null) {
+            java.math.BigDecimal montantTotal =
+                    offre.getPrixParPersonne().multiply(java.math.BigDecimal.valueOf(totalPersonnes));
+            inscription.setMontant(montantTotal);
+
+            boolean supportsPaymentModes = offre.getType() == TypeOffre.VOYAGE || offre.getType() == TypeOffre.SEJOUR;
+            PeriodePaiement periode = supportsPaymentModes
+                    ? (periodePaiement != null ? periodePaiement : inscription.getPeriodePaiement())
+                    : PeriodePaiement.COMPTANT;
+            inscription.setPeriodePaiement(periode);
+
+            inscription.getEcheances().clear();
+            List<Echeance> newEcheances = EcheanceFactory.generate(inscription, montantTotal, periode);
+            inscription.getEcheances().addAll(newEcheances);
+        }
+
+        return inscriptionMapper.toResponse(inscriptionRepository.save(inscription));
+    }
+
+    @Transactional
     public InscriptionResponse annuler(Adherent adherent, Long inscriptionId) {
         Inscription inscription = inscriptionRepository
                 .findByIdAndAdherent(inscriptionId, adherent)
                 .orElseThrow(() -> new NotFoundException("Inscription introuvable"));
 
         ApprovalStatus oldStatut = inscription.getStatut();
+        if (oldStatut != ApprovalStatus.PENDING)
+            throw new BadRequestException("Seules les inscriptions en attente peuvent être annulées.");
         inscription.setStatut(ApprovalStatus.CANCELLED);
         inscription.setDateAnnulation(LocalDateTime.now());
         Inscription saved = inscriptionRepository.save(inscription);

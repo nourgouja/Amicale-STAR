@@ -14,6 +14,8 @@ import java.util.stream.Collectors;
 @Repository
 public interface VoteSondageRepository extends JpaRepository<VoteSondage, Long> {
 
+    void deleteBySondageId(Long sondageId);
+
     Optional<VoteSondage> findBySondageIdAndAdherentId(Long sondageId, Long adherentId);
 
     boolean existsBySondageIdAndAdherentId(Long sondageId, Long adherentId);

@@ -44,6 +44,9 @@ public interface OffreRepository extends JpaRepository<Offre, Long> {
 
     List<Offre> findByStatutAndType(OfferStatus statut, TypeOffre type);
 
+    @Query("SELECT o FROM Offre o WHERE o.statut IN :statuts OR o.type = :type")
+    List<Offre> findByStatutInOrType(@Param("statuts") List<OfferStatus> statuts, @Param("type") TypeOffre type);
+
     //dashboard
     long countByStatut(OfferStatus statut);
 

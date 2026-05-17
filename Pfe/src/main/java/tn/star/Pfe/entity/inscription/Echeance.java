@@ -36,7 +36,7 @@ public class Echeance {
     private LocalDate dateEcheance;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "VARCHAR(50)")
     @Builder.Default
     private PaymentStatus statut = PaymentStatus.PENDING;
 

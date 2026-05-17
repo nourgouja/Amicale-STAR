@@ -44,6 +44,9 @@ public class CandidateApplication {
     @Column(columnDefinition = "TEXT")
     private String motivation;
 
+    @Column(length = 100)
+    private String poleNom;
+
     @NotNull(message = "Status cannot be null")
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

@@ -96,7 +96,8 @@ public class Offre {
     private List<Inscription> inscriptions = new ArrayList<>();
 
 
-    public int getPlacesRestantes(){
+    public Integer getPlacesRestantes(){
+        if (capaciteMax == 0) return null; // no capacity limit set
         int occupied = inscriptions.stream()
                 .filter(i -> i.getStatut() == ApprovalStatus.APPROVED)
                 .mapToInt(Inscription::getTotalPeople)

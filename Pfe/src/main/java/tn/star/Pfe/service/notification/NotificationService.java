@@ -359,21 +359,31 @@ public class NotificationService {
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void onElectionResultsPublished(ElectionResultsPublishedEvent event) {
         try {
-            String msg = "Les résultats de l'élection «" + event.election().getTitre() + "» ont été publiés.";
-            userRepository.findByRole(Role.ADMIN).forEach(admin -> {
-                try {
-                    store.push(admin.getId(), new NotificationDto(
-                            UUID.randomUUID().toString(),
-                            "ELECTION_RESULTS_PUBLISHED",
-                            msg,
-                            "/admin/elections",
-                            Severity.SUCCESS,
-                            LocalDateTime.now()
-                    ));
-                } catch (Exception e) {
-                    log.error("Failed to notify admin {} of election results", admin.getId(), e);
-                }
-            });
+            String titre = event.election().getTitre();
+            String msg   = "Les résultats de l'élection «" + titre + "» sont disponibles.";
+
+            userRepository.findAll().stream()
+                    .filter(User::isActif)
+                    .forEach(user -> {
+                        try {
+                            String link = switch (user.getRole()) {
+                                case ADMIN         -> "/admin/elections";
+                                case MEMBRE_BUREAU -> "/bureau/elections";
+                                default            -> "/adherent/annonces";
+                            };
+                            Severity severity = user.getRole() == Role.ADMIN ? Severity.SUCCESS : Severity.INFO;
+                            store.push(user.getId(), new NotificationDto(
+                                    UUID.randomUUID().toString(),
+                                    "ELECTION_RESULTS_PUBLISHED",
+                                    msg,
+                                    link,
+                                    severity,
+                                    LocalDateTime.now()
+                            ));
+                        } catch (Exception e) {
+                            log.error("Failed to notify user {} of election results", user.getId(), e);
+                        }
+                    });
         } catch (Exception e) {
             log.error("Error processing ElectionResultsPublishedEvent notification", e);
         }

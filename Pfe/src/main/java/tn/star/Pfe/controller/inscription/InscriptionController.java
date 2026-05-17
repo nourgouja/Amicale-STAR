@@ -166,6 +166,26 @@ public class InscriptionController {
     }
 
 
+    @PatchMapping("/{inscriptionId}/modifier")
+    @PreAuthorize("hasRole('ADHERENT')")
+    public ResponseEntity<InscriptionResponse> modifier(
+            @PathVariable Long inscriptionId,
+            @RequestBody tn.star.Pfe.dto.inscription.InscriptionCreateRequest req,
+            @AuthenticationPrincipal @Parameter(hidden = true) UserPrincipal principal) {
+
+        Adherent adherent = getAdherentFromPrincipal(principal);
+        tn.star.Pfe.enums.PeriodePaiement periode = null;
+        if (req.getPaymentPeriod() != null && !req.getPaymentPeriod().isBlank()) {
+            try {
+                periode = tn.star.Pfe.enums.PeriodePaiement.valueOf(req.getPaymentPeriod().toUpperCase());
+            } catch (IllegalArgumentException e) {
+                throw new tn.star.Pfe.exceptions.BadRequestException(
+                    "Période de paiement invalide. Valeurs acceptées : COMPTANT, MENSUEL, TRIMESTRIEL, SEMESTRIEL");
+            }
+        }
+        return ResponseEntity.ok(inscriptionService.modifier(adherent, inscriptionId, req.getGuests(), periode));
+    }
+
     @PatchMapping("/annuler/{inscriptionId}")
     @PreAuthorize("hasRole('ADHERENT')")
     public ResponseEntity<InscriptionResponse> annuler(

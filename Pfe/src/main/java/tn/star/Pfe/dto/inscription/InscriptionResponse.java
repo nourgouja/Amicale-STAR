@@ -31,6 +31,8 @@ public class InscriptionResponse {
     private LocalDateTime dateAnnulation;
     private int nombreAccompagnants;
     private Integer totalPeople;
+    private java.math.BigDecimal prixParPersonne;
+    private Integer placesRestantes;
     private List<EcheanceResponse> echeances;
     private List<GuestDTO> guests;
 

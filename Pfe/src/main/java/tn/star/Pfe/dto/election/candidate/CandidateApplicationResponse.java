@@ -21,6 +21,7 @@ public class CandidateApplicationResponse {
     private Long callId;
     private PosteBureau position;
     private String motivation;
+    private String poleNom;
     private byte[] photo;
     private ApprovalStatus status;
     private LocalDateTime createdAt;

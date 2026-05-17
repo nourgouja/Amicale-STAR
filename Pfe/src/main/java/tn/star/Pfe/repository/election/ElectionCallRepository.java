@@ -32,4 +32,6 @@ public interface ElectionCallRepository extends JpaRepository<ElectionCall, Long
     Page<ElectionCall> searchByTitreOrDescription(@Param("query") String query, Pageable pageable);
 
     Optional<ElectionCall> findFirstByStatusOrderByCreatedAtDesc(LifecycleStatus status);
+
+    Optional<ElectionCall> findFirstByPublishedElection_StatusOrderByCreatedAtDesc(LifecycleStatus publishedElectionStatus);
 }

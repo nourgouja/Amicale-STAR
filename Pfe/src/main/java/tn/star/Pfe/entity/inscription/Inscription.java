@@ -40,6 +40,7 @@ public class Inscription {
     @JoinColumn(name = "offre_id")
     private Offre offre;
 
+    @Column(columnDefinition = "VARCHAR(50)")
     @Enumerated(EnumType.STRING)
     @Builder.Default
     private ApprovalStatus statut = ApprovalStatus.PENDING;
@@ -50,7 +51,7 @@ public class Inscription {
     private BigDecimal montant;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "periode_paiement")
+    @Column(name = "periode_paiement", columnDefinition = "VARCHAR(50)")
     private PeriodePaiement periodePaiement;
 
     private int nombreAccompagnants;

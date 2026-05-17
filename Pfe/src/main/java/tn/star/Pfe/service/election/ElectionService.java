@@ -184,11 +184,6 @@ public class ElectionService implements IElectionService {
             throw new IllegalStateException("Election is not active for voting");
         }
 
-        LocalDateTime now = LocalDateTime.now();
-        if (now.isBefore(election.getDateDebut()) || now.isAfter(election.getDateFin())) {
-            throw new IllegalStateException("Voting window has closed");
-        }
-
         Candidate candidate = candidateRepository.findById(request.getCandidateId())
                 .orElseThrow(() -> new IllegalArgumentException("Candidate not found: " + request.getCandidateId()));
 

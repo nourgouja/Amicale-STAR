@@ -23,5 +23,7 @@ public class ApplyRequest {
     @Size(min = 10, max = 1000, message = "Motivation must be between 10 and 1000 characters")
     private String motivation;
 
+    private String poleNom;
+
     private MultipartFile photo;
 }

@@ -23,6 +23,7 @@ public class Sondage {
     @Column(nullable = false, length = 200)
     private String titre;
 
+    @Column(columnDefinition = "VARCHAR(50)")
     @Enumerated(EnumType.STRING)
     @Builder.Default
     private LifecycleStatus statut = LifecycleStatus.DRAFT;

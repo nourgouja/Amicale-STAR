@@ -6,6 +6,6 @@ public record OffreDashboardItem(
         Long id,
         String titre,
         OfferStatus statut,
-        int placesRestantes,
+        Integer placesRestantes,
         long totalInscrits
 ) {}

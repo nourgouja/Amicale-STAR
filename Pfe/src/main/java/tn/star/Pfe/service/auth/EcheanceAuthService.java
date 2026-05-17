@@ -21,7 +21,7 @@ public class EcheanceAuthService implements IEcheanceAuthService {
         MembreBureau membre = (MembreBureau) userRepository.findById(principal.getId())
                 .orElseThrow();
 
-        if (membre.getPoste() == PosteBureau.TRESORIER) return true;
+        if (membre.getPoste() == PosteBureau.TREASURER) return true;
 
         Echeance echeance = echeanceRepository.findById(echeanceId)
                 .orElseThrow();

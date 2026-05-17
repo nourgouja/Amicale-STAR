@@ -140,10 +140,15 @@ public class SondageService implements ISondageService {
     }
 
     @Override
+    @Transactional
     public void supprimer(Long id, String username) {
         Sondage sondage = findSondage(id);
         User user = findUser(username);
         checkOwnerOrAdmin(sondage, user);
+
+        // delete votes first to satisfy the FK constraint on option_sondage
+        voteSondageRepository.deleteBySondageId(id);
+        voteSondageRepository.flush();
 
         sondageRepository.delete(sondage);
         log.info("Sondage supprimé: id={} par {}", id, username);
