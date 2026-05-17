@@ -61,6 +61,8 @@ public class ElectionCallService implements IElectionCallService {
                 .description(request.getDescription())
                 .status(LifecycleStatus.OPEN)
                 .dateFinCandidature(request.getDateFinCandidature())
+                .dateDebut(request.getDateDebut())
+                .dateFin(request.getDateFin())
                 .createdBy(userId)
                 .updatedBy(userId)
                 .build();

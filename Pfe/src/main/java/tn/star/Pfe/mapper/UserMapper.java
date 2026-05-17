@@ -34,6 +34,11 @@ public class UserMapper {
                         .map(Enum::name)
                         .sorted()
                         .collect(Collectors.toList());
+            } else if (mb.getPole() != null && mb.getPole().getTypesOffre() != null && !mb.getPole().getTypesOffre().isEmpty()) {
+                poleTypesOffre = mb.getPole().getTypesOffre().stream()
+                        .map(Enum::name)
+                        .sorted()
+                        .collect(Collectors.toList());
             }
         }
 

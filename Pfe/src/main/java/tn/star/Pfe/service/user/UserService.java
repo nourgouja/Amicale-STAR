@@ -116,13 +116,15 @@ public class UserService implements IUserService {
                 }
 
                 java.util.Set<TypeOffre> types = new java.util.HashSet<>();
-                if (request.typesAutorisees() != null) {
+                if (request.typesAutorisees() != null && !request.typesAutorisees().isEmpty()) {
                     for (String t : request.typesAutorisees()) {
                         try {
                             types.add(TypeOffre.valueOf(t));
                         } catch (IllegalArgumentException ignored) {
                         }
                     }
+                } else if (pole != null && pole.getTypesOffre() != null) {
+                    types.addAll(pole.getTypesOffre());
                 }
 
                 yield MembreBureau.builder()
@@ -183,10 +185,16 @@ public class UserService implements IUserService {
                 Pole pole = poleRepository.findById(request.poleId())
                         .orElseThrow(() -> new NotFoundException("Pôle introuvable avec ID: " + request.poleId()));
                 mb.setPole(pole);
+                if (request.typesAutorisees() == null || request.typesAutorisees().isEmpty()) {
+                    if (pole.getTypesOffre() != null) {
+                        mb.setTypesAutorisees(new java.util.HashSet<>(pole.getTypesOffre()));
+                    }
+                }
             } else if (request.posteMembre() != null && !request.posteMembre().equals("RESPONSABLE_POLE")) {
                 mb.setPole(null);
+                mb.setTypesAutorisees(new java.util.HashSet<>());
             }
-            if (request.typesAutorisees() != null) {
+            if (request.typesAutorisees() != null && !request.typesAutorisees().isEmpty()) {
                 java.util.Set<TypeOffre> types = new java.util.HashSet<>();
                 for (String t : request.typesAutorisees()) {
                     try { types.add(TypeOffre.valueOf(t)); } catch (IllegalArgumentException ignored) {}
@@ -231,11 +239,16 @@ public class UserService implements IUserService {
                 }
                 Pole pole = request.poleId() != null
                         ? poleRepository.findById(request.poleId()).orElse(null) : null;
+                java.util.Set<TypeOffre> migratedTypes = new java.util.HashSet<>();
+                if (pole != null && pole.getTypesOffre() != null) {
+                    migratedTypes.addAll(pole.getTypesOffre());
+                }
                 yield MembreBureau.builder()
                         .email(email).motDePasse(existing.getMotDePasse()).nom(nom).prenom(prenom)
                         .telephone(telephone).matriculeStar(matriculeStar)
                         .role(Role.MEMBRE_BUREAU).actif(true).firstLogin(existing.isFirstLogin())
-                        .poste(PosteBureau.valueOf(request.posteMembre())).pole(pole).build();
+                        .poste(PosteBureau.valueOf(request.posteMembre())).pole(pole)
+                        .typesAutorisees(migratedTypes).build();
             }
             case ADMIN -> Admin.builder()
                     .email(email).motDePasse(existing.getMotDePasse()).nom(nom).prenom(prenom)

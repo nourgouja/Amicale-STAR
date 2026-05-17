@@ -27,7 +27,11 @@ public class CreateElectionCallRequest {
     @FutureOrPresent(message = "Application deadline must be in the future")
     private LocalDateTime dateFinCandidature;
 
+    @NotNull(message = "Vote start date is required")
+    @Future(message = "Vote start date must be in the future")
     private LocalDateTime dateDebut;
 
+    @NotNull(message = "Vote end date is required")
+    @Future(message = "Vote end date must be in the future")
     private LocalDateTime dateFin;
 }

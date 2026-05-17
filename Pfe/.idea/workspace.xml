@@ -6,6 +6,11 @@
   <component name="ChangeListManager">
     <list default="true" id="9eb97705-73c2-4459-8719-a6433c0ff1ba" name="Changes" comment="inscription et cotisation">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/dto/election/election/CreateElectionCallRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/dto/election/election/CreateElectionCallRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/mapper/UserMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/mapper/UserMapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/election/ElectionCallService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/election/ElectionCallService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/email/EmailService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/email/EmailService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/user/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tn/star/Pfe/service/user/UserService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
