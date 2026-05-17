@@ -17,6 +17,8 @@ import tn.star.Pfe.event.*;
 import tn.star.Pfe.repository.user.UserRepository;
 import tn.star.Pfe.service.email.IEmailService;
 import tn.star.Pfe.event.InscriptionCreeeEvent;
+import tn.star.Pfe.event.SondageClosedEvent;
+import tn.star.Pfe.event.SondageOpenedEvent;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -375,6 +377,68 @@ public class NotificationService {
         } catch (Exception e) {
             log.error("Error processing ElectionResultsPublishedEvent notification", e);
         }
+    }
+
+    // ── Sondage notifications ───────────────────────────────────────────────
+
+    @Async
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    public void onSondageOpened(SondageOpenedEvent event) {
+        try {
+            String msg = "Nouveau sondage disponible : «" + event.sondage().getTitre() + "». Votez dès maintenant !";
+            userRepository.findAll().stream()
+                    .filter(User::isActif)
+                    .forEach(user -> {
+                        try {
+                            store.push(user.getId(), new NotificationDto(
+                                    UUID.randomUUID().toString(),
+                                    "SONDAGE_OUVERT",
+                                    msg,
+                                    sondagePath(user),
+                                    Severity.INFO,
+                                    LocalDateTime.now()
+                            ));
+                        } catch (Exception e) {
+                            log.error("Failed to notify user {} of new sondage", user.getId(), e);
+                        }
+                    });
+        } catch (Exception e) {
+            log.error("Error processing SondageOpenedEvent notification", e);
+        }
+    }
+
+    @Async
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    public void onSondageClosed(SondageClosedEvent event) {
+        try {
+            String msg = "Le sondage «" + event.sondage().getTitre() + "» est maintenant fermé. Les résultats sont disponibles.";
+            userRepository.findAll().stream()
+                    .filter(User::isActif)
+                    .forEach(user -> {
+                        try {
+                            store.push(user.getId(), new NotificationDto(
+                                    UUID.randomUUID().toString(),
+                                    "SONDAGE_FERME",
+                                    msg,
+                                    sondagePath(user),
+                                    Severity.INFO,
+                                    LocalDateTime.now()
+                            ));
+                        } catch (Exception e) {
+                            log.error("Failed to notify user {} of closed sondage", user.getId(), e);
+                        }
+                    });
+        } catch (Exception e) {
+            log.error("Error processing SondageClosedEvent notification", e);
+        }
+    }
+
+    private String sondagePath(User user) {
+        return switch (user.getRole()) {
+            case ADMIN         -> "/admin/sondages";
+            case MEMBRE_BUREAU -> "/bureau/sondages";
+            default            -> "/adherent/sondages";
+        };
     }
 
     private String electionsPath(User user) {

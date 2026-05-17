@@ -17,6 +17,7 @@ import tn.star.Pfe.entity.sondage.VoteSondage;
 import tn.star.Pfe.enums.Role;
 import tn.star.Pfe.enums.LifecycleStatus;
 import tn.star.Pfe.event.SondageClosedEvent;
+import tn.star.Pfe.event.SondageOpenedEvent;
 import tn.star.Pfe.exceptions.BadRequestException;
 import tn.star.Pfe.exceptions.ForbiddenException;
 import tn.star.Pfe.exceptions.NotFoundException;
@@ -62,6 +63,7 @@ public class SondageService implements ISondageService {
         sondage.getOptions().add(opt2);
 
         Sondage saved = sondageRepository.save(sondage);
+        eventPublisher.publishEvent(new SondageOpenedEvent(this, saved));
         log.info("Sondage créé et activé: id={} par {}", saved.getId(), username);
         return toResponse(saved, creator);
     }
@@ -99,6 +101,7 @@ public class SondageService implements ISondageService {
 
         sondage.setStatut(LifecycleStatus.OPEN);
         Sondage saved = sondageRepository.save(sondage);
+        eventPublisher.publishEvent(new SondageOpenedEvent(this, saved));
         log.info("Sondage activé: id={} par {}", id, username);
         return toResponse(saved, user);
     }
