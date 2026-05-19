@@ -1,0 +1,7 @@
+{
+  "scripts": {
+    "start": "npm start --prefix frontend-amicale",
+    "build": "npm run build --prefix frontend-amicale",
+    "install": "npm install --prefix frontend-amicale"
+  }
+}
