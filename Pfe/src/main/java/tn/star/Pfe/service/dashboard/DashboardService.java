@@ -119,9 +119,11 @@ public class DashboardService implements IDashboardService {
                 ))
                 .toList();
 
+        long totalAdherents = userRepository.countByRole(Role.ADHERENT);
+
         return new BureauDashboardResponse(
                 mesOffres, totalEnAttente, inscriptionsEnAttente,
-                totalPaiementsEnRetard, participation
+                totalPaiementsEnRetard, participation, totalAdherents
         );
     }
 

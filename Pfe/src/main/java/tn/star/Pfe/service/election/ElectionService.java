@@ -394,6 +394,7 @@ public class ElectionService implements IElectionService {
                         .nom(c.getUser().getNom())
                         .email(c.getUser().getEmail())
                         .position(pos.name())
+                        .motivation(c.getMotivation())
                         .pictureUrl(c.getPhoto() != null ?
                                 "data:image/jpeg;base64," + Base64.getEncoder().encodeToString(c.getPhoto()) : null)
                         .voteCount(votes)

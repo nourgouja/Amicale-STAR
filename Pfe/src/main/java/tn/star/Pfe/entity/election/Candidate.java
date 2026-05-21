@@ -42,6 +42,9 @@ public class Candidate {
     @Column(nullable = false)
     private PosteBureau position;
 
+    @Column(columnDefinition = "TEXT")
+    private String motivation;
+
     @Lob
     @Column(columnDefinition = "LONGBLOB")
     private byte[] photo;

@@ -270,6 +270,7 @@ public class ElectionCallService implements IElectionCallService {
                     .user(app.getUser())
                     .election(savedElection)
                     .position(app.getPosition())
+                    .motivation(app.getMotivation())
                     .photo(app.getPhoto())
                     .voteCount(0L)
                     .build();

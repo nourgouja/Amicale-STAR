@@ -16,6 +16,7 @@ public class CandidateSummary {
     private String email;
     private String position;
     private String pictureUrl;
+    private String motivation;
     private Long voteCount;
     private double votePercentage;
     private boolean winner;

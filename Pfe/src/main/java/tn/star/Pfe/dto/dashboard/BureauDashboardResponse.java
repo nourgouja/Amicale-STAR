@@ -8,5 +8,6 @@ public record BureauDashboardResponse(
         long totalInscriptionsEnAttente,
         List<InscriptionResponse> inscriptionsEnAttente,
         long totalPaiementsEnRetard,
-        List<ParticipationItem> participationParOffre
+        List<ParticipationItem> participationParOffre,
+        long totalAdherents
 ) {}
