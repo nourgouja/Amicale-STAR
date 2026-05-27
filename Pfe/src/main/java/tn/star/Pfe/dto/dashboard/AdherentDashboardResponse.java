@@ -13,7 +13,7 @@ public record AdherentDashboardResponse(
         long echeancesEnAttente,
         long echeancesEnRetard,
         BigDecimal montantDuTotal,
-        List<OffreResponse> offresDisponibles,       // up to 6 open offers not yet joined
-        List<InscriptionSummary> prochainsEvenements, // next 3 upcoming confirmed events
-        List<EcheanceSummary> prochainesEcheances     // next 3 unpaid deadlines
+        List<OffreResponse> offresDisponibles,
+        List<InscriptionSummary> prochainsEvenements,
+        List<EcheanceSummary> prochainesEcheances
 ) {}

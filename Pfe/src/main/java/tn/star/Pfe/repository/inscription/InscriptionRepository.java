@@ -20,8 +20,6 @@ public interface InscriptionRepository extends JpaRepository<Inscription, Long> 
 
     List<Inscription> findByStatut(ApprovalStatus statut);
 
-    List<Inscription> findByOffreAndStatut(Offre offre, ApprovalStatus statut);
-
     int countByOffreAndStatut(Offre offre, ApprovalStatus statut);
 
     Optional<Inscription> findByIdAndAdherent(Long id, Adherent adherent);
@@ -30,7 +28,6 @@ public interface InscriptionRepository extends JpaRepository<Inscription, Long> 
 
     boolean existsByOffreAndAdherentAndStatutNotIn(Offre offre, Adherent adherent, List<ApprovalStatus> statuts);
 
-    //dashboard
     long countByStatut(ApprovalStatus statut);
 
     @Query("""

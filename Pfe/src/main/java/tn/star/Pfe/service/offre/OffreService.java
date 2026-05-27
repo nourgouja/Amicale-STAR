@@ -73,7 +73,6 @@ public class OffreService implements IOffreService {
         User currentUser = userRepository.findByEmail(username)
                 .orElseThrow(() -> new NotFoundException("Utilisateur introuvable"));
 
-        // Resolve pole: bureau member always uses their own pole; otherwise find by type
         Pole pole = null;
         if (currentUser instanceof MembreBureau mb && mb.getPole() != null) {
             pole = mb.getPole();
@@ -218,7 +217,6 @@ public class OffreService implements IOffreService {
         if (offre.getType() == null)
             throw new BadRequestException("Type d'offre obligatoire.");
 
-        // CONVENTION is informational — date is optional
         boolean dateOptional = offre.getType() == TypeOffre.CONVENTION;
 
         if (!dateOptional && offre.getDateDebut() == null)

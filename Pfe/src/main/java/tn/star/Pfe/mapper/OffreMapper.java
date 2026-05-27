@@ -60,7 +60,6 @@ public class OffreMapper {
                 );
             }
         } catch (org.hibernate.LazyInitializationException ignored) {
-            // collection not initialized — caller did not pre-fetch; skip supplementary images
         }
 
         return res;

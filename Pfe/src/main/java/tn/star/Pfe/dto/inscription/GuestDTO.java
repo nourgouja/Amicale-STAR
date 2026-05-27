@@ -11,5 +11,5 @@ public class GuestDTO {
     private String nom;
     private String prenom;
     private Integer age;
-    private String sexe; // M / F / AUTRE
+    private String sexe;
 }

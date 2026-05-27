@@ -10,20 +10,11 @@ import org.springframework.stereotype.Repository;
 import tn.star.Pfe.entity.election.ElectionCall;
 import tn.star.Pfe.enums.LifecycleStatus;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Repository
 public interface ElectionCallRepository extends JpaRepository<ElectionCall, Long> {
     Page<ElectionCall> findByStatus(LifecycleStatus status, Pageable pageable);
-
-    Optional<ElectionCall> findByIdAndStatus(Long id, LifecycleStatus status);
-
-    Page<ElectionCall> findAllByStatusOrderByCreatedAtDesc(LifecycleStatus status, Pageable pageable);
-
-    @Query("SELECT ec FROM ElectionCall ec WHERE ec.status = :status " +
-            "AND ec.dateFinCandidature > :now ORDER BY ec.dateFinCandidature ASC")
-    Page<ElectionCall> findOpenCallsBeforeDeadline(LifecycleStatus status, LocalDateTime now, Pageable pageable);
 
     @Query("SELECT ec FROM ElectionCall ec WHERE " +
             "LOWER(ec.titre) LIKE LOWER(CONCAT('%', :query, '%')) OR " +

@@ -43,10 +43,7 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/api/auth/login",
                                 "/api/auth/forgot-password",
-                                "/api/auth/refresh",
-                                "/v3/api-docs/**",
-                                "/swagger-ui/**",
-                                "/swagger-ui.html"
+                                "/api/auth/refresh"
                         ).permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/adhesion/demande").permitAll()
                         .requestMatchers("/api/adhesion/**").hasRole("ADMIN")

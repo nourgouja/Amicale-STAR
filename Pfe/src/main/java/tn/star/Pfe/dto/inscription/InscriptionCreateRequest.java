@@ -10,5 +10,5 @@ import java.util.List;
 @NoArgsConstructor
 public class InscriptionCreateRequest {
     private List<GuestDTO> guests = new ArrayList<>();
-    private String paymentPeriod; // COMPTANT, MENSUEL, TRIMESTRIEL, SEMESTRIEL
+    private String paymentPeriod;
 }

@@ -7,7 +7,6 @@ import org.springframework.stereotype.Repository;
 import tn.star.Pfe.entity.election.CandidateApplication;
 import tn.star.Pfe.entity.election.ElectionCall;
 import tn.star.Pfe.entity.user.User;
-import tn.star.Pfe.enums.PosteBureau;
 import tn.star.Pfe.enums.ApprovalStatus;
 
 
@@ -22,8 +21,6 @@ public interface CandidateApplicationRepository extends JpaRepository<CandidateA
     Page<CandidateApplication> findByCallAndStatus(ElectionCall call, ApprovalStatus status, Pageable pageable);
 
     long countByCallAndStatus(ElectionCall call, ApprovalStatus status);
-
-    long countByCallAndStatusAndPosition(ElectionCall call, ApprovalStatus status, PosteBureau position);
 
     boolean existsByUserAndCall(User user, ElectionCall call);
 }

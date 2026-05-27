@@ -371,7 +371,8 @@ public class UserService implements IUserService {
                             mb.getNom(),
                             mb.getPrenom(),
                             mb.getPoste() != null ? mb.getPoste().name() : null,
-                            mb.getPole() != null ? mb.getPole().getNom() : null
+                            mb.getPole() != null ? mb.getPole().getNom() : null,
+                            mb.getEmail()
                     );
                 })
                 .toList();

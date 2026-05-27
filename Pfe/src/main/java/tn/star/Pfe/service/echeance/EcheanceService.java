@@ -113,7 +113,6 @@ public class EcheanceService implements IEcheanceService {
         }
     }
 
-    // ── Private helpers ───────────────────────────────────────────────────────
 
     private void notifyPaiementRecu(Echeance e) {
         Inscription ins  = e.getInscription();
@@ -190,7 +189,6 @@ public class EcheanceService implements IEcheanceService {
         );
     }
 
-    // ── Inner enum ────────────────────────────────────────────────────────────
 
     enum RappelType {
         J_MOINS_7 {

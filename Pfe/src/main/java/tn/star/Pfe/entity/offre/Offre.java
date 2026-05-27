@@ -90,7 +90,6 @@ public class Offre {
     @Builder.Default
     private List<OffreImage> imagesSupplementaires = new ArrayList<>();
 
-    //@JsonIgnore recherche chnw hedha
     @OneToMany(mappedBy= "offre" , cascade = CascadeType.ALL , orphanRemoval = true,fetch = FetchType.EAGER)
     @Builder.Default
     private List<Inscription> inscriptions = new ArrayList<>();

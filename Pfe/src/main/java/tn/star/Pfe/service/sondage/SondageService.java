@@ -38,7 +38,7 @@ import java.util.stream.Collectors;
 @Transactional
 public class SondageService implements ISondageService {
 
-    private static final long MAX_IMAGE_SIZE = 1024 * 1024; // 1MB
+    private static final long MAX_IMAGE_SIZE = 1024 * 1024;
 
     private final SondageRepository sondageRepository;
     private final VoteSondageRepository voteSondageRepository;
@@ -146,7 +146,6 @@ public class SondageService implements ISondageService {
         User user = findUser(username);
         checkOwnerOrAdmin(sondage, user);
 
-        // delete votes first to satisfy the FK constraint on option_sondage
         voteSondageRepository.deleteBySondageId(id);
         voteSondageRepository.flush();
 
@@ -211,8 +210,6 @@ public class SondageService implements ISondageService {
         log.info("Vote enregistré: sondage={}, option={}, user={}", sondageId, optionId, username);
         return toResponse(sondage, user);
     }
-
-    // --- Helpers ---
 
     private User findUser(String username) {
         return userRepository.findByEmail(username)

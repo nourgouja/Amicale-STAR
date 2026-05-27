@@ -30,7 +30,6 @@ public class DataInitializer {
     CommandLineRunner initData() {
         return args -> {
 
-            // ✅ Create Admin if not exists
             if (userRepository.findByEmail(adminEmail).isEmpty()) {
                 Admin admin = Admin.builder()
                         .nom("Admin")
@@ -43,10 +42,9 @@ public class DataInitializer {
                         .build();
 
                 userRepository.save(admin);
-                System.out.println("✅ ADMIN créé !");
+                System.out.println("ADMIN créé !");
             }
 
-            // ✅ Seed Poles
             seedPole("Pôle Activités & Loisirs");
             seedPole("Pôle Voyages & Séjours");
             seedPole("Pôle Conventions & Événements");
@@ -63,7 +61,7 @@ public class DataInitializer {
                             .nom(nom)
                             .build()
             );
-            System.out.println("✅ Pôle créé : " + nom);
+            System.out.println("Pôle créé : " + nom);
         }
     }
 }

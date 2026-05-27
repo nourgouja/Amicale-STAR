@@ -29,8 +29,6 @@ public class ElectionController {
 
     private final IElectionService electionService;
 
-    // ==================== READ - STATIC ROUTES FIRST ====================
-
     @GetMapping("/closed")
     public ResponseEntity<Page<ElectionResponse>> getAllClosedElections(
             @PageableDefault(size = 20) Pageable pageable) {
@@ -46,8 +44,6 @@ public class ElectionController {
         log.info("GET /elections/available-users electionId={}", electionId);
         return ResponseEntity.ok(electionService.getAvailableUsers(electionId, pageable));
     }
-
-    // ==================== READ - GENERIC ROUTES ====================
 
     @GetMapping
     public ResponseEntity<Page<ElectionResponse>> getAllActiveElections(
@@ -67,8 +63,6 @@ public class ElectionController {
         return ResponseEntity.ok(electionService.getElectionById(id, voterId));
     }
 
-    // ==================== ADMIN ACTIONS ====================
-
     @PostMapping("/{id}/close")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ElectionResponse> closeElection(
@@ -87,8 +81,6 @@ public class ElectionController {
         electionService.deleteElection(id, principal.getId());
         return ResponseEntity.noContent().build();
     }
-
-    // ==================== CANDIDATES ====================
 
     @GetMapping("/{electionId}/candidates")
     public ResponseEntity<Page<CandidateResponse>> listAllCandidates(
@@ -118,8 +110,6 @@ public class ElectionController {
                 .body(electionService.addCandidate(electionId, request, principal.getId()));
     }
 
-    // ==================== VOTING ====================
-
     @PostMapping("/{electionId}/vote")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ElectionResponse> voteForCandidate(
@@ -138,8 +128,6 @@ public class ElectionController {
         log.info("GET /elections/{}/my-votes by userId={}", electionId, principal.getId());
         return ResponseEntity.ok(electionService.getMyVotes(electionId, principal.getId()));
     }
-
-    // ==================== RESULTS ====================
 
     @GetMapping("/{electionId}/results")
     public ResponseEntity<Page<CandidateResponse>> getResults(

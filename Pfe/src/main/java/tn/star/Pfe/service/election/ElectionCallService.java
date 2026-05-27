@@ -99,13 +99,10 @@ public class ElectionCallService implements IElectionCallService {
     @Override
     @Transactional(readOnly = true)
     public Optional<ElectionCallResponse> getActiveCall() {
-        // Phase 1: candidacy open
         Optional<ElectionCall> openCall = electionCallRepository.findFirstByStatusOrderByCreatedAtDesc(LifecycleStatus.OPEN);
         if (openCall.isPresent()) return openCall.map(this::toResponse);
-        // Phase 2: voting in progress (call closed, published election still open)
         Optional<ElectionCall> votingCall = electionCallRepository.findFirstByPublishedElection_StatusOrderByCreatedAtDesc(LifecycleStatus.OPEN);
         if (votingCall.isPresent()) return votingCall.map(this::toResponse);
-        // Phase 3: results published
         return electionCallRepository.findFirstByPublishedElection_StatusOrderByCreatedAtDesc(LifecycleStatus.RESULTS_PUBLISHED)
                 .map(this::toResponse);
     }
@@ -245,7 +242,6 @@ public class ElectionCallService implements IElectionCallService {
             throw new IllegalStateException("Aucun candidat approuvé pour cette élection");
         }
 
-        // Voting starts the moment the election is published, ends at the call's dateFin
         LocalDateTime voteStart = LocalDateTime.now();
         LocalDateTime voteEnd   = call.getDateFin() != null ? call.getDateFin() : voteStart.plusDays(30);
 
@@ -262,7 +258,6 @@ public class ElectionCallService implements IElectionCallService {
 
         Election savedElection = electionRepository.save(election);
 
-        // Create Candidate entities from approved applications
         List<CandidateApplication> approved = applicationRepository
                 .findByCallAndStatus(call, ApprovalStatus.APPROVED, Pageable.unpaged()).getContent();
         for (CandidateApplication app : approved) {

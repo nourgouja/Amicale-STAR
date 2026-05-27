@@ -16,9 +16,6 @@ import tn.star.Pfe.enums.Role;
 import tn.star.Pfe.event.*;
 import tn.star.Pfe.repository.user.UserRepository;
 import tn.star.Pfe.service.email.IEmailService;
-import tn.star.Pfe.event.InscriptionCreeeEvent;
-import tn.star.Pfe.event.SondageClosedEvent;
-import tn.star.Pfe.event.SondageOpenedEvent;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -232,7 +229,6 @@ public class NotificationService {
         }
     }
 
-    // ── Election notifications ──────────────────────────────────────────────
 
     @Async
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
@@ -389,7 +385,6 @@ public class NotificationService {
         }
     }
 
-    // ── Sondage notifications ───────────────────────────────────────────────
 
     @Async
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)

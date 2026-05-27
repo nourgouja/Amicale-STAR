@@ -13,7 +13,6 @@ import tn.star.Pfe.dto.auth.create.UserResponse;
 import tn.star.Pfe.entity.user.User;
 import tn.star.Pfe.enums.Role;
 import tn.star.Pfe.mapper.UserMapper;
-import tn.star.Pfe.repository.user.UserRepository;
 import tn.star.Pfe.service.user.IUserService;
 
 @RestController
@@ -24,7 +23,6 @@ public class AdminController {
 
     private final IUserService userService;
     private final UserMapper userMapper;
-    private UserRepository userRepository;
 
     @GetMapping
     public ResponseEntity<Page<UserResponse>> listerTous(

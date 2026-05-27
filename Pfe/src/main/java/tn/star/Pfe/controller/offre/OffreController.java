@@ -29,7 +29,6 @@ public class OffreController {
         return ResponseEntity.ok(offreService.listerOffresOuvertes());
     }
 
-    /** Returns OUVERTE + FERMEE offers for the adherent home page */
     @GetMapping("/publiques")
     public ResponseEntity<List<OffreResponse>> listerPubliques() {
         return ResponseEntity.ok(offreService.listerOffresPubliques());
@@ -92,7 +91,6 @@ public class OffreController {
         return ResponseEntity.ok(offreService.modifier(id, req));
     }
 
-    /** Edit endpoint used by the frontend form (multipart, with optional image replacement) */
     @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasAnyRole('MEMBRE_BUREAU', 'ADMIN')")
     public ResponseEntity<OffreResponse> modifierAvecImage(

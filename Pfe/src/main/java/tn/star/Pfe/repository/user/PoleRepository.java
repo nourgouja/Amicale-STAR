@@ -12,9 +12,6 @@ import java.util.Optional;
 public interface PoleRepository extends JpaRepository<Pole, Long> {
 
     @Query("SELECT p FROM Pole p WHERE :type MEMBER OF p.typesOffre")
-    List<Pole> findByTypesOffreContaining(@Param("type") TypeOffre type);
-
-    @Query("SELECT p FROM Pole p WHERE :type MEMBER OF p.typesOffre")
     Optional<Pole> findFirstByTypesOffreContaining(@Param("type") TypeOffre type);
 
     List<Pole> findAll();

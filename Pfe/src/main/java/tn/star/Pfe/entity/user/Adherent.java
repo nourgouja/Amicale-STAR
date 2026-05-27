@@ -26,6 +26,4 @@ public class Adherent extends User {
     @Enumerated(EnumType.STRING)
     @Builder.Default
     private ApprovalStatus statut = ApprovalStatus.APPROVED;
-
-    //statut de ses paiements
 }

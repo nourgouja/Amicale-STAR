@@ -11,7 +11,6 @@ public interface IEmailService {
                                int numero, int total, BigDecimal montant,
                                LocalDate dateEcheance, String type);
 
-    // Election notifications
     void sendElectionCallCreatedToAdmins(String to, String callTitre, String description);
     void sendCandidacyConfirmationToApplicant(String to, String firstName, String callTitre, String position);
     void sendNewCandidacyToAdmins(String to, String adminName, String applicantName, String callTitre, String position);

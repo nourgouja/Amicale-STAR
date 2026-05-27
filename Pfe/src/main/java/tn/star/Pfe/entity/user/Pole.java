@@ -28,8 +28,7 @@ public class Pole {
     @CollectionTable(name = "pole_types_offre", joinColumns = @JoinColumn(name = "pole_id"))
     @Enumerated(EnumType.STRING)
     @Column(name = "type_offre", nullable = false)
-//    @Builder.Default
-//    private Set<TypeOffre> typesOffre = new HashSet<>();
+
     private List<TypeOffre> typesOffre;
 
     @Column(nullable = false, updatable = false)

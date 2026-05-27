@@ -20,8 +20,6 @@ public interface VoteSondageRepository extends JpaRepository<VoteSondage, Long> 
 
     boolean existsBySondageIdAndAdherentId(Long sondageId, Long adherentId);
 
-    long countByOptionId(Long optionId);
-
     long countBySondageId(Long sondageId);
 
     @Query("SELECT v.option.id, COUNT(v) FROM VoteSondage v WHERE v.option.id IN :optionIds GROUP BY v.option.id")

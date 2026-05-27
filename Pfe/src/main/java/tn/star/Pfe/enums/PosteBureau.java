@@ -7,8 +7,7 @@ public enum PosteBureau {
     RESPONSABLE_POLE_VOYAGE_SEJOURS("Responsable Pôle Voyage & Séjours"),
     RESPONSABLE_POLE_ACTIVITES_LOISIRS("Responsable Pôle Activités & Loisirs"),
     RESPONSABLE_POLE_EVENEMENTS_CONVENTIONS("Responsable Pôle Événements & Conventions"),
-    RESPONSABLE_POLE("Responsable de Pôle"),
-    MEMBER("Membre");
+    RESPONSABLE_POLE("Responsable de Pôle");
 
     private final String label;
 

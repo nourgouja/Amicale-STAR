@@ -73,6 +73,6 @@ public class CandidateApplication {
     @Column(nullable = false)
     private LocalDateTime updatedAt;
 
-    @Version // for what purpose ?
+    @Version
     private Long version;
 }

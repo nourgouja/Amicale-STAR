@@ -34,7 +34,6 @@ public class EcheanceFactory {
 
         BigDecimal montantParTranche = prixTotal
                 .divide(BigDecimal.valueOf(nbTranches), 2, RoundingMode.HALF_UP);
-        // last tranche absorbs rounding so the sum always equals prixTotal
         BigDecimal derniereTranche = prixTotal.subtract(
                 montantParTranche.multiply(BigDecimal.valueOf(nbTranches - 1)));
 

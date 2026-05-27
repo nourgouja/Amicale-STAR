@@ -21,8 +21,6 @@ public class GuestService {
     private final GuestRepository guestRepository;
     private final InscriptionRepository inscriptionRepository;
 
-    // ── Adherent operations (own inscriptions only) ───────────────────────────
-
     public GuestResponse addGuest(Long inscriptionId, GuestRequest request, Adherent adherent) {
         Inscription inscription = getInscriptionForAdherent(inscriptionId, adherent);
         return save(new Guest(), inscription, request);
@@ -45,8 +43,6 @@ public class GuestService {
         guestRepository.delete(guest);
     }
 
-    // ── Admin / bureau operations (any inscription) ───────────────────────────
-
     public GuestResponse addGuestAdmin(Long inscriptionId, GuestRequest request) {
         Inscription inscription = findInscriptionOrThrow(inscriptionId);
         return save(new Guest(), inscription, request);
@@ -68,8 +64,6 @@ public class GuestService {
         Guest guest = getGuestOfInscription(guestId, inscriptionId);
         guestRepository.delete(guest);
     }
-
-    // ── Helpers ───────────────────────────────────────────────────────────────
 
     private Inscription getInscriptionForAdherent(Long inscriptionId, Adherent adherent) {
         return inscriptionRepository.findByIdAndAdherent(inscriptionId, adherent)

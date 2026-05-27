@@ -12,7 +12,6 @@ import tn.star.Pfe.entity.election.ElectionCall;
 import tn.star.Pfe.enums.LifecycleStatus;
 
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,20 +21,6 @@ public interface ElectionRepository extends JpaRepository<Election, Long> {
 
     Page<Election> findByStatus(LifecycleStatus status, Pageable pageable);
 
-    Optional<Election> findByIdAndStatus(Long id, LifecycleStatus status);
-
-    @Query("SELECT e FROM Election e WHERE e.status = :status AND e.dateFin < :now")
-    Page<Election> findClosedElections(
-            @Param("status") LifecycleStatus status,
-            @Param("now") LocalDateTime now,
-            Pageable pageable);
-
-    @Query("SELECT e FROM Election e WHERE e.status IN ('OPEN', 'CLOSED') " +
-            "AND e.dateFin < :now AND e.resultsJson IS NULL")
-    List<Election> findElectionsNeedingResults(@Param("now") LocalDateTime now);
-
     @Query("SELECT e FROM Election e WHERE e.parentElection.id = :parentId")
     List<Election> findExtraRounds(@Param("parentId") Long parentId);
-
-    long countByCall(ElectionCall call);
 }

@@ -5,5 +5,6 @@ public record MembreBureauPublicResponse(
         String nom,
         String prenom,
         String poste,
-        String poleNom
+        String poleNom,
+        String email
 ) {}

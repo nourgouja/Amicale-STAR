@@ -29,9 +29,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
            "LOWER(u.prenom) LIKE LOWER(CONCAT('%', :search, '%')))")
     Page<User> findByActifAndRoleAndSearch(@Param("actif") boolean actif, @Param("role") Role role, @Param("search") String search, Pageable pageable);
 
-    @Query("SELECT u FROM User u WHERE u.role = :role AND " + "(LOWER(u.nom) LIKE LOWER(CONCAT('%', :search, '%')) OR " + "LOWER(u.prenom) LIKE LOWER(CONCAT('%', :search, '%')))")
-    Page<User> findByRoleAndSearch(@Param("role") Role role, @Param("search") String search, Pageable pageable);
-    Page<User> findByRole(Role role, Pageable pageable);
     List<User> findByRole(Role role);
 
     @Query("SELECT u FROM User u WHERE u.actif = :actif AND (" +
@@ -39,9 +36,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
            "LOWER(u.prenom) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
            "LOWER(u.email) LIKE LOWER(CONCAT('%', :search, '%')))")
     Page<User> searchByKeywordAndActif(@Param("actif") boolean actif, @Param("search") String search, Pageable pageable);
-
-    @Query("SELECT u FROM User u WHERE " + "LOWER(u.nom) LIKE LOWER(CONCAT('%', :search, '%')) OR " + "LOWER(u.prenom) LIKE LOWER(CONCAT('%', :search, '%')) OR " + "LOWER(u.email) LIKE LOWER(CONCAT('%', :search, '%'))")
-    Page<User> searchByKeyword(@Param("search") String search, Pageable pageable);
 
     long countByRole(Role role);
 
